@@ -533,7 +533,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       <button class="nav-btn active" onclick="switchView('cal')">&#128197; Calendar</button>
       <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
       <button class="nav-btn" onclick="switchView('res')">&#128230; ยืม/คืน</button>
-      <button class="nav-btn" onclick="openModal(null)">+ จอง</button>
+      <button class="nav-btn" id="nav-book-btn" onclick="openModal(null)">+ จอง</button>
     </div>
     <div class="topbar-right">
       <div class="notif-bell-wrap" id="notif-bell-wrap" onclick="toggleNotifPanel()">
@@ -1102,6 +1102,14 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 <div class="modal">
   <div class="modal-hd"><span id="modal-title">จองนัดหมาย</span><button class="modal-close" onclick="closeModal()">&#10005;</button></div>
   <div class="staff-tag" id="staff-tag-modal"></div>
+  <div id="assign-ps-wrap" style="display:none;margin-bottom:12px;">
+    <div class="fgg">
+      <label>&#128101; Assign ให้ PS (ถ้าไม่เลือก จะใช้ชื่อตัวเอง)</label>
+      <select id="f-assign-ps" style="padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;background:var(--white);width:100%;">
+        <option value="">— ใช้ชื่อตัวเอง —</option>
+      </select>
+    </div>
+  </div>
   <div class="fgrid">
     <div class="fgg"><label>ชื่อโรงพยาบาล / คลินิก *</label><input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ"></div>
     <div class="fgg"><label>ชื่อผู้ติดต่อ *</label><input type="text" id="f-contact" placeholder="เช่น คุณสมชาย"></div>
@@ -1267,6 +1275,12 @@ const ADMIN_PW = 'admin1234';
 const MGR_PW = 'manager2026';
 let currentUser = null;
 let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {};
+
+// ROLE HELPERS
+function isSales(){ return currentUser && currentUser.dept==='sales'; }
+function isPS(){ return currentUser && currentUser.dept==='ps'; }
+function isPSManager(){ return isPS() && (currentUser.level==='Manager'||currentUser.level==='Supervisor'); }
+function canAssign(){ return isPSManager(); }
 let uFilter = 'all', aFilter = 'all';
 let calMode = 'month', calDate = new Date();
 let editId = null, photoMemberId = null, photoB64 = null;
@@ -1402,6 +1416,11 @@ function startUserApp(){
   renderCalendar();
   renderNotifications();
   startRealtimeNotifListener();
+  // ปรับ UI ตาม role
+  const bookBtn = document.getElementById('nav-book-btn');
+  if(bookBtn) bookBtn.style.display = isSales() ? 'none' : '';
+  // Sales: default filter = mine
+  if(isSales()){ uFilter = 'mine'; }
 }
 
 // START ADMIN
@@ -1606,9 +1625,22 @@ function renderWeek(){
 
 // MODAL
 function openModal(ds){
+  if(isSales()){ showToast('Sales ไม่มีสิทธิ์จองนัดใหม่','error'); return; }
   document.getElementById('f-date').value=ds||'';
   if(!ds) document.getElementById('f-date').valueAsDate=new Date();
   document.getElementById('modal-title').textContent='จองนัดหมาย'+(ds?' — '+fmtTH(ds):'');
+  // PS Manager: แสดง assign dropdown
+  const wrap = document.getElementById('assign-ps-wrap');
+  const sel = document.getElementById('f-assign-ps');
+  if(canAssign() && wrap && sel){
+    wrap.style.display='block';
+    sel.innerHTML='<option value="">— ใช้ชื่อตัวเอง —</option>';
+    Object.entries(allMembers).filter(([,m])=>m.dept==='ps').forEach(([id,m])=>{
+      const o=document.createElement('option');
+      o.value=id; o.textContent=m.name+(m.position?' — '+m.position:'');
+      sel.appendChild(o);
+    });
+  } else if(wrap){ wrap.style.display='none'; }
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('f-hospital').focus(),100);
 }
@@ -1625,10 +1657,19 @@ function submitBooking(){
   if(!hospital||!contact||!date||!time||!category){ showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ (รวมถึงประเภทการจอง)','error'); return; }
   const btn=document.getElementById('submit-btn');
   btn.disabled=true; btn.textContent='กำลังบันทึก...';
+  // PS Manager: ใช้ PS ที่ assign ถ้าเลือกไว้
+  const assignSelEl = document.getElementById('f-assign-ps');
+  const assignedId = (canAssign() && assignSelEl && assignSelEl.value) ? assignSelEl.value : currentUser.id;
+  const assignedMember = assignedId !== currentUser.id ? allMembers[assignedId] : null;
+  const assignedName = assignedMember ? assignedMember.name : currentUser.name;
+  const assignedPos = assignedMember ? (assignedMember.position||'') : (currentUser.position||'');
+  const assignedLevel = assignedMember ? (assignedMember.level||'') : (currentUser.level||'');
   bookingsRef.push({
-    role:currentUser.dept, dept:currentUser.dept,
-    staffId:currentUser.id, staff:currentUser.name,
-    staffPosition:currentUser.position||'', staffLevel:currentUser.level||'',
+    role: assignedMember ? 'ps' : currentUser.dept,
+    dept: assignedMember ? 'ps' : currentUser.dept,
+    staffId: assignedId, staff: assignedName,
+    staffPosition: assignedPos, staffLevel: assignedLevel,
+    assignedBy: assignedMember ? currentUser.name : '',
     hospital, contact,
     phone:document.getElementById('f-phone').value.trim(),
     date, time,
@@ -1656,9 +1697,34 @@ function bkgRow(b, isAdmin){
   const mine=currentUser&&b.staffId===currentUser.id;
   const m=memberOf(b);
   const staffAvHTML=m?avatarHTML(m,16):(`<div style="width:16px;height:16px;border-radius:50%;background:${b.role==='ps'?'var(--primary)':'var(--navy)'};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:white;">${(b.staff||'?').slice(0,1)}</div>`);
+
+  // Sales: เห็นเฉพาะนัดของตัวเอง
+  if(isSales() && !isAdmin && !mine) return '';
+  const salesOnly = isSales() && !isAdmin;
+
+  // Status dropdown
+  const statusSelect = salesOnly
+    ? `<select class="sts ${scMap[b.status]||''}" onchange="changeStatus('${b.id}',this)">
+        <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
+        <option value="cancel" ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
+      </select>`
+    : `<select class="sts ${scMap[b.status]||''}" onchange="changeStatus('${b.id}',this)">
+        <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
+        <option value="active" ${b.status==='active'?'selected':''}>กำลังดำเนินการ</option>
+        <option value="done" ${b.status==='done'?'selected':''}>เสร็จสิ้น</option>
+        <option value="cancel" ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
+      </select>`;
+
+  // Assign dropdown สำหรับ PS Manager/Supervisor
+  const assignBtn = (!isAdmin && canAssign() && b.role==='ps')
+    ? `<select class="sts active" style="font-size:10px;min-width:80px;" onchange="assignBooking('${b.id}',this)" title="Assign PS">
+        <option value="">— Assign —</option>
+        ${Object.entries(allMembers).filter(([,mm])=>mm.dept==='ps').map(([kid,mm])=>`<option value="${kid}" ${b.staffId===kid?'selected':''}>${esc(mm.name)}</option>`).join('')}
+      </select>` : '';
+
   return `<div class="b-item${mine&&!isAdmin?' is-mine':''}">
     <div style="display:flex;flex-direction:column;align-items:center;">
-      ${m?avatarHTML(m,34,'b-av'):`<div class="b-av-ini ${b.role==='ps'?'':''}\" style=\"background:${b.role==='ps'?'var(--primary-light)':'var(--blue-light)'};color:${b.role==='ps'?'var(--primary-dark)':'var(--navy)'}">${ini}</div>`}
+      ${m?avatarHTML(m,34,'b-av'):`<div class="b-av-ini ${b.role==='ps'?'':''}" style="background:${b.role==='ps'?'var(--primary-light)':'var(--blue-light)'};color:${b.role==='ps'?'var(--primary-dark)':'var(--navy)'}">${ini}</div>`}
     </div>
     <div class="b-info">
       <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}${isAdmin?'<span class="badge bg-admin">Admin</span>':''}${catTag(b.category)}</div>
@@ -1666,14 +1732,12 @@ function bkgRow(b, isAdmin){
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
     </div>
-    <select class="sts ${scMap[b.status]||''}" onchange="changeStatus('${b.id}',this)">
-      <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
-      <option value="active" ${b.status==='active'?'selected':''}>กำลังดำเนินการ</option>
-      <option value="done" ${b.status==='done'?'selected':''}>เสร็จสิ้น</option>
-      <option value="cancel" ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
-    </select>
+    ${statusSelect}
+    ${assignBtn}
     ${isAdmin?`<button class="edit-btn" onclick="openEdit('${b.id}')">&#9998;</button>`:''}
-    <button class="del-btn" onclick="deleteBooking('${b.id}')">&#10005;</button>
+    ${salesOnly
+      ? `<button class="edit-btn" onclick="openEdit('${b.id}')" title="เลื่อนนัด" style="background:var(--amber-light);color:var(--amber);border-color:var(--amber-light);">&#128197;</button>`
+      : `<button class="del-btn" onclick="deleteBooking('${b.id}')">&#10005;</button>`}
   </div>`;
 }
 
@@ -1866,12 +1930,62 @@ function changeStatus(id, sel){
     .then(()=>showToast('อัปเดตสถานะแล้ว','success'));
 }
 
-function deleteBooking(id){ if(!confirm('ยืนยันลบรายการนี้?'))return; bookingsRef.child(id).remove().then(()=>showToast('ลบรายการแล้ว')); }
+function deleteBooking(id){
+  if(isSales()){ showToast('ไม่มีสิทธิ์ลบรายการ','error'); return; }
+  if(!confirm('ยืนยันลบรายการนี้?'))return;
+  bookingsRef.child(id).remove().then(()=>showToast('ลบรายการแล้ว'));
+}
+
+function assignBooking(id, sel){
+  if(!canAssign()){ showToast('ไม่มีสิทธิ์ Assign','error'); sel.value=''; return; }
+  const name = sel.value;
+  if(!name) return;
+  const member = Object.values(allMembers).find(m=>m.name===name);
+  bookingsRef.child(id).update({
+    staff: name,
+    staffId: Object.keys(allMembers).find(k=>allMembers[k].name===name)||'',
+    staffPosition: member?.position||'',
+    staffLevel: member?.level||'',
+    lastUpdatedBy: currentUser.name,
+    lastUpdatedAt: Date.now()
+  }).then(()=>showToast('Assign งานให้ '+name+' แล้ว ✓','success'));
+}
 function setFilter(el,f){ uFilter=f; document.querySelectorAll('#view-dash .filter-chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); renderList(); }
 function setAFilter(el,f){ aFilter=f; document.querySelectorAll('#aview-bookings .filter-chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); renderAdminBkgList(); }
 
 // EDIT
-function openEdit(id){ editId=id; const b=allBookings[id];if(!b)return; document.getElementById('e-hospital').value=b.hospital||''; document.getElementById('e-contact').value=b.contact||''; document.getElementById('e-phone').value=b.phone||''; document.getElementById('e-date').value=b.date||''; document.getElementById('e-time').value=b.time||''; document.getElementById('e-category').value=b.category||''; document.getElementById('e-status').value=b.status||'pending'; document.getElementById('e-note').value=b.note||''; document.getElementById('edit-overlay').classList.add('open'); }
+function openEdit(id){
+  editId=id;
+  const b=allBookings[id]; if(!b) return;
+  // Sales: เห็นเฉพาะนัดของตัวเอง
+  if(isSales() && b.staffId !== currentUser.id){ showToast('ไม่มีสิทธิ์แก้ไขนัดของผู้อื่น','error'); return; }
+  document.getElementById('e-hospital').value=b.hospital||'';
+  document.getElementById('e-contact').value=b.contact||'';
+  document.getElementById('e-phone').value=b.phone||'';
+  document.getElementById('e-date').value=b.date||'';
+  document.getElementById('e-time').value=b.time||'';
+  document.getElementById('e-category').value=b.category||'';
+  document.getElementById('e-note').value=b.note||'';
+  // Sales: lock fields ที่ไม่ควรเปลี่ยน
+  const statusSel = document.getElementById('e-status');
+  if(isSales()){
+    statusSel.value = b.status||'pending';
+    statusSel.disabled = true;
+    // แสดงเฉพาะ pending/cancel
+    [...statusSel.options].forEach(o=>{ o.style.display=(o.value==='pending'||o.value==='cancel')?'':'none'; });
+    document.getElementById('e-hospital').disabled = true;
+    document.getElementById('e-contact').disabled = true;
+    document.getElementById('e-category').disabled = true;
+  } else {
+    statusSel.value = b.status||'pending';
+    statusSel.disabled = false;
+    [...statusSel.options].forEach(o=>{ o.style.display=''; });
+    document.getElementById('e-hospital').disabled = false;
+    document.getElementById('e-contact').disabled = false;
+    document.getElementById('e-category').disabled = false;
+  }
+  document.getElementById('edit-overlay').classList.add('open');
+}
 function closeEdit(){ document.getElementById('edit-overlay').classList.remove('open'); editId=null; }
 function saveEdit(){
   if(!editId) return;
