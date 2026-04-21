@@ -975,51 +975,122 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <!-- SETTINGS VIEW -->
     <div class="view" id="aview-settings">
       <div class="card">
-        <div class="card-title">&#128276; Line Notify — แจ้งเตือนกลุ่ม Line</div>
-        <div style="font-size:12px;color:var(--gray-600);margin-bottom:16px;line-height:1.7;">
-          เมื่อ Sales ยกเลิกหรือเลื่อนนัดหมาย ระบบจะส่งข้อความแจ้งเตือนเข้ากลุ่ม Line ที่กำหนดทันที
+        <div class="card-title">&#128279; n8n Webhook — แจ้งเตือนกลุ่ม Line OA</div>
+        <div style="font-size:12px;color:var(--gray-600);margin-bottom:16px;line-height:1.8;">
+          วาง Webhook URL จาก n8n ด้านล่าง — เมื่อ Sales ยกเลิก/เลื่อนนัด ระบบจะเรียก n8n ทันที แล้ว n8n ส่งข้อความเข้ากลุ่ม Line OA
         </div>
-        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:560px;">
           <div class="fgg">
-            <label>Line Notify Token *</label>
+            <label>n8n Webhook URL *</label>
             <div style="display:flex;gap:8px;">
-              <input type="password" id="line-token-input" placeholder="วาง Token ที่ได้จาก notify-bot.line.me" style="flex:1;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
-              <button onclick="toggleTokenVisibility()" id="toggle-token-vis" style="padding:8px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);cursor:pointer;font-size:13px;">&#128065;</button>
+              <input type="text" id="n8n-webhook-url" placeholder="https://your-n8n.app.n8n.cloud/webhook/xxxxxxxx" style="flex:1;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;outline:none;">
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button onclick="saveLineToken()" style="padding:9px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">บันทึก Token</button>
-            <button onclick="testLineNotify()" style="padding:9px 20px;background:var(--white);color:var(--primary);border:1.5px solid var(--primary);border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">&#128640; ทดสอบส่ง</button>
-            <button onclick="clearLineToken()" style="padding:9px 16px;background:var(--white);color:var(--red);border:1px solid var(--red-light);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer;">ลบ Token</button>
+            <button onclick="saveN8nUrl()" style="padding:9px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">&#128190; บันทึก URL</button>
+            <button onclick="testN8nWebhook()" style="padding:9px 20px;background:var(--white);color:var(--primary);border:1.5px solid var(--primary);border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">&#128640; ทดสอบส่ง</button>
+            <button onclick="clearN8nUrl()" style="padding:9px 16px;background:var(--white);color:var(--red);border:1px solid var(--red-light);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer;">ลบ URL</button>
           </div>
-          <div id="line-status-box" style="display:none;padding:10px 14px;border-radius:var(--radius-sm);font-size:12px;"></div>
+          <div id="n8n-status-box" style="display:none;padding:10px 14px;border-radius:var(--radius-sm);font-size:12px;"></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">&#128712; การตั้งค่าแจ้งเตือน</div>
-        <div style="display:flex;flex-direction:column;gap:10px;max-width:420px;">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--gray-800);">
-            <input type="checkbox" id="notif-cancel" checked onchange="saveNotifSettings()" style="width:16px;height:16px;accent-color:var(--primary);">
-            <span>&#10060; แจ้งเตือนเมื่อ Sales <b>ยกเลิก</b>นัดหมาย</span>
-          </label>
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--gray-800);">
-            <input type="checkbox" id="notif-postpone" checked onchange="saveNotifSettings()" style="width:16px;height:16px;accent-color:var(--primary);">
-            <span>&#128197; แจ้งเตือนเมื่อ Sales <b>เลื่อน</b>นัดหมาย (เปลี่ยนวันที่)</span>
-          </label>
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--gray-800);">
-            <input type="checkbox" id="notif-delete" checked onchange="saveNotifSettings()" style="width:16px;height:16px;accent-color:var(--primary);">
-            <span>&#128465; แจ้งเตือนเมื่อ Sales <b>ลบ</b>นัดหมาย</span>
-          </label>
+        <div class="card-title">&#128712; กรณีที่จะแจ้งเตือน</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--red-light);border-radius:var(--radius-sm);border-left:3px solid var(--red);">
+            <span style="font-size:18px;">&#10060;</span>
+            <div><div style="font-size:12px;font-weight:700;color:var(--red);">Sales ยกเลิกนัดหมาย</div><div style="font-size:11px;color:var(--gray-600);">status เปลี่ยนเป็น "ยกเลิก" — ส่งข้อมูลไป n8n พร้อม type: cancel</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--amber-light);border-radius:var(--radius-sm);border-left:3px solid var(--amber);">
+            <span style="font-size:18px;">&#128197;</span>
+            <div><div style="font-size:12px;font-weight:700;color:var(--amber);">Sales เลื่อนนัดหมาย</div><div style="font-size:11px;color:var(--gray-600);">วันที่นัดเปลี่ยน — ส่งข้อมูลพร้อม type: postpone, oldDate, newDate</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--gray-100);border-radius:var(--radius-sm);border-left:3px solid var(--gray-400);">
+            <span style="font-size:18px;">&#128465;</span>
+            <div><div style="font-size:12px;font-weight:700;color:var(--gray-600);">Sales ลบนัดหมาย</div><div style="font-size:11px;color:var(--gray-600);">ลบ booking ออกจากระบบ — ส่งข้อมูลพร้อม type: delete</div></div>
+          </div>
         </div>
       </div>
       <div class="card" style="background:var(--primary-light);border-color:var(--primary);">
-        <div class="card-title">&#128221; วิธีสร้าง Line Notify Token</div>
+        <div class="card-title">&#128221; ขั้นตอนสร้าง n8n Workflow (ดูคู่มือ PDF)</div>
         <ol style="font-size:12px;color:var(--gray-800);line-height:2.2;padding-left:18px;margin:0;">
-          <li>เปิด <b>Line</b> → กลุ่มที่ต้องการรับแจ้งเตือน → เพิ่มสมาชิก <b>"Line Notify"</b></li>
-          <li>เปิด <b><a href="https://notify-bot.line.me" target="_blank" style="color:var(--primary);">notify-bot.line.me</a></b> → Login → My page</li>
-          <li>เลื่อนลงหา <b>Generate token</b> → ใส่ชื่อ → เลือกกลุ่ม → กด Generate</li>
-          <li><b>คัดลอก Token</b> ทันที (แสดงครั้งเดียว) แล้ววางในช่องด้านบน</li>
+          <li>สมัคร <a href="https://n8n.io" target="_blank" style="color:var(--primary);">n8n.io</a> (ฟรี) → สร้าง workflow ใหม่</li>
+          <li>เพิ่ม node <b>Webhook</b> → Copy URL → วางในช่องด้านบน</li>
+          <li>เพิ่ม node <b>Line</b> → ใส่ Channel Access Token → เลือก Push Message</li>
+          <li>ตั้งค่า message ใช้ข้อมูลจาก webhook: <code style="background:var(--white);padding:1px 5px;border-radius:3px;">{{$json.hospital}}</code> เป็นต้น</li>
+          <li>กด <b>Activate</b> → กลับมากด "ทดสอบส่ง" ในหน้านี้</li>
         </ol>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128227; สถานะ Line OA Integration</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+          <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;">
+            <div style="font-size:11px;color:var(--gray-400);margin-bottom:4px;">Cloud Functions</div>
+            <div style="font-size:13px;font-weight:600;color:var(--primary);">&#128994; Deploy แล้ว</div>
+            <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">onBookingChanged · onBookingDeleted</div>
+          </div>
+          <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;">
+            <div style="font-size:11px;color:var(--gray-400);margin-bottom:4px;">Region</div>
+            <div style="font-size:13px;font-weight:600;color:var(--navy);">asia-southeast1</div>
+            <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">Singapore (ใกล้ไทยที่สุด)</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--gray-600);line-height:1.8;">
+          การตั้งค่าทั้งหมดอยู่ใน Firebase Cloud Functions Secrets ครับ ไม่ได้เก็บใน browser<br>
+          หากต้องการเปลี่ยน Token หรือ Group ID ให้รัน:<br>
+          <code style="background:var(--gray-100);padding:2px 8px;border-radius:4px;font-size:11px;color:var(--navy);">firebase functions:secrets:set LINE_CHANNEL_TOKEN</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128712; กรณีที่จะส่งแจ้งเตือน</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--red-light);border-radius:var(--radius-sm);border-left:3px solid var(--red);">
+            <span style="font-size:18px;">&#10060;</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--red);">Sales ยกเลิกนัดหมาย</div>
+              <div style="font-size:11px;color:var(--gray-600);">เมื่อ status เปลี่ยนเป็น "ยกเลิก" — ส่ง Flex Message สีแดงเข้ากลุ่ม</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--amber-light);border-radius:var(--radius-sm);border-left:3px solid var(--amber);">
+            <span style="font-size:18px;">&#128197;</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--amber);">Sales เลื่อนนัดหมาย</div>
+              <div style="font-size:11px;color:var(--gray-600);">เมื่อวันที่นัดเปลี่ยน — ส่ง Flex Message แสดงวันเดิม → วันใหม่</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--gray-100);border-radius:var(--radius-sm);border-left:3px solid var(--gray-400);">
+            <span style="font-size:18px;">&#128465;</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--gray-600);">Sales ลบนัดหมาย</div>
+              <div style="font-size:11px;color:var(--gray-600);">เมื่อลบ booking ออกจากระบบ — ส่งแจ้งเตือนเข้ากลุ่ม</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128196; ขั้นตอน Deploy (ดูไฟล์ DEPLOY_GUIDE.md)</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--gray-800);">
+            <span style="background:var(--primary);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">1</span>
+            <span>หา <b>Channel Access Token</b> จาก Line Developers Console → Messaging API</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--gray-800);">
+            <span style="background:var(--primary);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">2</span>
+            <span>เพิ่ม OA เข้ากลุ่ม Line → รับ <b>Group ID</b> จาก webhook event</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--gray-800);">
+            <span style="background:var(--primary);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">3</span>
+            <span><code style="background:var(--gray-100);padding:1px 6px;border-radius:3px;font-size:10px;">firebase functions:secrets:set LINE_CHANNEL_TOKEN</code></span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--gray-800);">
+            <span style="background:var(--primary);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">4</span>
+            <span><code style="background:var(--gray-100);padding:1px 6px;border-radius:3px;font-size:10px;">firebase functions:secrets:set LINE_GROUP_ID</code></span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--gray-800);">
+            <span style="background:var(--primary);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">5</span>
+            <span><code style="background:var(--gray-100);padding:1px 6px;border-radius:3px;font-size:10px;">firebase deploy --only functions</code></span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2463,139 +2534,120 @@ function refreshMgr(){
     renderMgrView(active.id.replace('mview-',''));
 }
 
-// ===================== LINE NOTIFY =====================
-let lineToken = localStorage.getItem('pes_line_token') || '';
-let notifSettings = JSON.parse(localStorage.getItem('pes_notif_settings') || '{"cancel":true,"postpone":true,"delete":true}');
+// ===================== N8N WEBHOOK — LINE OA =====================
+let n8nWebhookUrl = localStorage.getItem('pes_n8n_url') || '';
 
 function initSettingsView(){
-  const inp = document.getElementById('line-token-input');
-  if(inp) inp.value = lineToken;
+  const inp = document.getElementById('n8n-webhook-url');
+  if(inp) inp.value = n8nWebhookUrl;
   const dot = document.getElementById('line-configured-dot');
-  if(dot) dot.style.display = lineToken ? 'block' : 'none';
-  const nc = document.getElementById('notif-cancel');
-  const np = document.getElementById('notif-postpone');
-  const nd = document.getElementById('notif-delete');
-  if(nc) nc.checked = notifSettings.cancel !== false;
-  if(np) np.checked = notifSettings.postpone !== false;
-  if(nd) nd.checked = notifSettings.delete !== false;
-  showLineStatus('', '');
+  if(dot) dot.style.display = n8nWebhookUrl ? 'block' : 'none';
+  showN8nStatus('','');
 }
 
-function saveLineToken(){
-  const v = document.getElementById('line-token-input').value.trim();
-  if(!v){ showLineStatus('กรุณากรอก Token', 'error'); return; }
-  lineToken = v;
-  localStorage.setItem('pes_line_token', lineToken);
+function saveN8nUrl(){
+  const v = (document.getElementById('n8n-webhook-url')?.value || '').trim();
+  if(!v || !v.startsWith('http')){ showN8nStatus('กรุณากรอก Webhook URL ที่ถูกต้อง','error'); return; }
+  n8nWebhookUrl = v;
+  localStorage.setItem('pes_n8n_url', n8nWebhookUrl);
   const dot = document.getElementById('line-configured-dot');
   if(dot) dot.style.display = 'block';
-  showLineStatus('✅ บันทึก Token แล้ว', 'success');
-  showToast('บันทึก Line Token แล้ว ✓', 'success');
+  showN8nStatus('✅ บันทึก URL แล้ว','success');
+  showToast('บันทึก n8n Webhook URL แล้ว ✓','success');
 }
 
-function clearLineToken(){
-  if(!confirm('ลบ Token ออก?')) return;
-  lineToken = '';
-  localStorage.removeItem('pes_line_token');
-  document.getElementById('line-token-input').value = '';
+function clearN8nUrl(){
+  if(!confirm('ลบ Webhook URL?')) return;
+  n8nWebhookUrl = '';
+  localStorage.removeItem('pes_n8n_url');
+  const inp = document.getElementById('n8n-webhook-url');
+  if(inp) inp.value = '';
   const dot = document.getElementById('line-configured-dot');
   if(dot) dot.style.display = 'none';
-  showLineStatus('ลบ Token แล้ว', '');
+  showN8nStatus('ลบ URL แล้ว','');
 }
 
-function toggleTokenVisibility(){
-  const inp = document.getElementById('line-token-input');
-  if(inp) inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-
-function saveNotifSettings(){
-  notifSettings = {
-    cancel:   document.getElementById('notif-cancel')?.checked   !== false,
-    postpone: document.getElementById('notif-postpone')?.checked !== false,
-    delete:   document.getElementById('notif-delete')?.checked   !== false,
-  };
-  localStorage.setItem('pes_notif_settings', JSON.stringify(notifSettings));
-  showToast('บันทึกการตั้งค่าแล้ว', 'success');
-}
-
-function showLineStatus(msg, type){
-  const box = document.getElementById('line-status-box');
+function showN8nStatus(msg, type){
+  const box = document.getElementById('n8n-status-box');
   if(!box) return;
   if(!msg){ box.style.display='none'; return; }
-  box.style.display = 'block';
+  box.style.display='block';
   box.style.background = type==='success'?'var(--primary-light)':type==='error'?'var(--red-light)':'var(--gray-100)';
   box.style.color = type==='success'?'var(--primary-dark)':type==='error'?'var(--red)':'var(--gray-800)';
   box.style.border = '1px solid '+(type==='success'?'var(--primary)':type==='error'?'var(--red)':'var(--gray-200)');
   box.textContent = msg;
 }
 
-async function sendLineNotify(message){
-  if(!lineToken) return;
+async function callN8nWebhook(payload){
+  if(!n8nWebhookUrl) return;
   try {
-    // Use allorigins CORS proxy to call Line Notify API from browser
-    const encoded = encodeURIComponent('message=' + encodeURIComponent(message));
-    await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(
-      'https://notify-api.line.me/api/notify'
-    ) + '&method=POST&headers=' + encodeURIComponent(JSON.stringify({
-      'Authorization': 'Bearer ' + lineToken,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    })) + '&body=' + encodeURIComponent('message=' + encodeURIComponent(message)), { method: 'GET' });
+    await fetch(n8nWebhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      mode: 'no-cors', // n8n webhook รองรับ CORS แล้ว แต่ใส่ไว้กันสะดุด
+    });
+    console.log('[n8n] webhook called:', payload.type);
   } catch(e) {
-    // Fallback: direct fetch (works if CORS allows or on local network)
-    try {
-      await fetch('https://notify-api.line.me/api/notify', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + lineToken, 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'message=' + encodeURIComponent(message)
-      });
-    } catch(e2) { console.warn('Line Notify send failed:', e2); }
+    console.warn('[n8n] webhook error:', e);
   }
 }
 
-async function testLineNotify(){
-  if(!lineToken){ showLineStatus('⚠️ ยังไม่ได้บันทึก Token', 'error'); return; }
-  showLineStatus('กำลังส่ง...', '');
-  const msg = '\n[PES] ✅ ทดสอบระบบแจ้งเตือน\nระบบจองนัดหมาย Prapatsorn Engineering\nการเชื่อมต่อ Line Notify สำเร็จ!';
-  await sendLineNotify(msg);
-  showLineStatus('✅ ส่งข้อความทดสอบแล้ว — ตรวจสอบในกลุ่ม Line', 'success');
+async function testN8nWebhook(){
+  const url = (document.getElementById('n8n-webhook-url')?.value || '').trim();
+  if(!url){ showN8nStatus('⚠️ ยังไม่ได้กรอก Webhook URL','error'); return; }
+  n8nWebhookUrl = url;
+  showN8nStatus('กำลังส่ง...','');
+  await callN8nWebhook({
+    type: 'test',
+    staff: 'ทดสอบระบบ',
+    hospital: 'โรงพยาบาลทดสอบ',
+    date: new Date().toISOString().slice(0,10),
+    contact: 'ผู้ทดสอบ',
+    message: '✅ ระบบแจ้งเตือน PES เชื่อมต่อ n8n สำเร็จ!'
+  });
+  showN8nStatus('✅ ส่งข้อมูลทดสอบไป n8n แล้ว — ตรวจสอบใน n8n Executions','success');
 }
 
-function buildLineMessage(type, booking, extra){
-  const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  const fmt = ds => { const d=new Date(ds+'T00:00:00'); return d.getDate()+' '+thM[d.getMonth()]+' '+(d.getFullYear()+543); };
-  if(type==='cancel'){
-    return '\n[PES] ❌ ยกเลิกนัดหมาย'
-      + '\nSales: ' + (booking.staff||'—')
-      + '\nโรงพยาบาล: ' + (booking.hospital||'—')
-      + (booking.date ? '\nวันที่นัดเดิม: ' + fmt(booking.date) : '')
-      + (booking.contact ? '\nผู้ติดต่อ: ' + booking.contact : '')
-      + (booking.product ? '\nสินค้า: ' + booking.product : '');
-  } else if(type==='postpone'){
-    return '\n[PES] 📅 เลื่อนนัดหมาย'
-      + '\nSales: ' + (booking.staff||'—')
-      + '\nโรงพยาบาล: ' + (booking.hospital||'—')
-      + (extra?.oldDate ? '\nจากวันที่: ' + fmt(extra.oldDate) : '')
-      + (extra?.newDate ? '\nเป็นวันที่: ' + fmt(extra.newDate) : '')
-      + (booking.contact ? '\nผู้ติดต่อ: ' + booking.contact : '')
-      + (booking.product ? '\nสินค้า: ' + booking.product : '');
-  } else if(type==='delete'){
-    return '\n[PES] 🗑️ ลบนัดหมาย'
-      + '\nSales: ' + (booking.staff||'—')
-      + '\nโรงพยาบาล: ' + (booking.hospital||'—')
-      + (booking.date ? '\nวันที่: ' + fmt(booking.date) : '');
-  }
-  return '';
-}
-
-// Override addNotification to also send Line
-const _origAddNotification = addNotification;
+// Hook เข้ากับ addNotification — ส่ง webhook ทุกครั้งที่มี event
+const _origAddNotif = addNotification;
 addNotification = function(type, booking, extra){
-  _origAddNotification(type, booking, extra);
-  if(!lineToken) return;
-  if(type==='cancel' && notifSettings.cancel === false) return;
-  if(type==='postpone' && notifSettings.postpone === false) return;
-  if(type==='delete' && notifSettings.delete === false) return;
-  const msg = buildLineMessage(type, booking, extra);
-  if(msg) sendLineNotify(msg);
+  _origAddNotif(type, booking, extra);
+  if(!n8nWebhookUrl) return;
+  const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const fmt = ds => { if(!ds) return '—'; const d=new Date(ds+'T00:00:00'); return d.getDate()+' '+thM[d.getMonth()]+' '+(d.getFullYear()+543); };
+  const payload = {
+    type,
+    staff:    booking.staff    || '—',
+    hospital: booking.hospital || '—',
+    contact:  booking.contact  || '—',
+    product:  booking.product  || '',
+    date:     fmt(booking.date),
+    note:     booking.note     || '',
+    updatedBy: booking.lastUpdatedBy || booking.staff || '—',
+    oldDate:  extra?.oldDate ? fmt(extra.oldDate) : undefined,
+    newDate:  extra?.newDate ? fmt(extra.newDate) : undefined,
+    // message สำเร็จรูปสำหรับใช้ใน n8n ได้เลย
+    message: type==='cancel'
+      ? `❌ ยกเลิกนัดหมาย
+Sales: ${booking.staff||'—'}
+โรงพยาบาล: ${booking.hospital||'—'}
+วันที่: ${fmt(booking.date)}
+ผู้ติดต่อ: ${booking.contact||'—'}${booking.product?'
+สินค้า: '+booking.product:''}`
+      : type==='postpone'
+      ? `📅 เลื่อนนัดหมาย
+Sales: ${booking.staff||'—'}
+โรงพยาบาล: ${booking.hospital||'—'}
+จากวันที่: ${extra?.oldDate?fmt(extra.oldDate):'—'}
+เป็นวันที่: ${extra?.newDate?fmt(extra.newDate):'—'}
+ผู้ติดต่อ: ${booking.contact||'—'}`
+      : `🗑️ ลบนัดหมาย
+Sales: ${booking.staff||'—'}
+โรงพยาบาล: ${booking.hospital||'—'}
+วันที่: ${fmt(booking.date)}`
+  };
+  callN8nWebhook(payload);
 };
 
 </script>
