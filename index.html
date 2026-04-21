@@ -14,6 +14,7 @@
   --amber:#b45309;--amber-light:#fef3c7;--red:#be123c;--red-light:#fee2e2;
   --blue:#1e5fa8;--blue-light:#dbeafe;--purple:#6d28d9;--purple-light:#ede9fe;
   --radius:10px;--radius-sm:6px;
+  --teal:#0d7a6b;--teal-light:#e0f5f2;--orange:#c2410c;--orange-light:#fff7ed;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color:var(--gray-800);font-size:14px;min-height:100vh;}
@@ -340,18 +341,97 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .res-add-form input.r-name{flex:1;min-width:140px;}
 .res-add-form input.r-detail{flex:1;min-width:120px;}
 
+/* MANAGER SCREEN */
+.topbar.mgr-bar{border-bottom-color:var(--teal);}
+.hero-mgr{background:linear-gradient(135deg,#064e3b,var(--teal));}
+.nav-btn.m-active{background:var(--teal);color:var(--white);}
+.nav-btn:hover{background:var(--primary-light);color:var(--primary);}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.kpi-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;border-top:3px solid var(--gray-200);}
+.kpi-card.k-book{border-top-color:var(--primary);}
+.kpi-card.k-conv{border-top-color:#f59e0b;}
+.kpi-card.k-util{border-top-color:var(--blue);}
+.kpi-card.k-cust{border-top-color:var(--teal);}
+.kpi-label{font-size:11px;color:var(--gray-400);margin-bottom:4px;font-weight:500;}
+.kpi-val{font-size:28px;font-weight:700;color:var(--gray-900);line-height:1;}
+.kpi-sub{font-size:11px;color:var(--gray-400);margin-top:4px;}
+.kpi-card.k-conv .kpi-val{color:#b45309;}
+.kpi-card.k-util .kpi-val{color:var(--blue);}
+.kpi-card.k-cust .kpi-val{color:var(--teal);}
+
+/* CHART BARS */
+.chart-wrap{margin-top:10px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.bar-label{font-size:12px;color:var(--gray-700);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;background:var(--gray-100);border-radius:4px;height:20px;position:relative;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s ease;display:flex;align-items:center;padding-left:6px;}
+.bar-fill.bf-ps{background:var(--primary-light);}
+.bar-fill.bf-sales{background:var(--blue-light);}
+.bar-fill.bf-prod{background:var(--teal-light);}
+.bar-fill.bf-conv{background:#fef3c7;}
+.bar-num{font-size:11px;font-weight:600;color:var(--gray-700);width:28px;flex-shrink:0;text-align:right;}
+.bar-pct{font-size:10px;color:var(--gray-400);width:34px;text-align:right;flex-shrink:0;}
+.bar-text{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;}
+.bar-text.c-ps{color:var(--primary-dark);}
+.bar-text.c-sales{color:var(--navy);}
+.bar-text.c-prod{color:var(--teal);}
+.bar-text.c-conv{color:#92400e;}
+
+/* DONUT */
+.donut-wrap{display:flex;align-items:center;gap:18px;margin-top:8px;}
+.donut-svg{flex-shrink:0;}
+.donut-legend{display:flex;flex-direction:column;gap:6px;}
+.dl-item{display:flex;align-items:center;gap:7px;font-size:12px;}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dl-val{font-weight:600;color:var(--gray-900);margin-left:auto;padding-left:10px;}
+
+/* LEADERBOARD */
+.lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100);}
+.lb-row:last-child{border-bottom:none;}
+.lb-rank{font-size:14px;font-weight:700;color:var(--gray-400);width:20px;text-align:center;flex-shrink:0;}
+.lb-rank.r1{color:#f59e0b;}
+.lb-rank.r2{color:var(--gray-600);}
+.lb-rank.r3{color:#b45309;}
+.lb-info{flex:1;min-width:0;}
+.lb-name{font-size:13px;font-weight:600;color:var(--gray-900);}
+.lb-pos{font-size:11px;color:var(--gray-400);}
+.lb-stats{display:flex;gap:12px;text-align:right;flex-shrink:0;}
+.lb-stat{text-align:center;}
+.lb-stat-val{font-size:15px;font-weight:700;color:var(--gray-900);}
+.lb-stat-lbl{font-size:10px;color:var(--gray-400);}
+
+/* COVERAGE TABLE */
+.cov-table{width:100%;border-collapse:collapse;font-size:12px;}
+.cov-table th{background:var(--gray-50);color:var(--gray-600);font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid var(--gray-200);}
+.cov-table td{padding:7px 10px;border-bottom:1px solid var(--gray-100);}
+.cov-table tr:last-child td{border-bottom:none;}
+.cov-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
+.cov-hot{background:#fee2e2;color:#be123c;}
+.cov-warm{background:#fef3c7;color:#92400e;}
+.cov-cold{background:var(--gray-100);color:var(--gray-600);}
+.cov-new{background:var(--teal-light);color:var(--teal);}
+
+/* DATE RANGE FILTER */
+.mgr-filter{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+.mgr-filter label{font-size:12px;font-weight:500;color:var(--gray-600);}
+.mgr-filter input,.mgr-filter select{padding:6px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;outline:none;background:var(--white);}
+.mgr-filter input:focus,.mgr-filter select:focus{border-color:var(--teal);}
+.mgr-filter-btn{padding:6px 14px;border-radius:var(--radius-sm);border:none;background:var(--teal);color:white;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;}
+.mgr-filter-btn:hover{background:#064e3b;}
+.quick-btn{padding:5px 10px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);font-size:11px;font-weight:500;font-family:inherit;cursor:pointer;color:var(--gray-600);}
+.quick-btn.on{background:var(--teal);color:white;border-color:var(--teal);}
+
+/* SECTION LABEL */
+.section-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.login-tab.mgr-tab.active{color:var(--teal);}
+
 @media(max-width:640px){
-  .stat-grid{grid-template-columns:repeat(2,1fr);}
-  .fgrid,.report-grid{grid-template-columns:1fr;}
-  .fgg.full{grid-column:1;}
-  .topbar{padding:0 10px;}
-  .hero{padding:12px;flex-direction:column;align-items:flex-start;gap:8px;}
-  .main{padding:12px 10px;}
-  .member-cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
-  .add-member-form{flex-direction:column;}
-  .add-member-form input,.add-member-form select{width:100%;}
-  .res-grid{grid-template-columns:repeat(2,1fr);}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .section-2col{grid-template-columns:1fr;}
 }
+
 </style>
 </head>
 <body>
@@ -367,6 +447,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
   <div class="login-tabs">
     <button class="login-tab active" onclick="switchTab('user')">เข้าใช้งาน</button>
     <button class="login-tab admin-tab" onclick="switchTab('admin')">Admin</button>
+    <button class="login-tab mgr-tab" onclick="switchTab('mgr')">Manager</button>
   </div>
   <div class="tab-panel active" id="tab-user">
     <div class="no-member-note" id="no-member-note">ยังไม่มีรายชื่อสมาชิก — ติดต่อ Admin เพื่อเพิ่มชื่อ</div>
@@ -394,6 +475,14 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     </div>
     <button class="login-btn admin-btn" onclick="doAdminLogin()">เข้าสู่หน้า Admin</button>
     <div class="login-err" id="admin-err"></div>
+  </div>
+  <div class="tab-panel" id="tab-mgr">
+    <div class="fg">
+      <label>รหัสผ่าน Manager / Owner *</label>
+      <input type="password" id="mgr-pw" placeholder="กรอกรหัสผ่าน" onkeydown="if(event.key==='Enter')doMgrLogin()">
+    </div>
+    <button class="login-btn" style="background:var(--teal);color:white;" onclick="doMgrLogin()">เข้าสู่ Manager Dashboard</button>
+    <div class="login-err" id="mgr-err"></div>
   </div>
 </div>
 </div>
@@ -541,6 +630,185 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     </div>
   </div>
   <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; ระบบจองนัดหมาย &nbsp;|&nbsp; Powered by Firebase</div>
+</div>
+
+<!-- MANAGER / OWNER DASHBOARD -->
+<div class="screen" id="mgr-screen">
+  <div class="topbar mgr-bar">
+    <div class="logo-area">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div>
+      <div class="logo-divider"></div>
+      <div><div class="logo-title">Prapatsorn Engineering</div><div class="logo-sub" style="color:var(--teal);">Manager Dashboard</div></div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn m-active" onclick="switchMgrView('overview')">&#127968; Overview</button>
+      <button class="nav-btn" onclick="switchMgrView('booking')">&#128203; Booking</button>
+      <button class="nav-btn" onclick="switchMgrView('conversion')">&#127919; Conversion</button>
+      <button class="nav-btn" onclick="switchMgrView('utilization')">&#9201; Utilization</button>
+      <button class="nav-btn" onclick="switchMgrView('coverage')">&#127760; Coverage</button>
+    </div>
+    <div class="topbar-right">
+      <div class="user-chip-top">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:14px;color:white;">👤</div>
+        <div><div class="uc-name">Manager</div><div class="uc-role">รายงานภาพรวม</div></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">ออก</button>
+    </div>
+  </div>
+  <div class="hero hero-mgr">
+    <div class="hero-left">
+      <div class="hero-initials">📊</div>
+      <div>
+        <div class="hero-title">Manager &amp; Owner Dashboard</div>
+        <div class="hero-pos">ภาพรวมธุรกิจ · Booking · Conversion · Utilization · Customer Coverage</div>
+      </div>
+    </div>
+    <div class="hero-badge" id="mgr-date-range-label">ทั้งหมด</div>
+  </div>
+  <div class="main">
+
+    <!-- SHARED DATE FILTER (rendered once, referenced by all views) -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="mgr-filter">
+        <span style="font-size:12px;font-weight:600;color:var(--gray-600);">📅 ช่วงเวลา:</span>
+        <button class="quick-btn on" onclick="setMgrRange('all',this)">ทั้งหมด</button>
+        <button class="quick-btn" onclick="setMgrRange('thismonth',this)">เดือนนี้</button>
+        <button class="quick-btn" onclick="setMgrRange('last3m',this)">3 เดือน</button>
+        <button class="quick-btn" onclick="setMgrRange('thisyear',this)">ปีนี้</button>
+        <span style="font-size:12px;color:var(--gray-400);">หรือกำหนดเอง:</span>
+        <input type="date" id="mgr-from" oninput="applyMgrFilter()">
+        <span style="font-size:12px;color:var(--gray-400);">–</span>
+        <input type="date" id="mgr-to" oninput="applyMgrFilter()">
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="view active" id="mview-overview">
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card k-book"><div class="kpi-label">📋 Booking ทั้งหมด</div><div class="kpi-val" id="k-total">—</div><div class="kpi-sub" id="k-done-sub">—</div></div>
+        <div class="kpi-card k-conv"><div class="kpi-label">🎯 Conversion Rate</div><div class="kpi-val" id="k-conv">—</div><div class="kpi-sub">Demo → ปิดการขาย</div></div>
+        <div class="kpi-card k-util"><div class="kpi-label">⏱ PS Utilization</div><div class="kpi-val" id="k-util">—</div><div class="kpi-sub" id="k-util-sub">วัน/คน (เฉลี่ย)</div></div>
+        <div class="kpi-card k-cust"><div class="kpi-label">🏥 Hospitals covered</div><div class="kpi-val" id="k-cust">—</div><div class="kpi-sub">สถานพยาบาลไม่ซ้ำ</div></div>
+      </div>
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-title">📋 Booking ต่อคน (Top 10)</div>
+          <div class="chart-wrap" id="ov-per-person"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📦 Booking ต่อสินค้า</div>
+          <div class="chart-wrap" id="ov-per-product"></div>
+        </div>
+      </div>
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-title">🎯 Conversion: Demo → Done</div>
+          <div id="ov-conversion"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏥 Top Hospitals</div>
+          <div class="chart-wrap" id="ov-hospitals"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKING DETAIL -->
+    <div class="view" id="mview-booking">
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-title">👤 Booking ต่อคน</div>
+          <div class="chart-wrap" id="bk-per-person"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 PS vs Sales</div>
+          <div id="bk-dept-donut" style="margin-top:8px;"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📦 Booking ต่อสินค้า (ทั้งหมด)</div>
+        <div class="chart-wrap" id="bk-per-product"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏷 Booking ต่อประเภท (Category)</div>
+        <div class="chart-wrap" id="bk-per-cat"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📅 Booking รายเดือน</div>
+        <div class="chart-wrap" id="bk-monthly"></div>
+      </div>
+    </div>
+
+    <!-- CONVERSION -->
+    <div class="view" id="mview-conversion">
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="kpi-card k-conv"><div class="kpi-label">📊 Clinical Demo ทั้งหมด</div><div class="kpi-val" id="cv-demo-total">—</div></div>
+        <div class="kpi-card k-book"><div class="kpi-label">✅ เสร็จสิ้น (Done)</div><div class="kpi-val" id="cv-demo-done">—</div></div>
+        <div class="kpi-card k-util"><div class="kpi-label">🎯 Conversion Rate</div><div class="kpi-val" id="cv-rate">—%</div></div>
+      </div>
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-title">🎯 Conversion ต่อคน</div>
+          <div class="chart-wrap" id="cv-per-person"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📦 Conversion ต่อสินค้า</div>
+          <div class="chart-wrap" id="cv-per-product"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">📋 Demo Bookings ทั้งหมด</div>
+        <div id="cv-list"></div>
+      </div>
+    </div>
+
+    <!-- UTILIZATION -->
+    <div class="view" id="mview-utilization">
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="kpi-card k-util"><div class="kpi-label">👥 PS ทั้งหมด</div><div class="kpi-val" id="ut-ps-count">—</div></div>
+        <div class="kpi-card k-book"><div class="kpi-label">📋 งาน PS รวม</div><div class="kpi-val" id="ut-ps-bk">—</div></div>
+        <div class="kpi-card k-conv"><div class="kpi-label">⏱ เฉลี่ย/คน</div><div class="kpi-val" id="ut-avg">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⏱ Utilization ต่อ PS (Booking count)</div>
+        <div class="chart-wrap" id="ut-per-ps"></div>
+      </div>
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-title">📊 สถานะงาน PS</div>
+          <div id="ut-status-chart"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Workload รายเดือน (PS)</div>
+          <div class="chart-wrap" id="ut-monthly"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COVERAGE -->
+    <div class="view" id="mview-coverage">
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="kpi-card k-cust"><div class="kpi-label">🏥 Hospitals ทั้งหมด</div><div class="kpi-val" id="cov-total">—</div></div>
+        <div class="kpi-card k-book"><div class="kpi-label">🔁 Repeat customers</div><div class="kpi-val" id="cov-repeat">—</div></div>
+        <div class="kpi-card k-conv"><div class="kpi-label">✨ ลูกค้าใหม่</div><div class="kpi-val" id="cov-new">—</div></div>
+        <div class="kpi-card k-util"><div class="kpi-label">📍 Avg visits/hospital</div><div class="kpi-val" id="cov-avg">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:10px;">🏥 รายชื่อสถานพยาบาล (Customer Coverage)</div>
+        <div style="overflow-x:auto;">
+          <table class="cov-table" id="cov-table">
+            <thead><tr><th>#</th><th>Hospital / คลินิก</th><th>Bookings</th><th>ครั้งล่าสุด</th><th>สินค้าที่สนใจ</th><th>สถานะ</th></tr></thead>
+            <tbody id="cov-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📈 Top 10 Hospitals by Visits</div>
+        <div class="chart-wrap" id="cov-top-hosp"></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; Manager Dashboard &nbsp;|&nbsp; Powered by Firebase</div>
 </div>
 
 <!-- ADMIN APP -->
@@ -819,20 +1087,22 @@ const resourcesRef = db.ref('resources');
 const resBookingsRef = db.ref('resBookings');
 
 const ADMIN_PW = 'admin1234';
+const MGR_PW = 'manager2024';
 let currentUser = null;
 let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {};
 let uFilter = 'all', aFilter = 'all';
 let calMode = 'month', calDate = new Date();
 let editId = null, photoMemberId = null, photoB64 = null;
 let resBookType = 'demo', adminResTab = 'demo';
+let mgrDateFrom = null, mgrDateTo = null;
 
 // FIREBASE
 db.ref('.info/connected').on('value', s => {
   const el = document.getElementById('conn-status');
   if(el){ el.textContent = s.val()?'เชื่อมต่อ':'ออฟไลน์'; el.style.color = s.val()?'var(--primary)':'#ef4444'; }
 });
-bookingsRef.on('value', s => { allBookings = s.val()||{}; refreshAll(); });
-membersRef.on('value', s => { allMembers = s.val()||{}; renderMemberDropdown(); renderMemberCards(); refreshAll(); });
+bookingsRef.on('value', s => { allBookings = s.val()||{}; refreshAll(); refreshMgr(); });
+membersRef.on('value', s => { allMembers = s.val()||{}; renderMemberDropdown(); renderMemberCards(); refreshAll(); refreshMgr(); });
 resourcesRef.on('value', s => { allResources = s.val()||{}; renderResViews(); });
 resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews(); });
 
@@ -853,9 +1123,10 @@ function avatarHTML(member, size=34, cls=''){
 
 // LOGIN
 function switchTab(t){
-  document.querySelectorAll('.login-tab').forEach((b,i)=>b.classList.toggle('active',(t==='user'&&i===0)||(t==='admin'&&i===1)));
+  document.querySelectorAll('.login-tab').forEach((b,i)=>b.classList.toggle('active',(t==='user'&&i===0)||(t==='admin'&&i===1)||(t==='mgr'&&i===2)));
   document.getElementById('tab-user').classList.toggle('active',t==='user');
   document.getElementById('tab-admin').classList.toggle('active',t==='admin');
+  document.getElementById('tab-mgr').classList.toggle('active',t==='mgr');
 }
 
 function renderMemberDropdown(){
@@ -916,11 +1187,12 @@ function doAdminLogin(){
 }
 
 function doLogout(){
-  sessionStorage.removeItem('pes_user'); sessionStorage.removeItem('pes_admin');
+  sessionStorage.removeItem('pes_user'); sessionStorage.removeItem('pes_admin'); sessionStorage.removeItem('pes_mgr');
   currentUser = null;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('login-screen').classList.add('active');
   document.getElementById('admin-pw').value='';
+  document.getElementById('mgr-pw').value='';
   document.getElementById('sel-member').value='';
   document.getElementById('member-preview').classList.remove('show');
 }
@@ -1525,9 +1797,378 @@ function showToast(msg,type=''){ const t=document.getElementById('toast'); t.tex
 function esc(s){ if(!s)return''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // RESTORE SESSION
-const su=sessionStorage.getItem('pes_user'), sa=sessionStorage.getItem('pes_admin');
+const su=sessionStorage.getItem('pes_user'), sa=sessionStorage.getItem('pes_admin'), sm=sessionStorage.getItem('pes_mgr');
 if(sa==='1') startAdminApp();
+else if(sm==='1') startMgrApp();
 else if(su){ try{ currentUser=JSON.parse(su); startUserApp(); }catch(e){ sessionStorage.removeItem('pes_user'); } }
+
+// ===================== MANAGER DASHBOARD =====================
+
+function doMgrLogin(){
+  const pw=document.getElementById('mgr-pw').value;
+  const err=document.getElementById('mgr-err');
+  if(pw!==MGR_PW){ err.textContent='รหัสผ่านไม่ถูกต้อง'; document.getElementById('mgr-pw').value=''; return; }
+  err.textContent='';
+  sessionStorage.setItem('pes_mgr','1');
+  startMgrApp();
+}
+
+function startMgrApp(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('mgr-screen').classList.add('active');
+  setMgrRange('all', document.querySelector('.quick-btn'));
+}
+
+function switchMgrView(v){
+  document.querySelectorAll('#mgr-screen .view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('#mgr-screen .nav-btn').forEach(el=>el.classList.remove('active','m-active'));
+  document.getElementById('mview-'+v).classList.add('active');
+  const idx={overview:0,booking:1,conversion:2,utilization:3,coverage:4};
+  const btns=document.querySelectorAll('#mgr-screen .nav-btn');
+  if(btns[idx[v]]) btns[idx[v]].classList.add('m-active');
+  renderMgrView(v);
+}
+
+// --- Date range ---
+function setMgrRange(preset, btn){
+  document.querySelectorAll('.quick-btn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const now=new Date(), y=now.getFullYear(), m=now.getMonth();
+  if(preset==='all'){ mgrDateFrom=null; mgrDateTo=null; }
+  else if(preset==='thismonth'){
+    mgrDateFrom=new Date(y,m,1).toISOString().slice(0,10);
+    mgrDateTo=new Date(y,m+1,0).toISOString().slice(0,10);
+  } else if(preset==='last3m'){
+    mgrDateFrom=new Date(y,m-2,1).toISOString().slice(0,10);
+    mgrDateTo=new Date(y,m+1,0).toISOString().slice(0,10);
+  } else if(preset==='thisyear'){
+    mgrDateFrom=`${y}-01-01`; mgrDateTo=`${y}-12-31`;
+  }
+  document.getElementById('mgr-from').value=mgrDateFrom||'';
+  document.getElementById('mgr-to').value=mgrDateTo||'';
+  updateMgrLabel();
+  applyMgrFilter();
+}
+
+function applyMgrFilter(){
+  mgrDateFrom=document.getElementById('mgr-from').value||null;
+  mgrDateTo=document.getElementById('mgr-to').value||null;
+  updateMgrLabel();
+  // re-render current active view
+  const active=document.querySelector('#mgr-screen .view.active');
+  if(active) renderMgrView(active.id.replace('mview-',''));
+}
+
+function updateMgrLabel(){
+  const el=document.getElementById('mgr-date-range-label');
+  if(!el) return;
+  if(!mgrDateFrom&&!mgrDateTo) el.textContent='ทั้งหมด';
+  else el.textContent=(mgrDateFrom||'...')+' → '+(mgrDateTo||'...');
+}
+
+// --- Filter bookings by date range ---
+function getMgrBookings(){
+  return Object.values(allBookings).filter(b=>{
+    if(!b.date) return false;
+    if(mgrDateFrom && b.date<mgrDateFrom) return false;
+    if(mgrDateTo   && b.date>mgrDateTo)   return false;
+    return true;
+  });
+}
+
+function renderMgrView(v){
+  if(v==='overview') renderMgrOverview();
+  else if(v==='booking') renderMgrBooking();
+  else if(v==='conversion') renderMgrConversion();
+  else if(v==='utilization') renderMgrUtilization();
+  else if(v==='coverage') renderMgrCoverage();
+}
+
+// ---- HELPERS ----
+function barChart(containerId, rows, colorClass, maxVal, showPct){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  if(!rows.length){ el.innerHTML='<div class="empty">ยังไม่มีข้อมูล</div>'; return; }
+  const mx=maxVal||Math.max(...rows.map(r=>r.val))||1;
+  el.innerHTML=rows.map(r=>{
+    const pct=Math.round((r.val/mx)*100);
+    const pctLabel=showPct&&r.total?Math.round(r.val/r.total*100)+'%':'';
+    return `<div class="bar-row">
+      <div class="bar-label" title="${esc(r.label)}">${esc(r.label)}</div>
+      <div class="bar-track">
+        <div class="bar-fill ${colorClass}" style="width:${pct}%;">
+          <span class="bar-text ${colorClass.replace('bf-','c-')}">${r.val>0?r.val:''}</span>
+        </div>
+      </div>
+      <div class="bar-num">${r.val}</div>
+      ${showPct?`<div class="bar-pct">${pctLabel}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function donutChart(containerId, segments, total){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  const colors=['var(--primary)','var(--navy)','var(--teal)','#f59e0b','var(--red)'];
+  let offset=0; const r=52; const cx=60; const cy=60; const circ=2*Math.PI*r;
+  let paths=''; let legend='';
+  segments.forEach((s,i)=>{
+    const frac=total>0?s.val/total:0;
+    const dash=frac*circ; const gap=circ-dash;
+    paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colors[i%colors.length]}" stroke-width="16" stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-dashoffset="${(-offset*circ).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset+=frac;
+    const pct=total>0?Math.round(frac*100):0;
+    legend+=`<div class="dl-item"><div class="dl-dot" style="background:${colors[i%colors.length]};"></div><span>${esc(s.label)}</span><span class="dl-val">${s.val} <span style="color:var(--gray-400);font-weight:400;font-size:10px;">(${pct}%)</span></span></div>`;
+  });
+  el.innerHTML=`<div class="donut-wrap">
+    <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--gray-100)" stroke-width="16"/>
+      ${paths}
+      <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-size="18" font-weight="700" fill="var(--gray-900)">${total}</text>
+    </svg>
+    <div class="donut-legend">${legend}</div>
+  </div>`;
+}
+
+// ---- OVERVIEW ----
+function renderMgrOverview(){
+  const bks=getMgrBookings();
+  const total=bks.length;
+  const done=bks.filter(b=>b.status==='done').length;
+  const demos=bks.filter(b=>b.category==='clinical_demo');
+  const demosDone=demos.filter(b=>b.status==='done').length;
+  const convRate=demos.length>0?Math.round(demosDone/demos.length*100):0;
+  const psBks=bks.filter(b=>b.dept==='ps');
+  const psMembers=Object.values(allMembers).filter(m=>m.dept==='ps');
+  const avgUtil=psMembers.length>0?(psBks.length/psMembers.length).toFixed(1):0;
+  const hospitals=new Set(bks.map(b=>b.hospital).filter(Boolean));
+
+  setText('k-total',total);
+  setText('k-done-sub',`เสร็จสิ้น ${done} รายการ`);
+  setText('k-conv',convRate+'%');
+  setText('k-util',avgUtil);
+  setText('k-cust',hospitals.size);
+
+  // per-person top 10
+  const byPerson={};
+  bks.forEach(b=>{ const k=b.staff||'?'; byPerson[k]=(byPerson[k]||0)+1; });
+  const personRows=Object.entries(byPerson).sort((a,b)=>b[1]-a[1]).slice(0,10)
+    .map(([name,val])=>({label:name,val}));
+  barChart('ov-per-person', personRows, 'bf-ps', null, false);
+
+  // per-product
+  const byProd={};
+  bks.forEach(b=>{ if(b.product){ const k=b.product; byProd[k]=(byProd[k]||0)+1; } });
+  const prodRows=Object.entries(byProd).sort((a,b)=>b[1]-a[1]).slice(0,8)
+    .map(([label,val])=>({label,val}));
+  barChart('ov-per-product', prodRows, 'bf-prod', null, false);
+
+  // conversion donut
+  donutChart('ov-conversion',[
+    {label:'Demo Done',val:demosDone},
+    {label:'Demo Pending/Active',val:demos.length-demosDone}
+  ], demos.length||1);
+
+  // top hospitals
+  const byHosp={};
+  bks.forEach(b=>{ if(b.hospital){ byHosp[b.hospital]=(byHosp[b.hospital]||0)+1; } });
+  const hospRows=Object.entries(byHosp).sort((a,b)=>b[1]-a[1]).slice(0,8)
+    .map(([label,val])=>({label,val}));
+  barChart('ov-hospitals', hospRows, 'bf-sales', null, false);
+}
+
+// ---- BOOKING ----
+function renderMgrBooking(){
+  const bks=getMgrBookings();
+
+  // per-person
+  const byPerson={};
+  bks.forEach(b=>{ const k=b.staff||'?'; if(!byPerson[k]) byPerson[k]={val:0,dept:b.dept}; byPerson[k].val++; });
+  const personRows=Object.entries(byPerson).sort((a,b)=>b[1].val-a[1].val)
+    .map(([name,d])=>({label:name,val:d.val,dept:d.dept}));
+  barChart('bk-per-person', personRows, 'bf-ps', null, false);
+
+  // dept donut
+  const psCount=bks.filter(b=>b.dept==='ps').length;
+  const salesCount=bks.filter(b=>b.dept==='sales').length;
+  donutChart('bk-dept-donut',[{label:'PS',val:psCount},{label:'Sales',val:salesCount}],bks.length||1);
+
+  // per-product
+  const byProd={};
+  bks.forEach(b=>{ if(b.product){ byProd[b.product]=(byProd[b.product]||0)+1; } });
+  const noProd=bks.filter(b=>!b.product).length;
+  const prodRows=Object.entries(byProd).sort((a,b)=>b[1]-a[1]).map(([label,val])=>({label,val}));
+  if(noProd) prodRows.push({label:'ไม่ระบุสินค้า',val:noProd});
+  barChart('bk-per-product', prodRows, 'bf-prod', null, false);
+
+  // per-category
+  const catLabels={case_support:'🏥 Case Support',clinical_demo:'📊 Clinical Demo',inservice_training:'🎓 In-service Training',maintenance:'🔧 Maintenance'};
+  const byCat={};
+  bks.forEach(b=>{ const k=catLabels[b.category]||b.category||'ไม่ระบุ'; byCat[k]=(byCat[k]||0)+1; });
+  barChart('bk-per-cat', Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([label,val])=>({label,val})), 'bf-sales', null, false);
+
+  // monthly
+  const byMonth={};
+  bks.forEach(b=>{
+    if(!b.date) return;
+    const mk=b.date.slice(0,7);
+    byMonth[mk]=(byMonth[mk]||0)+1;
+  });
+  const monthRows=Object.entries(byMonth).sort((a,b)=>a[0].localeCompare(b[0]))
+    .map(([mk,val])=>({label:thMonthLabel(mk),val}));
+  barChart('bk-monthly', monthRows, 'bf-ps', null, false);
+}
+
+// ---- CONVERSION ----
+function renderMgrConversion(){
+  const bks=getMgrBookings();
+  const demos=bks.filter(b=>b.category==='clinical_demo');
+  const demosDone=demos.filter(b=>b.status==='done').length;
+  const rate=demos.length>0?Math.round(demosDone/demos.length*100):0;
+  setText('cv-demo-total',demos.length);
+  setText('cv-demo-done',demosDone);
+  setText('cv-rate',rate+'%');
+
+  // per-person conversion
+  const byP={};
+  demos.forEach(b=>{
+    const k=b.staff||'?';
+    if(!byP[k]) byP[k]={total:0,done:0};
+    byP[k].total++; if(b.status==='done') byP[k].done++;
+  });
+  const cvPersonRows=Object.entries(byP).sort((a,b)=>b[1].done-a[1].done)
+    .map(([name,d])=>({label:`${name} (${d.done}/${d.total})`,val:d.done,total:d.total}));
+  barChart('cv-per-person', cvPersonRows, 'bf-conv', null, true);
+
+  // per-product conversion
+  const byProd={};
+  demos.forEach(b=>{
+    const k=b.product||'ไม่ระบุ';
+    if(!byProd[k]) byProd[k]={total:0,done:0};
+    byProd[k].total++; if(b.status==='done') byProd[k].done++;
+  });
+  const cvProdRows=Object.entries(byProd).sort((a,b)=>b[1].done-a[1].done)
+    .map(([name,d])=>({label:`${name} (${d.done}/${d.total})`,val:d.done,total:d.total}));
+  barChart('cv-per-product', cvProdRows, 'bf-prod', null, true);
+
+  // list
+  const el=document.getElementById('cv-list');
+  if(el){
+    if(!demos.length){ el.innerHTML='<div class="empty">ไม่มี Demo booking ในช่วงนี้</div>'; }
+    else {
+      const scMap={pending:'pending',active:'active',done:'done',cancel:'cancel'};
+      el.innerHTML=demos.sort((a,b)=>a.date.localeCompare(b.date)).map(b=>{
+        const ds=fmtTH(b.date);
+        return `<div class="b-item">
+          <div class="b-info">
+            <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.dept==='ps'?'bg-ps':'bg-sales'}">${b.dept==='ps'?'PS':'Sales'}</span></div>
+            <div class="b-meta"><span>${ds}</span><span>${esc(b.contact)}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
+            <div class="b-staff-row"><span class="b-staff-name">${esc(b.staff||'')}</span></div>
+          </div>
+          <select class="sts ${scMap[b.status]||''}" onchange="changeStatus('${Object.entries(allBookings).find(([,v])=>v===b)?.[0]||''}',this)">
+            <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
+            <option value="active"  ${b.status==='active'?'selected':''}>กำลังดำเนินการ</option>
+            <option value="done"    ${b.status==='done'?'selected':''}>เสร็จสิ้น</option>
+            <option value="cancel"  ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
+          </select>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+// ---- UTILIZATION ----
+function renderMgrUtilization(){
+  const bks=getMgrBookings().filter(b=>b.dept==='ps');
+  const psMembers=Object.values(allMembers).filter(m=>m.dept==='ps');
+  setText('ut-ps-count',psMembers.length);
+  setText('ut-ps-bk',bks.length);
+  const avg=psMembers.length>0?(bks.length/psMembers.length).toFixed(1):0;
+  setText('ut-avg',avg);
+
+  // per-PS bar
+  const byPS={};
+  psMembers.forEach(m=>{ byPS[m.name]={val:0,done:0,pending:0}; });
+  bks.forEach(b=>{ const k=b.staff||'?'; if(!byPS[k]) byPS[k]={val:0,done:0,pending:0}; byPS[k].val++; if(b.status==='done') byPS[k].done++; if(b.status==='pending') byPS[k].pending++; });
+  const psRows=Object.entries(byPS).sort((a,b)=>b[1].val-a[1].val)
+    .map(([name,d])=>({label:name,val:d.val}));
+  barChart('ut-per-ps', psRows, 'bf-ps', null, false);
+
+  // status donut
+  const st={pending:0,active:0,done:0,cancel:0};
+  bks.forEach(b=>{ if(st[b.status]!==undefined) st[b.status]++; });
+  donutChart('ut-status-chart',[
+    {label:'รอดำเนินการ',val:st.pending},
+    {label:'กำลังดำเนินการ',val:st.active},
+    {label:'เสร็จสิ้น',val:st.done},
+    {label:'ยกเลิก',val:st.cancel}
+  ], bks.length||1);
+
+  // monthly workload
+  const byMonth={};
+  bks.forEach(b=>{ if(!b.date) return; const mk=b.date.slice(0,7); byMonth[mk]=(byMonth[mk]||0)+1; });
+  barChart('ut-monthly', Object.entries(byMonth).sort((a,b)=>a[0].localeCompare(b[0])).map(([mk,val])=>({label:thMonthLabel(mk),val})), 'bf-ps', null, false);
+}
+
+// ---- COVERAGE ----
+function renderMgrCoverage(){
+  const bks=getMgrBookings();
+  const hospMap={};
+  bks.forEach(b=>{
+    const h=b.hospital||'ไม่ระบุ';
+    if(!hospMap[h]) hospMap[h]={count:0,dates:[],products:new Set(),staff:new Set()};
+    hospMap[h].count++;
+    if(b.date) hospMap[h].dates.push(b.date);
+    if(b.product) hospMap[h].products.add(b.product);
+    if(b.staff) hospMap[h].staff.add(b.staff);
+  });
+  const hospList=Object.entries(hospMap).sort((a,b)=>b[1].count-a[1].count);
+  const totalHosp=hospList.length;
+  const repeatHosp=hospList.filter(([,d])=>d.count>1).length;
+  const newHosp=totalHosp-repeatHosp;
+  const avgVisit=totalHosp>0?(bks.length/totalHosp).toFixed(1):0;
+  setText('cov-total',totalHosp);
+  setText('cov-repeat',repeatHosp);
+  setText('cov-new',newHosp);
+  setText('cov-avg',avgVisit);
+
+  // table
+  const tbody=document.getElementById('cov-tbody');
+  if(tbody){
+    tbody.innerHTML=hospList.map(([hosp,d],i)=>{
+      const lastDate=d.dates.length?d.dates.sort().at(-1):'—';
+      const prods=[...d.products].slice(0,2).join(', ')+(d.products.size>2?' +อื่น':'');
+      const badge=d.count>=5?'<span class="cov-badge cov-hot">Hot 🔥</span>':d.count>=3?'<span class="cov-badge cov-warm">Warm</span>':d.count===1?'<span class="cov-badge cov-new">ใหม่</span>':'<span class="cov-badge cov-cold">Cold</span>';
+      return `<tr>
+        <td style="color:var(--gray-400);font-weight:600;">${i+1}</td>
+        <td style="font-weight:600;">${esc(hosp)}</td>
+        <td style="text-align:center;font-weight:700;color:var(--primary);">${d.count}</td>
+        <td>${lastDate!=='—'?fmtTH(lastDate):'—'}</td>
+        <td style="font-size:11px;color:var(--gray-600);">${esc(prods)||'—'}</td>
+        <td>${badge}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // top hospitals bar
+  const topRows=hospList.slice(0,10).map(([label,d])=>({label,val:d.count}));
+  barChart('cov-top-hosp', topRows, 'bf-sales', null, false);
+}
+
+// ---- UTILS ----
+function setText(id,val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+function thMonthLabel(mk){
+  const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const [y,m]=mk.split('-'); return thM[parseInt(m,10)-1]+' '+(parseInt(y,10)+543-2500)%100;
+}
+
+// re-render manager on data change
+function refreshMgr(){
+  const active=document.querySelector('#mgr-screen .view.active');
+  if(active&&document.getElementById('mgr-screen').classList.contains('active'))
+    renderMgrView(active.id.replace('mview-',''));
+}
+
 </script>
 </body>
 </html>
