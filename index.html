@@ -200,6 +200,11 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .bg-mine{background:var(--primary);color:white;}
 .bg-admin{background:var(--purple-light);color:var(--purple);}
 .prod-tag{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-200);}
+.cat-tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;border:1px solid transparent;}
+.cat-case{background:#fce7f3;color:#9d174d;border-color:#f9a8d4;}
+.cat-demo{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd;}
+.cat-training{background:#dbeafe;color:#1e40af;border-color:#93c5fd;}
+.cat-maintenance{background:#fef3c7;color:#92400e;border-color:#fcd34d;}
 .sts{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid transparent;outline:none;flex-shrink:0;}
 .sts.pending{background:#fef3c7;color:#b45309;border-color:#fbbf24;}
 .sts.active{background:var(--blue-light);color:#1e40af;border-color:#93c5fd;}
@@ -560,6 +565,15 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="fgg"><label>เบอร์โทร</label><input type="tel" id="f-phone" placeholder="0812345678"></div>
     <div class="fgg"><label>วันที่นัดหมาย *</label><input type="date" id="f-date"></div>
     <div class="fgg"><label>เวลา *</label><input type="time" id="f-time" value="09:00"></div>
+    <div class="fgg"><label>ประเภทการจอง *</label>
+      <select id="f-category">
+        <option value="">-- เลือกประเภท --</option>
+        <option value="case_support">🏥 Case Support — เข้าช่วยดูหน้างานจริง</option>
+        <option value="clinical_demo">📊 Clinical Demo / Presentation — สาธิตเครื่อง</option>
+        <option value="inservice_training">🎓 In-service Training — อบรมการใช้งาน</option>
+        <option value="maintenance">🔧 Maintenance / Calibration — ตรวจเช็คเครื่อง</option>
+      </select>
+    </div>
     <div class="fgg"><label>สินค้าที่สนใจ</label>
       <select id="f-product">
         <option value="">-- เลือกสินค้า --</option>
@@ -588,6 +602,15 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="fgg"><label>เบอร์โทร</label><input type="tel" id="e-phone"></div>
     <div class="fgg"><label>วันที่</label><input type="date" id="e-date"></div>
     <div class="fgg"><label>เวลา</label><input type="time" id="e-time"></div>
+    <div class="fgg"><label>ประเภทการจอง</label>
+      <select id="e-category">
+        <option value="">-- เลือกประเภท --</option>
+        <option value="case_support">🏥 Case Support</option>
+        <option value="clinical_demo">📊 Clinical Demo / Presentation</option>
+        <option value="inservice_training">🎓 In-service Training</option>
+        <option value="maintenance">🔧 Maintenance / Calibration</option>
+      </select>
+    </div>
     <div class="fgg"><label>สถานะ</label>
       <select id="e-status">
         <option value="pending">รอดำเนินการ</option>
@@ -982,7 +1005,8 @@ function submitBooking(){
   const contact=document.getElementById('f-contact').value.trim();
   const date=document.getElementById('f-date').value;
   const time=document.getElementById('f-time').value;
-  if(!hospital||!contact||!date||!time){ showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ','error'); return; }
+  const category=document.getElementById('f-category').value;
+  if(!hospital||!contact||!date||!time||!category){ showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ (รวมถึงประเภทการจอง)','error'); return; }
   const btn=document.getElementById('submit-btn');
   btn.disabled=true; btn.textContent='กำลังบันทึก...';
   bookingsRef.push({
@@ -992,16 +1016,24 @@ function submitBooking(){
     hospital, contact,
     phone:document.getElementById('f-phone').value.trim(),
     date, time,
+    category:document.getElementById('f-category').value,
     product:document.getElementById('f-product').value,
     note:document.getElementById('f-note').value.trim(),
     status:'pending', createdAt:Date.now()
   }).then(()=>{ showToast('บันทึกสำเร็จ ✓','success'); closeModal(); btn.disabled=false; btn.textContent='บันทึกการจอง'; })
   .catch(()=>{ showToast('เกิดข้อผิดพลาด','error'); btn.disabled=false; btn.textContent='บันทึกการจอง'; });
 }
-function clearForm(){ ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f-time').value='09:00'; document.getElementById('f-product').value=''; }
+function clearForm(){ ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f-time').value='09:00'; document.getElementById('f-product').value=''; document.getElementById('f-category').value=''; }
 
 // BOOKING LIST
 const scMap={pending:'pending',active:'active',done:'done',cancel:'cancel'};
+const catMap={
+  case_support:{label:'🏥 Case Support',cls:'cat-case'},
+  clinical_demo:{label:'📊 Clinical Demo',cls:'cat-demo'},
+  inservice_training:{label:'🎓 In-service Training',cls:'cat-training'},
+  maintenance:{label:'🔧 Maintenance',cls:'cat-maintenance'}
+};
+function catTag(cat){ const c=catMap[cat]; return c?`<span class="cat-tag ${c.cls}">${c.label}</span>`:''; }
 function bkgRow(b, isAdmin){
   const ini=(b.contact||'?').slice(0,2);
   const ds=b.date?new Date(b.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}):'';
@@ -1013,7 +1045,7 @@ function bkgRow(b, isAdmin){
       ${m?avatarHTML(m,34,'b-av'):`<div class="b-av-ini ${b.role==='ps'?'':''}\" style=\"background:${b.role==='ps'?'var(--primary-light)':'var(--blue-light)'};color:${b.role==='ps'?'var(--primary-dark)':'var(--navy)'}">${ini}</div>`}
     </div>
     <div class="b-info">
-      <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}${isAdmin?'<span class="badge bg-admin">Admin</span>':''}</div>
+      <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}${isAdmin?'<span class="badge bg-admin">Admin</span>':''}${catTag(b.category)}</div>
       <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
@@ -1064,9 +1096,9 @@ function setFilter(el,f){ uFilter=f; document.querySelectorAll('#view-dash .filt
 function setAFilter(el,f){ aFilter=f; document.querySelectorAll('#aview-bookings .filter-chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); renderAdminBkgList(); }
 
 // EDIT
-function openEdit(id){ editId=id; const b=allBookings[id];if(!b)return; document.getElementById('e-hospital').value=b.hospital||''; document.getElementById('e-contact').value=b.contact||''; document.getElementById('e-phone').value=b.phone||''; document.getElementById('e-date').value=b.date||''; document.getElementById('e-time').value=b.time||''; document.getElementById('e-status').value=b.status||'pending'; document.getElementById('e-note').value=b.note||''; document.getElementById('edit-overlay').classList.add('open'); }
+function openEdit(id){ editId=id; const b=allBookings[id];if(!b)return; document.getElementById('e-hospital').value=b.hospital||''; document.getElementById('e-contact').value=b.contact||''; document.getElementById('e-phone').value=b.phone||''; document.getElementById('e-date').value=b.date||''; document.getElementById('e-time').value=b.time||''; document.getElementById('e-category').value=b.category||''; document.getElementById('e-status').value=b.status||'pending'; document.getElementById('e-note').value=b.note||''; document.getElementById('edit-overlay').classList.add('open'); }
 function closeEdit(){ document.getElementById('edit-overlay').classList.remove('open'); editId=null; }
-function saveEdit(){ if(!editId)return; bookingsRef.child(editId).update({hospital:document.getElementById('e-hospital').value.trim(),contact:document.getElementById('e-contact').value.trim(),phone:document.getElementById('e-phone').value.trim(),date:document.getElementById('e-date').value,time:document.getElementById('e-time').value,status:document.getElementById('e-status').value,note:document.getElementById('e-note').value.trim()}).then(()=>{showToast('แก้ไขแล้ว ✓','success');closeEdit();}).catch(()=>showToast('เกิดข้อผิดพลาด','error')); }
+function saveEdit(){ if(!editId)return; bookingsRef.child(editId).update({hospital:document.getElementById('e-hospital').value.trim(),contact:document.getElementById('e-contact').value.trim(),phone:document.getElementById('e-phone').value.trim(),date:document.getElementById('e-date').value,time:document.getElementById('e-time').value,category:document.getElementById('e-category').value,status:document.getElementById('e-status').value,note:document.getElementById('e-note').value.trim()}).then(()=>{showToast('แก้ไขแล้ว ✓','success');closeEdit();}).catch(()=>showToast('เกิดข้อผิดพลาด','error')); }
 
 // REPORT
 function renderReport(){
