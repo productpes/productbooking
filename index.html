@@ -8,320 +8,508 @@
 <style>
 :root{
   --primary:#1a6b3c;--primary-dark:#124d2b;--primary-light:#e8f5ee;--primary-mid:#2d9658;
-  --navy:#1a3a5c;--white:#fff;--gray-50:#f7faf8;--gray-100:#eef3f0;--gray-200:#d6e4db;
+  --navy:#1a3a5c;--navy-light:#eef3fa;--white:#fff;
+  --gray-50:#f7faf8;--gray-100:#eef3f0;--gray-200:#d6e4db;
   --gray-400:#8aab97;--gray-600:#4a7060;--gray-800:#1f3328;--gray-900:#0f1f18;
   --amber:#b45309;--amber-light:#fef3c7;--red:#be123c;--red-light:#fee2e2;
-  --blue:#1e5fa8;--blue-light:#dbeafe;--radius:10px;--radius-sm:6px;
+  --blue:#1e5fa8;--blue-light:#dbeafe;--purple:#6d28d9;--purple-light:#ede9fe;
+  --radius:10px;--radius-sm:6px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color:var(--gray-800);font-size:14px;min-height:100vh;}
 
-/* TOPBAR */
+/* ===== SCREENS ===== */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:block;}
+#login-screen.active{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);padding:16px;}
+
+/* ===== LOGIN CARD ===== */
+.login-card{background:var(--white);border-radius:16px;padding:36px 32px;width:100%;max-width:420px;}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-logo img{height:50px;width:auto;}
+.login-logo-name{font-size:15px;font-weight:600;color:var(--primary-dark);margin-top:10px;}
+.login-logo-sub{font-size:12px;color:var(--gray-400);margin-top:2px;}
+.login-tabs{display:flex;gap:0;background:var(--gray-100);border-radius:var(--radius-sm);padding:3px;margin-bottom:20px;}
+.login-tab{flex:1;padding:8px;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;transition:all .15s;text-align:center;}
+.login-tab.active{background:var(--white);color:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.login-tab.admin-tab.active{color:var(--purple);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.form-g{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.form-g label{font-size:12px;font-weight:500;color:var(--gray-600);}
+.form-g input,.form-g select{width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;color:var(--gray-800);outline:none;transition:border-color .15s;background:var(--white);}
+.form-g input:focus,.form-g select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,107,60,.1);}
+.dept-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.dept-btn{border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:12px 10px;cursor:pointer;transition:all .15s;background:var(--white);text-align:center;}
+.dept-btn:hover{border-color:var(--primary-mid);}
+.dept-btn.sel-ps{border-color:var(--primary);background:var(--primary-light);}
+.dept-btn.sel-sales{border-color:var(--navy);background:var(--navy-light);}
+.dept-icon{font-size:22px;margin-bottom:5px;}
+.dept-name{font-size:13px;font-weight:600;color:var(--gray-700);}
+.dept-btn.sel-ps .dept-name{color:var(--primary-dark);}
+.dept-btn.sel-sales .dept-name{color:var(--navy);}
+.dept-desc{font-size:11px;color:var(--gray-400);margin-top:1px;}
+.login-btn{width:100%;padding:11px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s;}
+.login-btn.ps-btn{background:var(--primary);color:white;}
+.login-btn.ps-btn:hover{background:var(--primary-dark);}
+.login-btn.admin-btn{background:var(--purple);color:white;}
+.login-btn.admin-btn:hover{background:#5b21b6;}
+.login-btn:disabled{background:var(--gray-400);cursor:not-allowed;}
+.login-err{font-size:12px;color:var(--red);text-align:center;margin-top:8px;min-height:18px;}
+.no-member-msg{font-size:12px;color:var(--amber);background:var(--amber-light);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:12px;display:none;}
+
+/* ===== TOPBAR ===== */
 .topbar{background:var(--white);border-bottom:2px solid var(--primary);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;}
+.topbar.admin-bar{border-bottom-color:var(--purple);}
 .logo-area{display:flex;align-items:center;gap:10px;}
-.logo-img{height:36px;width:auto;object-fit:contain;}
-.logo-divider{width:1px;height:26px;background:var(--gray-200);}
+.logo-img{height:34px;width:auto;object-fit:contain;}
+.logo-divider{width:1px;height:24px;background:var(--gray-200);}
 .logo-title{font-size:13px;font-weight:600;color:var(--primary-dark);}
 .logo-sub{font-size:11px;color:var(--gray-400);}
 .nav{display:flex;gap:2px;}
 .nav-btn{padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;font-weight:500;transition:all .15s;}
 .nav-btn:hover{background:var(--primary-light);color:var(--primary);}
 .nav-btn.active{background:var(--primary);color:var(--white);}
-.realtime-dot{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--primary);}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--primary-mid);animation:pulse 2s infinite;}
+.nav-btn.admin-active{background:var(--purple);color:var(--white);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.user-chip{display:flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px 4px 6px;border:1px solid var(--gray-200);}
+.user-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;}
+.av-ps-bg{background:var(--primary);}
+.av-sales-bg{background:var(--navy);}
+.av-admin-bg{background:var(--purple);}
+.user-name{font-size:12px;font-weight:500;color:var(--gray-800);}
+.user-role{font-size:10px;color:var(--gray-400);}
+.logout-btn{font-size:12px;color:var(--gray-400);cursor:pointer;background:none;border:1px solid var(--gray-200);font-family:inherit;padding:5px 10px;border-radius:var(--radius-sm);transition:all .15s;}
+.logout-btn:hover{color:var(--red);border-color:var(--red);background:var(--red-light);}
+.realtime-dot{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--primary);}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--primary-mid);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-/* HERO */
-.hero{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 60%,var(--primary-mid) 100%);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;color:var(--white);}
-.hero-title{font-size:16px;font-weight:600;}
+/* ===== HERO ===== */
+.hero{padding:14px 24px;display:flex;align-items:center;justify-content:space-between;color:white;}
+.hero-ps{background:linear-gradient(135deg,var(--primary-dark),var(--primary));}
+.hero-sales{background:linear-gradient(135deg,#0d2f4f,var(--navy));}
+.hero-admin{background:linear-gradient(135deg,#3b0764,var(--purple));}
+.hero-title{font-size:15px;font-weight:600;}
 .hero-sub{font-size:12px;opacity:.8;margin-top:2px;}
 .hero-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;}
 
-/* LAYOUT */
+/* ===== MAIN ===== */
 .main{max-width:960px;margin:0 auto;padding:20px 16px;}
 .view{display:none;}
 .view.active{display:block;}
-
-/* CARD */
 .card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;margin-bottom:14px;}
 .card-title{font-size:11px;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
 .card-title::before{content:'';display:inline-block;width:3px;height:13px;background:var(--primary);border-radius:2px;}
+.card-title.purple-title{color:var(--purple);}
+.card-title.purple-title::before{background:var(--purple);}
 
-/* STATS */
+/* ===== STATS ===== */
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
 .stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 14px;border-top:3px solid var(--gray-200);}
-.stat-card.all{border-top-color:var(--primary);}
-.stat-card.pending{border-top-color:#f59e0b;}
-.stat-card.active{border-top-color:var(--blue);}
-.stat-card.done{border-top-color:var(--primary-mid);}
+.stat-card.s-all{border-top-color:var(--primary);}
+.stat-card.s-pend{border-top-color:#f59e0b;}
+.stat-card.s-act{border-top-color:var(--blue);}
+.stat-card.s-done{border-top-color:var(--primary-mid);}
 .stat-label{font-size:11px;color:var(--gray-400);margin-bottom:3px;}
 .stat-val{font-size:24px;font-weight:600;color:var(--gray-900);}
-.stat-card.pending .stat-val{color:#b45309;}
-.stat-card.active .stat-val{color:var(--blue);}
-.stat-card.done .stat-val{color:var(--primary);}
+.stat-card.s-pend .stat-val{color:#b45309;}
+.stat-card.s-act .stat-val{color:var(--blue);}
+.stat-card.s-done .stat-val{color:var(--primary);}
 
-/* CALENDAR VIEW TOGGLE */
-.cal-toggle{display:flex;gap:4px;background:var(--gray-100);border-radius:var(--radius-sm);padding:3px;width:fit-content;margin-bottom:14px;}
+/* ===== MY BANNER ===== */
+.my-banner{border-radius:var(--radius);padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;border-left:4px solid var(--primary);border:1px solid var(--gray-200);border-left-width:4px;}
+.my-banner.b-ps{background:var(--primary-light);}
+.my-banner.b-sales{background:var(--navy-light);border-left-color:var(--navy);}
+.my-banner-name{font-size:13px;font-weight:500;color:var(--gray-800);}
+.my-banner-sub{font-size:11px;color:var(--gray-400);margin-top:2px;}
+.my-count{font-size:26px;font-weight:700;color:var(--primary);}
+.b-sales .my-count{color:var(--navy);}
+
+/* ===== CAL ===== */
+.cal-toggle{display:flex;gap:4px;background:var(--gray-100);border-radius:var(--radius-sm);padding:3px;width:fit-content;margin-bottom:12px;}
 .cal-toggle-btn{padding:5px 16px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;transition:all .15s;}
 .cal-toggle-btn.active{background:var(--white);color:var(--primary);border:0.5px solid var(--gray-200);}
-
-/* MONTH CALENDAR */
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.cal-nav{display:flex;align-items:center;gap:8px;}
-.cal-nav-btn{width:30px;height:30px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);cursor:pointer;font-size:16px;color:var(--gray-600);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cal-nav{display:flex;align-items:center;gap:6px;}
+.cal-nav-btn{width:28px;height:28px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);cursor:pointer;font-size:15px;color:var(--gray-600);display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .cal-nav-btn:hover{border-color:var(--primary);color:var(--primary);}
-.cal-month-label{font-size:15px;font-weight:600;color:var(--gray-900);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-day-header{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);padding:6px 0;text-transform:uppercase;}
-.cal-day{min-height:72px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:6px;cursor:pointer;transition:all .15s;background:var(--white);position:relative;vertical-align:top;}
+.cal-label{font-size:14px;font-weight:600;color:var(--gray-900);min-width:160px;text-align:center;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-dh{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);padding:5px 0;}
+.cal-day{min-height:70px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:5px;cursor:pointer;transition:all .15s;background:var(--white);vertical-align:top;}
 .cal-day:hover{border-color:var(--primary);background:var(--primary-light);}
-.cal-day.other-month{background:var(--gray-50);opacity:.5;}
-.cal-day.today{border-color:var(--primary);border-width:2px;}
-.cal-day.has-booking{background:var(--primary-light);}
-.cal-day-num{font-size:12px;font-weight:500;color:var(--gray-700);margin-bottom:3px;}
-.cal-day.today .cal-day-num{color:var(--primary);font-weight:700;}
-.cal-event{font-size:10px;padding:1px 5px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
-.cal-event.ev-ps{background:var(--primary-light);color:var(--primary-dark);}
-.cal-event.ev-sales{background:var(--blue-light);color:var(--navy);}
-.cal-event.ev-pending{border-left:2px solid #f59e0b;}
-.cal-event.ev-done{border-left:2px solid var(--primary-mid);}
-.cal-more{font-size:10px;color:var(--gray-400);padding-left:4px;}
+.cal-day.other{background:var(--gray-50);opacity:.5;}
+.cal-day.today{border:2px solid var(--primary);}
+.cal-day.has-b{background:var(--primary-light);}
+.cal-dn{font-size:12px;font-weight:500;color:var(--gray-700);margin-bottom:2px;}
+.cal-day.today .cal-dn{color:var(--primary);font-weight:700;}
+.cal-ev{font-size:10px;padding:1px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ev-ps{background:var(--primary-light);color:var(--primary-dark);}
+.ev-sales{background:var(--blue-light);color:var(--navy);}
+.ev-mine{font-weight:600;}
+.cal-more{font-size:10px;color:var(--gray-400);padding-left:2px;}
+.wk-header{display:grid;grid-template-columns:48px repeat(7,1fr);gap:3px;margin-bottom:3px;}
+.wk-dh{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);padding:3px 0;}
+.wk-dh.t-hd{color:var(--primary);}
+.wk-dn{font-size:16px;font-weight:600;display:block;margin-top:2px;}
+.wk-dn.t-dn{color:white;background:var(--primary);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;margin:2px auto 0;}
+.wk-grid{display:grid;grid-template-columns:48px repeat(7,1fr);gap:3px;}
+.wk-tc{display:flex;flex-direction:column;}
+.wk-ts{height:48px;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:6px;padding-top:2px;font-size:10px;color:var(--gray-400);}
+.wk-dc{border-left:1px solid var(--gray-200);position:relative;min-height:672px;cursor:pointer;}
+.wk-dc.t-dc{background:rgba(26,107,60,.03);}
+.wk-hl{height:48px;border-bottom:1px solid var(--gray-100);}
+.wk-ev{position:absolute;left:2px;right:2px;border-radius:4px;padding:2px 4px;font-size:10px;font-weight:500;overflow:hidden;z-index:10;}
+.wk-ev.ev-ps{border-left:3px solid var(--primary);}
+.wk-ev.ev-sales{border-left:3px solid var(--blue);}
 
-/* WEEK CALENDAR */
-.week-header{display:grid;grid-template-columns:60px repeat(7,1fr);gap:4px;margin-bottom:4px;}
-.week-day-hd{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);padding:4px 0;}
-.week-day-hd.today-hd{color:var(--primary);}
-.week-day-num-hd{font-size:18px;font-weight:600;color:var(--gray-800);display:block;margin-top:2px;}
-.week-day-num-hd.today-num{color:var(--white);background:var(--primary);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;margin:2px auto 0;}
-.week-grid{display:grid;grid-template-columns:60px repeat(7,1fr);gap:4px;}
-.week-time-col{display:flex;flex-direction:column;}
-.week-time-slot{height:48px;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:8px;padding-top:2px;font-size:10px;color:var(--gray-400);}
-.week-day-col{border-left:1px solid var(--gray-200);position:relative;min-height:576px;}
-.week-day-col.today-col{background:rgba(26,107,60,.03);}
-.week-hour-line{height:48px;border-bottom:1px solid var(--gray-100);}
-.week-event{position:absolute;left:2px;right:2px;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:500;cursor:pointer;overflow:hidden;z-index:10;}
-.week-event.ev-ps{background:var(--primary-light);color:var(--primary-dark);border-left:3px solid var(--primary);}
-.week-event.ev-sales{background:var(--blue-light);color:var(--navy);border-left:3px solid var(--blue);}
-
-/* MODAL OVERLAY */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--white);border-radius:var(--radius);padding:24px;width:100%;max-width:480px;margin:16px;max-height:90vh;overflow-y:auto;}
-.modal-title{font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
-.modal-close{width:28px;height:28px;border:none;background:var(--gray-100);border-radius:var(--radius-sm);cursor:pointer;font-size:16px;color:var(--gray-600);display:flex;align-items:center;justify-content:center;}
-.modal-close:hover{background:var(--red-light);color:var(--red);}
-
-/* ROLE SELECTOR */
-.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-.role-card{border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;transition:all .15s;background:var(--white);}
-.role-card.selected-ps{border-color:var(--primary);background:var(--primary-light);}
-.role-card.selected-sales{border-color:var(--navy);background:#eef3fa;}
-.role-icon{font-size:18px;margin-bottom:4px;}
-.role-name{font-size:13px;font-weight:600;color:var(--gray-800);}
-.role-card.selected-ps .role-name{color:var(--primary-dark);}
-.role-card.selected-sales .role-name{color:var(--navy);}
-.role-desc{font-size:11px;color:var(--gray-400);margin-top:1px;}
-
-/* FORM */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.form-group{display:flex;flex-direction:column;gap:4px;}
-.form-group.full{grid-column:1/-1;}
-label{font-size:12px;font-weight:500;color:var(--gray-600);}
-input,select,textarea{width:100%;padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;color:var(--gray-800);background:var(--white);outline:none;transition:border-color .15s;}
-input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,107,60,.08);}
-textarea{height:60px;resize:none;}
-.submit-btn{width:100%;margin-top:14px;padding:10px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s;}
-.submit-btn:hover{background:var(--primary-dark);}
-.submit-btn:disabled{background:var(--gray-400);cursor:not-allowed;}
-
-/* FILTER + LIST */
-.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-.filter-chip{padding:4px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-family:inherit;transition:all .15s;}
+/* ===== FILTER + LIST ===== */
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.filter-chip{padding:4px 11px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-family:inherit;transition:all .15s;}
 .filter-chip:hover{border-color:var(--primary);color:var(--primary);}
 .filter-chip.on{background:var(--primary);color:white;border-color:var(--primary);}
-.booking-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100);}
-.booking-item:last-child{border-bottom:none;padding-bottom:0;}
-.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.av-ps{background:var(--primary-light);color:var(--primary-dark);}
-.av-sales{background:#dbeafe;color:var(--navy);}
+.b-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100);}
+.b-item:last-child{border-bottom:none;padding-bottom:0;}
+.b-item.is-mine{background:rgba(26,107,60,.04);margin:0 -8px;padding:10px 8px;border-radius:var(--radius-sm);}
+.av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.av.ps{background:var(--primary-light);color:var(--primary-dark);}
+.av.sales{background:var(--blue-light);color:var(--navy);}
 .b-info{flex:1;min-width:0;}
-.b-name{font-size:13px;font-weight:600;color:var(--gray-900);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.b-name{font-size:13px;font-weight:600;color:var(--gray-900);display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
 .b-meta{font-size:11px;color:var(--gray-400);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;}
 .badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
-.badge-ps{background:var(--primary-light);color:var(--primary-dark);}
-.badge-sales{background:#dbeafe;color:var(--navy);}
-.product-tag{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-200);}
-.status-select{padding:3px 7px;border-radius:20px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid transparent;outline:none;flex-shrink:0;}
-.status-pending{background:#fef3c7;color:#b45309;border-color:#fbbf24;}
-.status-active{background:#dbeafe;color:#1e40af;border-color:#93c5fd;}
-.status-done{background:var(--primary-light);color:var(--primary-dark);border-color:#6fcf97;}
-.status-cancel{background:#fee2e2;color:#be123c;border-color:#fca5a5;}
-.delete-btn{width:26px;height:26px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);color:var(--gray-400);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
-.delete-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light);}
-
+.bg-ps{background:var(--primary-light);color:var(--primary-dark);}
+.bg-sales{background:var(--blue-light);color:var(--navy);}
+.bg-mine{background:var(--primary);color:white;}
+.bg-admin{background:var(--purple-light);color:var(--purple);}
+.prod-tag{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-200);}
+.sts{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid transparent;outline:none;flex-shrink:0;}
+.sts.pending{background:#fef3c7;color:#b45309;border-color:#fbbf24;}
+.sts.active{background:var(--blue-light);color:#1e40af;border-color:#93c5fd;}
+.sts.done{background:var(--primary-light);color:var(--primary-dark);border-color:#6fcf97;}
+.sts.cancel{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+.del-btn{width:26px;height:26px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);color:var(--gray-400);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;margin-top:1px;}
+.del-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light);}
 .empty{text-align:center;padding:32px;color:var(--gray-400);}
-.loading{text-align:center;padding:24px;color:var(--gray-400);font-size:13px;}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.section-count{font-size:12px;color:var(--gray-400);background:var(--gray-100);padding:2px 8px;border-radius:20px;}
+.loading{text-align:center;padding:24px;color:var(--gray-400);}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.sec-count{font-size:12px;color:var(--gray-400);background:var(--gray-100);padding:2px 8px;border-radius:20px;}
 
-/* TOAST */
+/* ===== ADMIN PANEL ===== */
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.member-list-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100);}
+.member-list-item:last-child{border-bottom:none;}
+.mem-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;}
+.mem-info{flex:1;}
+.mem-name{font-size:13px;font-weight:500;color:var(--gray-900);}
+.mem-dept{font-size:11px;color:var(--gray-400);margin-top:1px;}
+.mem-del{width:24px;height:24px;border-radius:4px;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-400);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.mem-del:hover{border-color:var(--red);color:var(--red);background:var(--red-light);}
+.add-member-form{display:flex;gap:8px;margin-top:12px;align-items:flex-end;}
+.add-member-form input,.add-member-form select{padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;}
+.add-member-form input:focus,.add-member-form select:focus{border-color:var(--purple);}
+.add-member-form input{flex:1;}
+.add-btn{padding:7px 16px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.add-btn:hover{background:#5b21b6;}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.report-card{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;text-align:center;}
+.report-label{font-size:11px;color:var(--gray-400);margin-bottom:4px;}
+.report-val{font-size:22px;font-weight:700;color:var(--gray-900);}
+.member-section{margin-bottom:8px;}
+.dept-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--gray-200);}
+.dept-section-title.ps{color:var(--primary);}
+.dept-section-title.sales{color:var(--navy);}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:var(--radius);padding:24px;width:100%;max-width:460px;margin:16px;max-height:90vh;overflow-y:auto;}
+.modal-hd{font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{width:28px;height:28px;border:none;background:var(--gray-100);border-radius:var(--radius-sm);cursor:pointer;font-size:14px;color:var(--gray-600);}
+.modal-close:hover{background:var(--red-light);color:var(--red);}
+.dept-tag-modal{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:14px;}
+.dt-ps{background:var(--primary-light);color:var(--primary-dark);}
+.dt-sales{background:var(--blue-light);color:var(--navy);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg.full{grid-column:1/-1;}
+.fg label{font-size:12px;font-weight:500;color:var(--gray-600);}
+.fg input,.fg select,.fg textarea{width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;color:var(--gray-800);background:var(--white);outline:none;transition:border-color .15s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,107,60,.08);}
+.fg textarea{height:58px;resize:none;}
+.save-btn{width:100%;margin-top:14px;padding:10px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s;}
+.save-btn:hover{background:var(--primary-dark);}
+.save-btn:disabled{background:var(--gray-400);cursor:not-allowed;}
+
+/* ===== EDIT MODAL ===== */
+.edit-modal{background:var(--white);border-radius:var(--radius);padding:24px;width:100%;max-width:460px;margin:16px;max-height:90vh;overflow-y:auto;}
+
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;}
 .toast.show{opacity:1;}
 .toast.success{background:var(--primary);}
 .toast.error{background:var(--red);}
-
-.footer{text-align:center;padding:16px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-200);}
+.footer{text-align:center;padding:14px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-200);}
 
 @media(max-width:640px){
   .stat-grid{grid-template-columns:repeat(2,1fr);}
-  .form-grid{grid-template-columns:1fr;}
-  .form-group.full{grid-column:1;}
-  .role-grid{grid-template-columns:1fr 1fr;}
+  .admin-grid{grid-template-columns:1fr;}
+  .report-grid{grid-template-columns:repeat(3,1fr);}
+  .fgrid{grid-template-columns:1fr;}
+  .fg.full{grid-column:1;}
   .topbar{padding:0 12px;}
-  .hero{padding:14px 12px;flex-direction:column;align-items:flex-start;gap:8px;}
-  .main{padding:14px 10px;}
-  .cal-day{min-height:52px;}
-  .cal-event{display:none;}
-  .cal-more{display:block!important;}
-  .week-header,.week-grid{grid-template-columns:40px repeat(7,1fr);}
+  .hero{padding:12px;flex-direction:column;align-items:flex-start;gap:6px;}
+  .main{padding:12px 10px;}
+  .add-member-form{flex-wrap:wrap;}
 }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="logo-area">
-    <img class="logo-img" src="data:image/jpeg;base64,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o45BM7yzEefoWdt/vHdf/wAWNmnDfGsryWz5LcI6uC8WdwNHV0lQYnt04OAdro4Ag9CCPqcOziD2CKVUkne5HJF+By9iwPH7PnF4zSnjqJb1dmtjqJ5pi8NYNaYxvZo01o6fpC/eJGCY7xBsUdnySmmlp4Z21ELoZnRSRyAEczXN6jo5w/n9l06JzyupXyOSNrWOIybhpZMhya1ZJcbhdzc7QB+z5Y6hrRAemyG8unEkbPNvf26LrrnRtuFrqbfLLNGyphdC6SJ3K9ocCCWn0PXoVkooc5O13sFFK9jQcP8AD7Hg2MwY7jtM+Chhe94D5C97nOcSS5x6nv8AyAA9Fi1OBY9PxFps+ENRFfYKY0vmRTFrJY9Eaezs783f4HsF1KJzyu3fccqslY5e6YHj1x4hWvO6iGo/bVsgdBTyNmIZyEPBDmdj0kd1+Vscuxqx5bYp7HkVuhr6CbXNFJsEEdnNcCC1w9HAghbdE55YzsOSOcbkOWrw2cLqG4Q1UlvuFfFC/nipKutc+Bp3v8o1zD3DiQfXalDI7BZcjsc9jvltp663TtDZKeVv09OxGuoI7gjRHotmiylVnNpyexEaUIqyRC9F4ZOFFNcxWG23GeMO5hSy1zzEPjppxH3cd+qlK645Z7jiVTistEyKz1FG6hdTU/7prYXM5OVvLrlAHQa7LbIkq1SdnJt2EaUId1WNDjWI2TH8Lhw+ip3S2eKCSDyah3mc8by4ua4nuDzEfZabEeF2LYvhl2w+2i4Psl1ZIyopqirdJyiRnI8Mcfqbtvse/XuST26KOpLOdyeSPkaPBcWtWGYvSY5ZGzNoKTn8oTSF7hzPLztx79XFaO2cLcUtXEOpzu0Q1VuvFXzfifIm/czBxaXgxkEDmLQTrR317kldwidSV2777jkjZK2wREWBkEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH//Z" alt="Prapatsorn">
-    <div class="logo-divider"></div>
-    <div>
-      <div class="logo-title">Prapatsorn Engineering</div>
-      <div class="logo-sub">ระบบจองนัดหมายทีม Sales &amp; PS</div>
+<!-- ===== LOGIN ===== -->
+<div class="screen active" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="data:image/jpeg;base64,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o45BM7yzEefoWdt/vHdf/wAWNmnDfGsryWz5LcI6uC8WdwNHV0lQYnt04OAdro4Ag9CCPqcOziD2CKVUkne5HJF+By9iwPH7PnF4zSnjqJb1dmtjqJ5pi8NYNaYxvZo01o6fpC/eJGCY7xBsUdnySmmlp4Z21ELoZnRSRyAEczXN6jo5w/n9l06JzyupXyOSNrWOIybhpZMhya1ZJcbhdzc7QB+z5Y6hrRAemyG8unEkbPNvf26LrrnRtuFrqbfLLNGyphdC6SJ3K9ocCCWn0PXoVkooc5O13sFFK9jQcP8AD7Hg2MwY7jtM+Chhe94D5C97nOcSS5x6nv8AyAA9Fi1OBY9PxFps+ENRFfYKY0vmRTFrJY9Eaezs783f4HsF1KJzyu3fccqslY5e6YHj1x4hWvO6iGo/bVsgdBTyNmIZyEPBDmdj0kd1+Vscuxqx5bYp7HkVuhr6CbXNFJsEEdnNcCC1w9HAghbdE55YzsOSOcbkOWrw2cLqG4Q1UlvuFfFC/nipKutc+Bp3v8o1zD3DiQfXalDI7BZcjsc9jvltp663TtDZKeVv09OxGuoI7gjRHotmiylVnNpyexEaUIqyRC9F4ZOFFNcxWG23GeMO5hSy1zzEPjppxH3cd+qlK645Z7jiVTistEyKz1FG6hdTU/7prYXM5OVvLrlAHQa7LbIkq1SdnJt2EaUId1WNDjWI2TH8Lhw+ip3S2eKCSDyah3mc8by4ua4nuDzEfZabEeF2LYvhl2w+2i4Psl1ZIyopqirdJyiRnI8Mcfqbtvse/XuST26KOpLOdyeSPkaPBcWtWGYvSY5ZGzNoKTn8oTSF7hzPLztx79XFaO2cLcUtXEOpzu0Q1VuvFXzfifIm/czBxaXgxkEDmLQTrR317kldwidSV2777jkjZK2wREWBkEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH//Z" alt="Prapatsorn">
+      <div class="login-logo-name">Prapatsorn Engineering</div>
+      <div class="login-logo-sub">ระบบจองนัดหมาย Sales &amp; Product Specialist</div>
     </div>
-  </div>
-  <div class="nav">
-    <button class="nav-btn active" onclick="switchView('cal')">&#128197; Calendar</button>
-    <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
-    <button class="nav-btn" onclick="openModal(null)">+ จอง</button>
-  </div>
-  <div class="realtime-dot"><div class="dot"></div><span id="conn-status">เชื่อมต่อ</span></div>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <div>
-    <div class="hero-title">ระบบจองนัดหมายลูกค้า</div>
-    <div class="hero-sub">เครื่องมือตรวจสมรรถภาพปอด &amp; กายภาพบำบัด</div>
-  </div>
-  <div class="hero-badge">Prapatsorn Engineering Co., Ltd.</div>
-</div>
-
-<div class="main">
-
-  <!-- CALENDAR VIEW -->
-  <div class="view active" id="view-cal">
-    <div class="stat-grid">
-      <div class="stat-card all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="s-total">—</div></div>
-      <div class="stat-card pending"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="s-pending">—</div></div>
-      <div class="stat-card active"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="s-active">—</div></div>
-      <div class="stat-card done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="s-done">—</div></div>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchLoginTab('user')">เข้าใช้งาน</button>
+      <button class="login-tab admin-tab" onclick="switchLoginTab('admin')">Admin</button>
     </div>
 
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div class="cal-toggle">
-          <button class="cal-toggle-btn active" id="btn-month" onclick="switchCal('month')">รายเดือน</button>
-          <button class="cal-toggle-btn" id="btn-week" onclick="switchCal('week')">รายสัปดาห์</button>
+    <!-- USER TAB -->
+    <div class="tab-panel active" id="tab-user">
+      <div class="no-member-msg" id="no-member-msg">ยังไม่มีรายชื่อสมาชิก — กรุณาติดต่อ Admin เพื่อเพิ่มชื่อ</div>
+      <div class="form-g">
+        <label>เลือกชื่อของคุณ *</label>
+        <select id="sel-member">
+          <option value="">— กรุณาเลือกชื่อ —</option>
+        </select>
+      </div>
+      <div id="dept-display" style="display:none;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:500;color:var(--gray-600);margin-bottom:6px;">แผนก</div>
+        <div id="dept-display-val" style="font-size:14px;font-weight:600;"></div>
+      </div>
+      <div class="dept-grid" id="dept-grid" style="display:none;">
+        <div class="dept-btn" id="dept-ps" onclick="selectDept('ps')">
+          <div class="dept-icon">&#128203;</div>
+          <div class="dept-name">Product Specialist</div>
+          <div class="dept-desc">สาธิต &amp; ให้ความรู้</div>
         </div>
-        <div class="cal-nav">
-          <button class="cal-nav-btn" onclick="navCal(-1)">&#8249;</button>
-          <span class="cal-month-label" id="cal-label">—</span>
-          <button class="cal-nav-btn" onclick="navCal(1)">&#8250;</button>
-          <button class="cal-nav-btn" onclick="goToday()" style="font-size:11px;width:auto;padding:0 10px;">วันนี้</button>
+        <div class="dept-btn" id="dept-sales" onclick="selectDept('sales')">
+          <div class="dept-icon">&#128200;</div>
+          <div class="dept-name">Sales</div>
+          <div class="dept-desc">นำเสนอ &amp; ปิดการขาย</div>
         </div>
       </div>
-      <div id="cal-container"></div>
+      <button class="login-btn ps-btn" onclick="doLogin()">เข้าใช้งาน</button>
+      <div class="login-err" id="user-err"></div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div class="tab-panel" id="tab-admin">
+      <div class="form-g">
+        <label>รหัสผ่าน Admin *</label>
+        <input type="password" id="admin-pw" placeholder="กรอกรหัสผ่าน" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      </div>
+      <button class="login-btn admin-btn" onclick="doAdminLogin()">เข้าสู่หน้า Admin</button>
+      <div class="login-err" id="admin-err"></div>
     </div>
   </div>
-
-  <!-- DASHBOARD VIEW -->
-  <div class="view" id="view-dash">
-    <div class="stat-grid">
-      <div class="stat-card all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="d-total">—</div></div>
-      <div class="stat-card pending"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="d-pending">—</div></div>
-      <div class="stat-card active"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="d-active">—</div></div>
-      <div class="stat-card done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="d-done">—</div></div>
-    </div>
-    <div class="card">
-      <div class="section-header">
-        <div class="card-title" style="margin:0;">รายการนัดหมาย</div>
-        <span class="section-count" id="list-count">0 รายการ</span>
-      </div>
-      <div class="filter-row">
-        <span style="font-size:12px;color:var(--gray-400);">กรอง:</span>
-        <button class="filter-chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
-        <button class="filter-chip" onclick="setFilter(this,'ps')">Product Specialist</button>
-        <button class="filter-chip" onclick="setFilter(this,'sales')">Sales</button>
-        <button class="filter-chip" onclick="setFilter(this,'pending')">รอดำเนินการ</button>
-        <button class="filter-chip" onclick="setFilter(this,'done')">เสร็จสิ้น</button>
-      </div>
-      <div id="booking-list"><div class="loading">กำลังโหลด...</div></div>
-    </div>
-  </div>
-
 </div>
 
-<div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; ระบบจองนัดหมาย &nbsp;|&nbsp; Powered by Firebase</div>
+<!-- ===== USER APP ===== -->
+<div class="screen" id="user-screen">
+  <div class="topbar" id="user-topbar">
+    <div class="logo-area">
+      <img class="logo-img" src="data:image/jpeg;base64,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o45BM7yzEefoWdt/vHdf/wAWNmnDfGsryWz5LcI6uC8WdwNHV0lQYnt04OAdro4Ag9CCPqcOziD2CKVUkne5HJF+By9iwPH7PnF4zSnjqJb1dmtjqJ5pi8NYNaYxvZo01o6fpC/eJGCY7xBsUdnySmmlp4Z21ELoZnRSRyAEczXN6jo5w/n9l06JzyupXyOSNrWOIybhpZMhya1ZJcbhdzc7QB+z5Y6hrRAemyG8unEkbPNvf26LrrnRtuFrqbfLLNGyphdC6SJ3K9ocCCWn0PXoVkooc5O13sFFK9jQcP8AD7Hg2MwY7jtM+Chhe94D5C97nOcSS5x6nv8AyAA9Fi1OBY9PxFps+ENRFfYKY0vmRTFrJY9Eaezs783f4HsF1KJzyu3fccqslY5e6YHj1x4hWvO6iGo/bVsgdBTyNmIZyEPBDmdj0kd1+Vscuxqx5bYp7HkVuhr6CbXNFJsEEdnNcCC1w9HAghbdE55YzsOSOcbkOWrw2cLqG4Q1UlvuFfFC/nipKutc+Bp3v8o1zD3DiQfXalDI7BZcjsc9jvltp663TtDZKeVv09OxGuoI7gjRHotmiylVnNpyexEaUIqyRC9F4ZOFFNcxWG23GeMO5hSy1zzEPjppxH3cd+qlK645Z7jiVTistEyKz1FG6hdTU/7prYXM5OVvLrlAHQa7LbIkq1SdnJt2EaUId1WNDjWI2TH8Lhw+ip3S2eKCSDyah3mc8by4ua4nuDzEfZabEeF2LYvhl2w+2i4Psl1ZIyopqirdJyiRnI8Mcfqbtvse/XuST26KOpLOdyeSPkaPBcWtWGYvSY5ZGzNoKTn8oTSF7hzPLztx79XFaO2cLcUtXEOpzu0Q1VuvFXzfifIm/czBxaXgxkEDmLQTrR317kldwidSV2777jkjZK2wREWBkEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH//Z" alt="Prapatsorn">
+      <div class="logo-divider"></div>
+      <div><div class="logo-title">Prapatsorn Engineering</div><div class="logo-sub">ระบบจองนัดหมาย</div></div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="switchView('cal')">&#128197; Calendar</button>
+      <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
+      <button class="nav-btn" onclick="openModal(null)">+ จอง</button>
+    </div>
+    <div class="topbar-right">
+      <div class="user-chip">
+        <div class="user-avatar" id="top-av"></div>
+        <div><div class="user-name" id="top-name">—</div><div class="user-role" id="top-role">—</div></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">ออก</button>
+      <div class="realtime-dot"><div class="dot"></div><span id="conn-status">เชื่อมต่อ</span></div>
+    </div>
+  </div>
+  <div class="hero" id="user-hero">
+    <div><div class="hero-title" id="hero-title">ยินดีต้อนรับ</div><div class="hero-sub">เครื่องมือตรวจสมรรถภาพปอด &amp; กายภาพบำบัด</div></div>
+    <div class="hero-badge" id="hero-badge">—</div>
+  </div>
+  <div class="main">
+    <div class="view active" id="view-cal">
+      <div class="stat-grid">
+        <div class="stat-card s-all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="s-total">—</div></div>
+        <div class="stat-card s-pend"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="s-pend">—</div></div>
+        <div class="stat-card s-act"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="s-act">—</div></div>
+        <div class="stat-card s-done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="s-done">—</div></div>
+      </div>
+      <div class="my-banner" id="my-banner">
+        <div><div class="my-banner-name" id="my-banner-name">นัดหมายของฉัน</div><div class="my-banner-sub" id="my-banner-sub">—</div></div>
+        <div class="my-count" id="my-count">0</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div class="cal-toggle">
+            <button class="cal-toggle-btn active" id="btn-month" onclick="switchCal('month')">รายเดือน</button>
+            <button class="cal-toggle-btn" id="btn-week" onclick="switchCal('week')">รายสัปดาห์</button>
+          </div>
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="navCal(-1)">&#8249;</button>
+            <span class="cal-label" id="cal-label">—</span>
+            <button class="cal-nav-btn" onclick="navCal(1)">&#8250;</button>
+            <button class="cal-nav-btn" style="font-size:11px;width:auto;padding:0 10px;" onclick="goToday()">วันนี้</button>
+          </div>
+        </div>
+        <div id="cal-container"></div>
+      </div>
+    </div>
+    <div class="view" id="view-dash">
+      <div class="stat-grid">
+        <div class="stat-card s-all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="d-total">—</div></div>
+        <div class="stat-card s-pend"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="d-pend">—</div></div>
+        <div class="stat-card s-act"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="d-act">—</div></div>
+        <div class="stat-card s-done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="d-done">—</div></div>
+      </div>
+      <div class="card">
+        <div class="sec-header">
+          <div class="card-title" style="margin:0;">รายการนัดหมาย</div>
+          <span class="sec-count" id="list-count">0 รายการ</span>
+        </div>
+        <div class="filter-row">
+          <span style="font-size:12px;color:var(--gray-400);">กรอง:</span>
+          <button class="filter-chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
+          <button class="filter-chip" onclick="setFilter(this,'mine')">ของฉัน</button>
+          <button class="filter-chip" onclick="setFilter(this,'ps')">PS</button>
+          <button class="filter-chip" onclick="setFilter(this,'sales')">Sales</button>
+          <button class="filter-chip" onclick="setFilter(this,'pending')">รอดำเนินการ</button>
+          <button class="filter-chip" onclick="setFilter(this,'done')">เสร็จสิ้น</button>
+        </div>
+        <div id="booking-list"><div class="loading">กำลังโหลด...</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; ระบบจองนัดหมาย &nbsp;|&nbsp; Powered by Firebase</div>
+</div>
 
-<!-- MODAL -->
+<!-- ===== ADMIN APP ===== -->
+<div class="screen" id="admin-screen">
+  <div class="topbar admin-bar">
+    <div class="logo-area">
+      <img class="logo-img" src="data:image/jpeg;base64,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o45BM7yzEefoWdt/vHdf/wAWNmnDfGsryWz5LcI6uC8WdwNHV0lQYnt04OAdro4Ag9CCPqcOziD2CKVUkne5HJF+By9iwPH7PnF4zSnjqJb1dmtjqJ5pi8NYNaYxvZo01o6fpC/eJGCY7xBsUdnySmmlp4Z21ELoZnRSRyAEczXN6jo5w/n9l06JzyupXyOSNrWOIybhpZMhya1ZJcbhdzc7QB+z5Y6hrRAemyG8unEkbPNvf26LrrnRtuFrqbfLLNGyphdC6SJ3K9ocCCWn0PXoVkooc5O13sFFK9jQcP8AD7Hg2MwY7jtM+Chhe94D5C97nOcSS5x6nv8AyAA9Fi1OBY9PxFps+ENRFfYKY0vmRTFrJY9Eaezs783f4HsF1KJzyu3fccqslY5e6YHj1x4hWvO6iGo/bVsgdBTyNmIZyEPBDmdj0kd1+Vscuxqx5bYp7HkVuhr6CbXNFJsEEdnNcCC1w9HAghbdE55YzsOSOcbkOWrw2cLqG4Q1UlvuFfFC/nipKutc+Bp3v8o1zD3DiQfXalDI7BZcjsc9jvltp663TtDZKeVv09OxGuoI7gjRHotmiylVnNpyexEaUIqyRC9F4ZOFFNcxWG23GeMO5hSy1zzEPjppxH3cd+qlK645Z7jiVTistEyKz1FG6hdTU/7prYXM5OVvLrlAHQa7LbIkq1SdnJt2EaUId1WNDjWI2TH8Lhw+ip3S2eKCSDyah3mc8by4ua4nuDzEfZabEeF2LYvhl2w+2i4Psl1ZIyopqirdJyiRnI8Mcfqbtvse/XuST26KOpLOdyeSPkaPBcWtWGYvSY5ZGzNoKTn8oTSF7hzPLztx79XFaO2cLcUtXEOpzu0Q1VuvFXzfifIm/czBxaXgxkEDmLQTrR317kldwidSV2777jkjZK2wREWBkEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH//Z" alt="Prapatsorn">
+      <div class="logo-divider"></div>
+      <div><div class="logo-title">Prapatsorn Engineering</div><div class="logo-sub">หน้าจัดการ Admin</div></div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn admin-active" onclick="switchAdminView('members')">&#128101; จัดการสมาชิก</button>
+      <button class="nav-btn" onclick="switchAdminView('report')">&#128202; รายงาน</button>
+      <button class="nav-btn" onclick="switchAdminView('bookings')">&#128203; การจองทั้งหมด</button>
+    </div>
+    <div class="topbar-right">
+      <div class="user-chip">
+        <div class="user-avatar av-admin-bg">&#9733;</div>
+        <div><div class="user-name">Administrator</div><div class="user-role">จัดการระบบ</div></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">ออก</button>
+    </div>
+  </div>
+  <div class="hero hero-admin">
+    <div><div class="hero-title">Admin Dashboard</div><div class="hero-sub">จัดการสมาชิก รายงาน และการจองทั้งหมด</div></div>
+    <div class="hero-badge">Prapatsorn Engineering</div>
+  </div>
+  <div class="main">
+
+    <!-- MEMBERS VIEW -->
+    <div class="view active" id="aview-members">
+      <div class="admin-grid">
+        <!-- PS -->
+        <div class="card">
+          <div class="card-title purple-title">Product Specialist</div>
+          <div class="member-section">
+            <div id="ps-member-list"><div class="empty" style="padding:16px;">ยังไม่มีสมาชิก</div></div>
+          </div>
+          <div class="add-member-form">
+            <input type="text" id="add-ps-name" placeholder="ชื่อสมาชิก PS" onkeydown="if(event.key==='Enter')addMember('ps')">
+            <button class="add-btn" onclick="addMember('ps')">+ เพิ่ม</button>
+          </div>
+        </div>
+        <!-- SALES -->
+        <div class="card">
+          <div class="card-title purple-title">Sales</div>
+          <div class="member-section">
+            <div id="sales-member-list"><div class="empty" style="padding:16px;">ยังไม่มีสมาชิก</div></div>
+          </div>
+          <div class="add-member-form">
+            <input type="text" id="add-sales-name" placeholder="ชื่อสมาชิก Sales" onkeydown="if(event.key==='Enter')addMember('sales')">
+            <button class="add-btn" onclick="addMember('sales')">+ เพิ่ม</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT VIEW -->
+    <div class="view" id="aview-report">
+      <div class="report-grid">
+        <div class="report-card"><div class="report-label">จองทั้งหมด</div><div class="report-val" id="r-total">—</div></div>
+        <div class="report-card"><div class="report-label">PS</div><div class="report-val" id="r-ps">—</div></div>
+        <div class="report-card"><div class="report-label">Sales</div><div class="report-val" id="r-sales">—</div></div>
+        <div class="report-card"><div class="report-label">รอดำเนินการ</div><div class="report-val" style="color:#b45309;" id="r-pend">—</div></div>
+        <div class="report-card"><div class="report-label">กำลังดำเนินการ</div><div class="report-val" style="color:var(--blue);" id="r-act">—</div></div>
+        <div class="report-card"><div class="report-label">เสร็จสิ้น</div><div class="report-val" style="color:var(--primary);" id="r-done">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title purple-title">สรุปรายบุคคล</div>
+        <div id="per-person-report"><div class="loading">กำลังโหลด...</div></div>
+      </div>
+    </div>
+
+    <!-- ALL BOOKINGS VIEW -->
+    <div class="view" id="aview-bookings">
+      <div class="card">
+        <div class="sec-header">
+          <div class="card-title purple-title" style="margin:0;">การจองทั้งหมด (Admin)</div>
+          <span class="sec-count" id="a-list-count">0 รายการ</span>
+        </div>
+        <div class="filter-row">
+          <span style="font-size:12px;color:var(--gray-400);">กรอง:</span>
+          <button class="filter-chip on" onclick="setAdminFilter(this,'all')">ทั้งหมด</button>
+          <button class="filter-chip" onclick="setAdminFilter(this,'ps')">PS</button>
+          <button class="filter-chip" onclick="setAdminFilter(this,'sales')">Sales</button>
+          <button class="filter-chip" onclick="setAdminFilter(this,'pending')">รอดำเนินการ</button>
+          <button class="filter-chip" onclick="setAdminFilter(this,'done')">เสร็จสิ้น</button>
+        </div>
+        <div id="admin-booking-list"><div class="loading">กำลังโหลด...</div></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; Admin Panel &nbsp;|&nbsp; Powered by Firebase</div>
+</div>
+
+<!-- BOOKING MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
-    <div class="modal-title">
-      <span id="modal-title-text">จองนัดหมาย</span>
+    <div class="modal-hd">
+      <span id="modal-title">จองนัดหมาย</span>
       <button class="modal-close" onclick="closeModal()">&#10005;</button>
     </div>
-    <div style="margin-bottom:12px;">
-      <div class="card-title">ตำแหน่งผู้จอง</div>
-      <div class="role-grid">
-        <div class="role-card selected-ps" id="role-ps" onclick="selectRole('ps')">
-          <div class="role-icon">&#128203;</div>
-          <div class="role-name">Product Specialist</div>
-          <div class="role-desc">สาธิต &amp; ให้ความรู้</div>
-        </div>
-        <div class="role-card" id="role-sales" onclick="selectRole('sales')">
-          <div class="role-icon">&#128200;</div>
-          <div class="role-name">Sales</div>
-          <div class="role-desc">นำเสนอ &amp; ปิดการขาย</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>ชื่อโรงพยาบาล / คลินิก *</label>
-        <input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ">
-      </div>
-      <div class="form-group">
-        <label>ชื่อผู้ติดต่อ *</label>
-        <input type="text" id="f-contact" placeholder="เช่น คุณสมชาย">
-      </div>
-      <div class="form-group">
-        <label>เบอร์โทรศัพท์</label>
-        <input type="tel" id="f-phone" placeholder="0812345678">
-      </div>
-      <div class="form-group">
-        <label>ชื่อผู้จอง</label>
-        <input type="text" id="f-staff" placeholder="เช่น คุณนภา">
-      </div>
-      <div class="form-group">
-        <label>วันที่นัดหมาย *</label>
-        <input type="date" id="f-date">
-      </div>
-      <div class="form-group">
-        <label>เวลา *</label>
-        <input type="time" id="f-time" value="09:00">
-      </div>
-      <div class="form-group full">
-        <label>สินค้าที่สนใจ</label>
+    <div class="dept-tag-modal" id="modal-dept-tag">—</div>
+    <div class="fgrid">
+      <div class="fg"><label>ชื่อโรงพยาบาล / คลินิก *</label><input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ"></div>
+      <div class="fg"><label>ชื่อผู้ติดต่อ *</label><input type="text" id="f-contact" placeholder="เช่น คุณสมชาย"></div>
+      <div class="fg"><label>เบอร์โทร</label><input type="tel" id="f-phone" placeholder="0812345678"></div>
+      <div class="fg"><label>วันที่นัดหมาย *</label><input type="date" id="f-date"></div>
+      <div class="fg"><label>เวลา *</label><input type="time" id="f-time" value="09:00"></div>
+      <div class="fg"><label>สินค้าที่สนใจ</label>
         <select id="f-product">
           <option value="">-- เลือกสินค้า --</option>
           <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
@@ -333,12 +521,36 @@ textarea{height:60px;resize:none;}
           <option>อื่น ๆ</option>
         </select>
       </div>
-      <div class="form-group full">
-        <label>หมายเหตุ</label>
-        <textarea id="f-note" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
-      </div>
+      <div class="fg full"><label>หมายเหตุ</label><textarea id="f-note" placeholder="รายละเอียดเพิ่มเติม..."></textarea></div>
     </div>
-    <button class="submit-btn" id="submit-btn" onclick="submitBooking()">บันทึกการจอง</button>
+    <button class="save-btn" id="submit-btn" onclick="submitBooking()">บันทึกการจอง</button>
+  </div>
+</div>
+
+<!-- EDIT MODAL (Admin) -->
+<div class="modal-overlay" id="edit-overlay" onclick="if(event.target.id==='edit-overlay')closeEdit()">
+  <div class="edit-modal">
+    <div class="modal-hd">
+      <span>แก้ไขการจอง</span>
+      <button class="modal-close" onclick="closeEdit()">&#10005;</button>
+    </div>
+    <div style="margin-top:12px;" class="fgrid">
+      <div class="fg"><label>ชื่อโรงพยาบาล / คลินิก</label><input type="text" id="e-hospital"></div>
+      <div class="fg"><label>ชื่อผู้ติดต่อ</label><input type="text" id="e-contact"></div>
+      <div class="fg"><label>เบอร์โทร</label><input type="tel" id="e-phone"></div>
+      <div class="fg"><label>วันที่</label><input type="date" id="e-date"></div>
+      <div class="fg"><label>เวลา</label><input type="time" id="e-time"></div>
+      <div class="fg"><label>สถานะ</label>
+        <select id="e-status">
+          <option value="pending">รอดำเนินการ</option>
+          <option value="active">กำลังดำเนินการ</option>
+          <option value="done">เสร็จสิ้น</option>
+          <option value="cancel">ยกเลิก</option>
+        </select>
+      </div>
+      <div class="fg full"><label>หมายเหตุ</label><textarea id="e-note"></textarea></div>
+    </div>
+    <button class="save-btn" onclick="saveEdit()" style="background:var(--purple);">บันทึกการแก้ไข</button>
   </div>
 </div>
 
@@ -359,140 +571,280 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const bookingsRef = db.ref('bookings');
+const membersRef = db.ref('members');
 
-let currentRole='ps', currentFilter='all', allBookings={};
-let calMode='month', calDate=new Date();
+const ADMIN_PW = 'admin1234';
+let currentUser = null;
+let allBookings = {};
+let allMembers = {};
+let currentFilter = 'all';
+let adminFilter = 'all';
+let calMode = 'month';
+let calDate = new Date();
+let editId = null;
+let selectedDeptLogin = '';
 
-db.ref('.info/connected').on('value',snap=>{
-  const el=document.getElementById('conn-status');
-  el.textContent=snap.val()?'เชื่อมต่อ':'ออฟไลน์';
-  el.style.color=snap.val()?'var(--primary)':'#ef4444';
+/* ===== FIREBASE LISTENERS ===== */
+db.ref('.info/connected').on('value', snap => {
+  const el = document.getElementById('conn-status');
+  if (el) { el.textContent = snap.val() ? 'เชื่อมต่อ' : 'ออฟไลน์'; el.style.color = snap.val() ? 'var(--primary)' : '#ef4444'; }
+});
+bookingsRef.on('value', snap => {
+  allBookings = snap.val() || {};
+  renderStats(); renderCalendar(); renderList(); renderAdminBookings(); renderReport(); updateMyBanner();
+});
+membersRef.on('value', snap => {
+  allMembers = snap.val() || {};
+  renderMemberDropdown(); renderMemberLists();
 });
 
-bookingsRef.on('value',snap=>{
-  allBookings=snap.val()||{};
-  renderStats();
+/* ===== LOGIN ===== */
+function switchLoginTab(t) {
+  document.querySelectorAll('.login-tab').forEach((b,i) => b.classList.toggle('active', (t==='user'&&i===0)||(t==='admin'&&i===1)));
+  document.getElementById('tab-user').classList.toggle('active', t==='user');
+  document.getElementById('tab-admin').classList.toggle('active', t==='admin');
+}
+
+function renderMemberDropdown() {
+  const sel = document.getElementById('sel-member');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— กรุณาเลือกชื่อ —</option>';
+  const members = Object.entries(allMembers).map(([id,m]) => ({id,...m})).sort((a,b) => a.name.localeCompare(b.name,'th'));
+  const noMsg = document.getElementById('no-member-msg');
+  if (members.length === 0) { noMsg.style.display='block'; return; }
+  noMsg.style.display = 'none';
+  const ps = members.filter(m => m.dept==='ps');
+  const sales = members.filter(m => m.dept==='sales');
+  if (ps.length) {
+    const g = document.createElement('optgroup'); g.label = 'Product Specialist';
+    ps.forEach(m => { const o=document.createElement('option'); o.value=m.id; o.textContent=m.name; o.dataset.dept='ps'; g.appendChild(o); });
+    sel.appendChild(g);
+  }
+  if (sales.length) {
+    const g = document.createElement('optgroup'); g.label = 'Sales';
+    sales.forEach(m => { const o=document.createElement('option'); o.value=m.id; o.textContent=m.name; o.dataset.dept='sales'; g.appendChild(o); });
+    sel.appendChild(g);
+  }
+  if (prev) sel.value = prev;
+  sel.onchange = () => {
+    const opt = sel.options[sel.selectedIndex];
+    const dept = opt ? opt.dataset.dept : '';
+    const deptDisp = document.getElementById('dept-display');
+    const deptVal = document.getElementById('dept-display-val');
+    if (dept) {
+      deptDisp.style.display = 'block';
+      deptVal.textContent = dept==='ps' ? '📋 Product Specialist' : '📈 Sales';
+      deptVal.style.color = dept==='ps' ? 'var(--primary-dark)' : 'var(--navy)';
+    } else { deptDisp.style.display='none'; }
+  };
+}
+
+function doLogin() {
+  const sel = document.getElementById('sel-member');
+  const opt = sel.options[sel.selectedIndex];
+  const memberId = sel.value;
+  const err = document.getElementById('user-err');
+  if (!memberId) { err.textContent='กรุณาเลือกชื่อของคุณ'; return; }
+  const member = allMembers[memberId];
+  if (!member) { err.textContent='ไม่พบข้อมูลสมาชิก'; return; }
+  err.textContent = '';
+  currentUser = { id: memberId, name: member.name, dept: member.dept };
+  sessionStorage.setItem('pes_user', JSON.stringify(currentUser));
+  startUserApp();
+}
+
+function doAdminLogin() {
+  const pw = document.getElementById('admin-pw').value;
+  const err = document.getElementById('admin-err');
+  if (pw !== ADMIN_PW) { err.textContent='รหัสผ่านไม่ถูกต้อง'; document.getElementById('admin-pw').value=''; return; }
+  err.textContent = '';
+  sessionStorage.setItem('pes_admin','1');
+  startAdminApp();
+}
+
+function doLogout() {
+  sessionStorage.removeItem('pes_user'); sessionStorage.removeItem('pes_admin');
+  currentUser = null;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('login-screen').classList.add('active');
+  document.getElementById('admin-pw').value = '';
+  document.getElementById('sel-member').value = '';
+  document.getElementById('dept-display').style.display = 'none';
+}
+
+/* ===== START USER APP ===== */
+function startUserApp() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('user-screen').classList.add('active');
+  const u = currentUser;
+  const isPS = u.dept==='ps';
+  document.getElementById('top-name').textContent = u.name;
+  document.getElementById('top-role').textContent = isPS ? 'Product Specialist' : 'Sales';
+  const av = document.getElementById('top-av');
+  av.textContent = u.name.slice(0,2); av.className = 'user-avatar '+(isPS?'av-ps-bg':'av-sales-bg');
+  document.getElementById('user-hero').className = 'hero '+(isPS?'hero-ps':'hero-sales');
+  document.getElementById('hero-title').textContent = 'ยินดีต้อนรับ คุณ'+u.name;
+  document.getElementById('hero-badge').textContent = isPS?'Product Specialist':'Sales';
+  document.getElementById('my-banner').className = 'my-banner '+(isPS?'b-ps':'b-sales');
+  document.getElementById('my-banner-name').textContent = 'นัดหมายของ'+u.name;
+  const dt = document.getElementById('modal-dept-tag');
+  dt.className = 'dept-tag-modal '+(isPS?'dt-ps':'dt-sales');
+  dt.textContent = (isPS?'📋 Product Specialist':'📈 Sales')+' — '+u.name;
   renderCalendar();
-  renderList();
-});
+}
 
-/* ---- VIEWS ---- */
-function switchView(v){
-  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+/* ===== START ADMIN APP ===== */
+function startAdminApp() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-screen').classList.add('active');
+  renderMemberLists(); renderReport(); renderAdminBookings();
+}
+
+/* ===== VIEWS ===== */
+function switchView(v) {
+  document.querySelectorAll('#user-screen .view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#user-screen .nav-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  const idx={cal:0,dash:1}[v];
-  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  document.querySelectorAll('#user-screen .nav-btn')[{cal:0,dash:1}[v]].classList.add('active');
+}
+function switchAdminView(v) {
+  document.querySelectorAll('#admin-screen .view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#admin-screen .nav-btn').forEach((el,i) => {
+    el.className = 'nav-btn'+(i==={members:0,report:1,bookings:2}[v]?' admin-active':'');
+  });
+  document.getElementById('aview-'+v).classList.add('active');
 }
 
-/* ---- STATS ---- */
-function renderStats(){
-  const list=Object.values(allBookings);
-  const c={pending:0,active:0,done:0,cancel:0};
-  list.forEach(b=>{if(c[b.status]!==undefined)c[b.status]++;});
-  ['s-total','d-total'].forEach(id=>document.getElementById(id).textContent=list.length);
-  ['s-pending','d-pending'].forEach(id=>document.getElementById(id).textContent=c.pending);
-  ['s-active','d-active'].forEach(id=>document.getElementById(id).textContent=c.active);
-  ['s-done','d-done'].forEach(id=>document.getElementById(id).textContent=c.done);
+/* ===== ADMIN MEMBERS ===== */
+function renderMemberLists() {
+  ['ps','sales'].forEach(dept => {
+    const members = Object.entries(allMembers).filter(([,m])=>m.dept===dept).map(([id,m])=>({id,...m})).sort((a,b)=>a.name.localeCompare(b.name,'th'));
+    const el = document.getElementById(dept+'-member-list');
+    if (members.length===0) { el.innerHTML='<div class="empty" style="padding:14px;font-size:13px;">ยังไม่มีสมาชิก</div>'; return; }
+    el.innerHTML = members.map(m => `
+      <div class="member-list-item">
+        <div class="mem-av" style="background:${dept==='ps'?'var(--primary)':'var(--navy)'}">${m.name.slice(0,2)}</div>
+        <div class="mem-info"><div class="mem-name">${esc(m.name)}</div><div class="mem-dept">${dept==='ps'?'Product Specialist':'Sales'}</div></div>
+        <button class="mem-del" onclick="deleteMember('${m.id}','${esc(m.name)}')">&#10005;</button>
+      </div>`).join('');
+  });
 }
 
-/* ---- CALENDAR ---- */
-function switchCal(mode){
-  calMode=mode;
-  document.getElementById('btn-month').classList.toggle('active',mode==='month');
-  document.getElementById('btn-week').classList.toggle('active',mode==='week');
+function addMember(dept) {
+  const inp = document.getElementById('add-'+dept+'-name');
+  const name = inp.value.trim();
+  if (!name) { showToast('กรุณาใส่ชื่อสมาชิก','error'); return; }
+  const exists = Object.values(allMembers).some(m => m.name===name && m.dept===dept);
+  if (exists) { showToast('มีชื่อนี้อยู่แล้ว','error'); return; }
+  membersRef.push({ name, dept, createdAt: Date.now() }).then(() => {
+    inp.value = '';
+    showToast('เพิ่มสมาชิกแล้ว ✓','success');
+  }).catch(e => showToast('เกิดข้อผิดพลาด','error'));
+}
+
+function deleteMember(id, name) {
+  if (!confirm('ลบสมาชิก "'+name+'" ออกจากทีม?')) return;
+  membersRef.child(id).remove().then(() => showToast('ลบสมาชิกแล้ว'));
+}
+
+/* ===== STATS ===== */
+function renderStats() {
+  const list = Object.values(allBookings);
+  const c = {pending:0,active:0,done:0,cancel:0};
+  list.forEach(b => { if(c[b.status]!==undefined) c[b.status]++; });
+  const ids = [['s-total','d-total'],[list.length,list.length]];
+  document.getElementById('s-total').textContent = list.length;
+  document.getElementById('d-total').textContent = list.length;
+  document.getElementById('s-pend').textContent = c.pending;
+  document.getElementById('d-pend').textContent = c.pending;
+  document.getElementById('s-act').textContent = c.active;
+  document.getElementById('d-act').textContent = c.active;
+  document.getElementById('s-done').textContent = c.done;
+  document.getElementById('d-done').textContent = c.done;
+}
+
+function updateMyBanner() {
+  if (!currentUser) return;
+  const mine = Object.values(allBookings).filter(b => b.staffId===currentUser.id);
+  document.getElementById('my-count').textContent = mine.length;
+  const pend = mine.filter(b=>b.status==='pending').length;
+  document.getElementById('my-banner-sub').textContent = pend>0 ? `รอดำเนินการ ${pend} รายการ` : 'ไม่มีรายการรอดำเนินการ';
+}
+
+/* ===== CALENDAR ===== */
+function switchCal(m) {
+  calMode=m;
+  document.getElementById('btn-month').classList.toggle('active',m==='month');
+  document.getElementById('btn-week').classList.toggle('active',m==='week');
   renderCalendar();
 }
-function navCal(dir){
-  if(calMode==='month'){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+dir,1);}
-  else{calDate=new Date(calDate.getTime()+dir*7*86400000);}
+function navCal(d) {
+  if(calMode==='month') calDate=new Date(calDate.getFullYear(),calDate.getMonth()+d,1);
+  else calDate=new Date(calDate.getTime()+d*7*86400000);
   renderCalendar();
 }
 function goToday(){calDate=new Date();renderCalendar();}
+function getBkgForDate(ds){return Object.entries(allBookings).filter(([,b])=>b.date===ds).map(([id,b])=>({id,...b}));}
 
-function getBookingsForDate(dateStr){
-  return Object.entries(allBookings).filter(([,b])=>b.date===dateStr).map(([id,b])=>({id,...b}));
-}
-
-function renderCalendar(){
-  if(calMode==='month') renderMonth();
-  else renderWeek();
-}
+function renderCalendar(){if(!currentUser)return;calMode==='month'?renderMonth():renderWeek();}
 
 function renderMonth(){
-  const today=new Date();
-  const y=calDate.getFullYear(), m=calDate.getMonth();
-  const thMonths=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  document.getElementById('cal-label').textContent=thMonths[m]+' '+(y+543);
-  const firstDay=new Date(y,m,1).getDay();
-  const daysInMonth=new Date(y,m+1,0).getDate();
-  const daysInPrev=new Date(y,m,0).getDate();
-  const thDays=['อา','จ','อ','พ','พฤ','ศ','ส'];
-  let html='<div class="cal-grid">';
-  thDays.forEach(d=>{html+=`<div class="cal-day-header">${d}</div>`;});
-  for(let i=firstDay-1;i>=0;i--){
-    const d=daysInPrev-i;
-    html+=`<div class="cal-day other-month"><div class="cal-day-num">${d}</div></div>`;
-  }
-  for(let d=1;d<=daysInMonth;d++){
-    const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
-    const bkgs=getBookingsForDate(dateStr);
-    const hasB=bkgs.length>0;
-    html+=`<div class="cal-day${isToday?' today':''}${hasB?' has-booking':''}" onclick="openModal('${dateStr}')">`;
-    html+=`<div class="cal-day-num">${d}</div>`;
+  const today=new Date(),y=calDate.getFullYear(),m=calDate.getMonth();
+  const thM=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('cal-label').textContent=thM[m]+' '+(y+543);
+  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),dip=new Date(y,m,0).getDate();
+  const thD=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  let h='<div class="cal-grid">';
+  thD.forEach(d=>{h+=`<div class="cal-dh">${d}</div>`;});
+  for(let i=fd-1;i>=0;i--) h+=`<div class="cal-day other"><div class="cal-dn">${dip-i}</div></div>`;
+  for(let d=1;d<=dim;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isT=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+    const bkgs=getBkgForDate(ds);
+    h+=`<div class="cal-day${isT?' today':''}${bkgs.length?' has-b':''}" onclick="openModal('${ds}')">`;
+    h+=`<div class="cal-dn">${d}</div>`;
     bkgs.slice(0,2).forEach(b=>{
-      html+=`<div class="cal-event ev-${b.role} ev-${b.status}" title="${esc(b.hospital)}">${b.time||''} ${esc(b.hospital)}</div>`;
+      const mine=currentUser&&b.staffId===currentUser.id;
+      h+=`<div class="cal-ev ev-${b.role}${mine?' ev-mine':''}">${b.time||''} ${esc(b.hospital)}</div>`;
     });
-    if(bkgs.length>2) html+=`<div class="cal-more">+${bkgs.length-2} รายการ</div>`;
-    html+='</div>';
+    if(bkgs.length>2) h+=`<div class="cal-more">+${bkgs.length-2}</div>`;
+    h+='</div>';
   }
-  const remaining=(7-((firstDay+daysInMonth)%7))%7;
-  for(let d=1;d<=remaining;d++){
-    html+=`<div class="cal-day other-month"><div class="cal-day-num">${d}</div></div>`;
-  }
-  html+='</div>';
-  document.getElementById('cal-container').innerHTML=html;
+  const rem=(7-((fd+dim)%7))%7;
+  for(let d=1;d<=rem;d++) h+=`<div class="cal-day other"><div class="cal-dn">${d}</div></div>`;
+  h+='</div>';
+  document.getElementById('cal-container').innerHTML=h;
 }
 
 function renderWeek(){
-  const today=new Date();
-  const dow=calDate.getDay();
-  const weekStart=new Date(calDate);
-  weekStart.setDate(calDate.getDate()-dow);
-  const days=[];
-  for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(weekStart.getDate()+i);days.push(d);}
-  const thDays=['อา','จ','อ','พ','พฤ','ศ','ส'];
-  const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  const startLabel=days[0].getDate()+' '+thMonths[days[0].getMonth()];
-  const endLabel=days[6].getDate()+' '+thMonths[days[6].getMonth()]+' '+(days[6].getFullYear()+543);
-  document.getElementById('cal-label').textContent=startLabel+' — '+endLabel;
-  const hours=[];for(let h=7;h<=20;h++)hours.push(h);
-  let html='<div class="week-header"><div></div>';
+  const today=new Date(),dow=calDate.getDay();
+  const ws=new Date(calDate);ws.setDate(calDate.getDate()-dow);
+  const days=[];for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);days.push(d);}
+  const thD=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  document.getElementById('cal-label').textContent=days[0].getDate()+' '+thM[days[0].getMonth()]+' — '+days[6].getDate()+' '+thM[days[6].getMonth()]+' '+(days[6].getFullYear()+543);
+  const hours=[];for(let h=7;h<=21;h++)hours.push(h);
+  let html='<div class="wk-header"><div></div>';
   days.forEach(d=>{
-    const isToday=d.toDateString()===today.toDateString();
-    html+=`<div class="week-day-hd${isToday?' today-hd':''}">
-      ${thDays[d.getDay()]}<br>
-      <span class="week-day-num-hd${isToday?' today-num':''}">${d.getDate()}</span>
-    </div>`;
+    const isT=d.toDateString()===today.toDateString();
+    html+=`<div class="wk-dh${isT?' t-hd':''}">${thD[d.getDay()]}<br><span class="wk-dn${isT?' t-dn':''}">${d.getDate()}</span></div>`;
   });
-  html+='</div><div class="week-grid"><div class="week-time-col">';
-  hours.forEach(h=>{html+=`<div class="week-time-slot">${h}:00</div>`;});
+  html+='</div><div class="wk-grid"><div class="wk-tc">';
+  hours.forEach(h=>{html+=`<div class="wk-ts">${h}:00</div>`;});
   html+='</div>';
   days.forEach(d=>{
-    const dateStr=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const isToday=d.toDateString()===today.toDateString();
-    const bkgs=getBookingsForDate(dateStr);
-    html+=`<div class="week-day-col${isToday?' today-col':''}" onclick="openModal('${dateStr}')">`;
-    hours.forEach(()=>{html+=`<div class="week-hour-line"></div>`;});
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const isT=d.toDateString()===today.toDateString();
+    const bkgs=getBkgForDate(ds);
+    html+=`<div class="wk-dc${isT?' t-dc':''}" onclick="openModal('${ds}')">`;
+    hours.forEach(()=>{html+=`<div class="wk-hl"></div>`;});
     bkgs.forEach(b=>{
       if(!b.time)return;
       const [hh,mm]=b.time.split(':').map(Number);
-      if(hh<7||hh>20)return;
+      if(hh<7||hh>21)return;
       const top=((hh-7)*48)+(mm/60*48);
-      html+=`<div class="week-event ev-${b.role}" style="top:${top}px;height:44px;" title="${esc(b.hospital)}" onclick="event.stopPropagation()">
-        ${b.time} ${esc(b.hospital)}
-      </div>`;
+      const mine=currentUser&&b.staffId===currentUser.id;
+      html+=`<div class="wk-ev ev-${b.role}${mine?' ev-mine':''}" style="top:${top}px;height:44px;" onclick="event.stopPropagation()">${b.time} ${esc(b.hospital)}</div>`;
     });
     html+='</div>';
   });
@@ -500,37 +852,23 @@ function renderWeek(){
   document.getElementById('cal-container').innerHTML=html;
 }
 
-/* ---- MODAL ---- */
-function openModal(dateStr){
-  if(dateStr){
-    document.getElementById('f-date').value=dateStr;
-    document.getElementById('modal-title-text').textContent='จองนัดหมาย — '+formatDateTH(dateStr);
-  } else {
-    document.getElementById('f-date').valueAsDate=new Date();
-    document.getElementById('modal-title-text').textContent='จองนัดหมาย';
-  }
+/* ===== MODAL ===== */
+function openModal(ds){
+  document.getElementById('f-date').value=ds||'';
+  if(!ds) document.getElementById('f-date').valueAsDate=new Date();
+  document.getElementById('modal-title').textContent='จองนัดหมาย'+(ds?' — '+fmtDateTH(ds):'');
   document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('f-hospital').focus();
+  setTimeout(()=>document.getElementById('f-hospital').focus(),100);
 }
-function closeModal(){
-  document.getElementById('modal-overlay').classList.remove('open');
-  clearForm();
-}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');clearForm();}
 function closeModalOutside(e){if(e.target.id==='modal-overlay')closeModal();}
-
-function formatDateTH(dateStr){
-  const d=new Date(dateStr+'T00:00:00');
-  const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  return d.getDate()+' '+thMonths[d.getMonth()]+' '+(d.getFullYear()+543);
+function fmtDateTH(ds){
+  const d=new Date(ds+'T00:00:00');
+  const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return d.getDate()+' '+thM[d.getMonth()]+' '+(d.getFullYear()+543);
 }
 
-/* ---- BOOKING ---- */
-function selectRole(r){
-  currentRole=r;
-  document.getElementById('role-ps').className='role-card'+(r==='ps'?' selected-ps':'');
-  document.getElementById('role-sales').className='role-card'+(r==='sales'?' selected-sales':'');
-}
-
+/* ===== BOOKING ===== */
 function submitBooking(){
   const hospital=document.getElementById('f-hospital').value.trim();
   const contact=document.getElementById('f-contact').value.trim();
@@ -539,95 +877,183 @@ function submitBooking(){
   if(!hospital||!contact||!date||!time){showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ','error');return;}
   const btn=document.getElementById('submit-btn');
   btn.disabled=true;btn.textContent='กำลังบันทึก...';
-  const booking={
-    role:currentRole,hospital,contact,
+  bookingsRef.push({
+    role:currentUser.dept,dept:currentUser.dept,
+    staffId:currentUser.id,staff:currentUser.name,
+    hospital,contact,
     phone:document.getElementById('f-phone').value.trim(),
-    staff:document.getElementById('f-staff').value.trim(),
     date,time,
     product:document.getElementById('f-product').value,
     note:document.getElementById('f-note').value.trim(),
     status:'pending',createdAt:Date.now()
-  };
-  bookingsRef.push(booking).then(()=>{
-    showToast('บันทึกสำเร็จ! อัปเดต Real-time แล้ว ✓','success');
+  }).then(()=>{
+    showToast('บันทึกสำเร็จ! ✓','success');
     closeModal();btn.disabled=false;btn.textContent='บันทึกการจอง';
-  }).catch(err=>{
-    showToast('เกิดข้อผิดพลาด: '+err.message,'error');
-    btn.disabled=false;btn.textContent='บันทึกการจอง';
-  });
+  }).catch(e=>{showToast('เกิดข้อผิดพลาด','error');btn.disabled=false;btn.textContent='บันทึกการจอง';});
 }
-
 function clearForm(){
-  ['f-hospital','f-contact','f-phone','f-staff','f-note'].forEach(id=>document.getElementById(id).value='');
+  ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-time').value='09:00';
   document.getElementById('f-product').value='';
-  selectRole('ps');
 }
 
-/* ---- LIST ---- */
+/* ===== LIST ===== */
+const scMap={pending:'pending',active:'active',done:'done',cancel:'cancel'};
+const stLabel={pending:'รอดำเนินการ',active:'กำลังดำเนินการ',done:'เสร็จสิ้น',cancel:'ยกเลิก'};
+
 function renderList(){
-  const list=Object.entries(allBookings).map(([id,b])=>({id,...b}))
-    .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-  let filtered=list;
-  if(currentFilter==='ps') filtered=list.filter(b=>b.role==='ps');
-  else if(currentFilter==='sales') filtered=list.filter(b=>b.role==='sales');
-  else if(currentFilter==='pending') filtered=list.filter(b=>b.status==='pending');
-  else if(currentFilter==='done') filtered=list.filter(b=>b.status==='done');
-  document.getElementById('list-count').textContent=filtered.length+' รายการ';
-  const container=document.getElementById('booking-list');
-  if(filtered.length===0){container.innerHTML='<div class="empty">ยังไม่มีรายการนัดหมาย</div>';return;}
-  const scMap={pending:'status-pending',active:'status-active',done:'status-done',cancel:'status-cancel'};
-  container.innerHTML=filtered.map(b=>{
-    const ini=(b.contact||'??').slice(0,2);
-    const dateStr=b.date?new Date(b.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}):'';
-    return `<div class="booking-item">
-      <div class="avatar ${b.role==='ps'?'av-ps':'av-sales'}">${ini}</div>
-      <div class="b-info">
-        <div class="b-name">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'badge-ps':'badge-sales'}">${b.role==='ps'?'PS':'Sales'}</span></div>
-        <div class="b-meta">
-          <span>${esc(b.contact)}</span>
-          ${b.phone?'<span>'+esc(b.phone)+'</span>':''}
-          <span>${dateStr} ${b.time||''}</span>
-          ${b.staff?'<span>โดย '+esc(b.staff)+'</span>':''}
-          ${b.product?'<span class="product-tag">'+esc(b.product)+'</span>':''}
-        </div>
-        ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
+  const list=Object.entries(allBookings).map(([id,b])=>({id,...b})).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  let f=list;
+  if(currentFilter==='mine') f=list.filter(b=>currentUser&&b.staffId===currentUser.id);
+  else if(currentFilter==='ps') f=list.filter(b=>b.role==='ps');
+  else if(currentFilter==='sales') f=list.filter(b=>b.role==='sales');
+  else if(currentFilter==='pending') f=list.filter(b=>b.status==='pending');
+  else if(currentFilter==='done') f=list.filter(b=>b.status==='done');
+  document.getElementById('list-count').textContent=f.length+' รายการ';
+  const c=document.getElementById('booking-list');
+  if(!f.length){c.innerHTML='<div class="empty">ไม่พบรายการนัดหมาย</div>';return;}
+  c.innerHTML=f.map(b=>bkgRow(b,false)).join('');
+}
+
+function renderAdminBookings(){
+  const list=Object.entries(allBookings).map(([id,b])=>({id,...b})).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  let f=list;
+  if(adminFilter==='ps') f=list.filter(b=>b.role==='ps');
+  else if(adminFilter==='sales') f=list.filter(b=>b.role==='sales');
+  else if(adminFilter==='pending') f=list.filter(b=>b.status==='pending');
+  else if(adminFilter==='done') f=list.filter(b=>b.status==='done');
+  document.getElementById('a-list-count').textContent=f.length+' รายการ';
+  const c=document.getElementById('admin-booking-list');
+  if(!f.length){c.innerHTML='<div class="empty">ไม่พบรายการนัดหมาย</div>';return;}
+  c.innerHTML=f.map(b=>bkgRow(b,true)).join('');
+}
+
+function bkgRow(b,isAdmin){
+  const ini=(b.contact||'??').slice(0,2);
+  const ds=b.date?new Date(b.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}):'';
+  const mine=currentUser&&b.staffId===currentUser.id;
+  return `<div class="b-item${mine&&!isAdmin?' is-mine':''}">
+    <div class="av ${b.role==='ps'?'ps':'sales'}">${ini}</div>
+    <div class="b-info">
+      <div class="b-name">${esc(b.hospital)}
+        <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>
+        ${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}
+        ${isAdmin?'<span class="badge bg-admin">Admin</span>':''}
       </div>
-      <select class="status-select ${scMap[b.status]||''}" onchange="changeStatus('${b.id}',this)">
-        <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
-        <option value="active" ${b.status==='active'?'selected':''}>กำลังดำเนินการ</option>
-        <option value="done" ${b.status==='done'?'selected':''}>เสร็จสิ้น</option>
-        <option value="cancel" ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
-      </select>
-      <button class="delete-btn" onclick="deleteBooking('${b.id}')">&#10005;</button>
-    </div>`;
-  }).join('');
+      <div class="b-meta">
+        <span>${esc(b.contact)}</span>
+        ${b.phone?'<span>'+esc(b.phone)+'</span>':''}
+        <span>${ds} ${b.time||''}</span>
+        ${b.staff?'<span>โดย '+esc(b.staff)+'</span>':''}
+        ${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}
+      </div>
+      ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
+    </div>
+    <select class="sts ${scMap[b.status]||''}" onchange="changeStatus('${b.id}',this)">
+      <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
+      <option value="active" ${b.status==='active'?'selected':''}>กำลังดำเนินการ</option>
+      <option value="done" ${b.status==='done'?'selected':''}>เสร็จสิ้น</option>
+      <option value="cancel" ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
+    </select>
+    ${isAdmin?`<button class="del-btn" style="color:var(--purple);border-color:var(--purple-light);" onclick="openEdit('${b.id}')">&#9998;</button>`:''}
+    <button class="del-btn" onclick="deleteBooking('${b.id}')">&#10005;</button>
+  </div>`;
 }
 
 function changeStatus(id,sel){
-  const scMap={pending:'status-pending',active:'status-active',done:'status-done',cancel:'status-cancel'};
-  sel.className='status-select '+(scMap[sel.value]||'');
+  sel.className='sts '+(scMap[sel.value]||'');
   bookingsRef.child(id).update({status:sel.value}).then(()=>showToast('อัปเดตสถานะแล้ว','success'));
 }
 function deleteBooking(id){
   if(!confirm('ยืนยันลบรายการนี้?'))return;
   bookingsRef.child(id).remove().then(()=>showToast('ลบรายการแล้ว'));
 }
-function setFilter(el,filter){
-  currentFilter=filter;
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-  renderList();
+function setFilter(el,f){currentFilter=f;document.querySelectorAll('#view-dash .filter-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');renderList();}
+function setAdminFilter(el,f){adminFilter=f;document.querySelectorAll('#aview-bookings .filter-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');renderAdminBookings();}
+
+/* ===== EDIT (ADMIN) ===== */
+function openEdit(id){
+  editId=id;
+  const b=allBookings[id];if(!b)return;
+  document.getElementById('e-hospital').value=b.hospital||'';
+  document.getElementById('e-contact').value=b.contact||'';
+  document.getElementById('e-phone').value=b.phone||'';
+  document.getElementById('e-date').value=b.date||'';
+  document.getElementById('e-time').value=b.time||'';
+  document.getElementById('e-status').value=b.status||'pending';
+  document.getElementById('e-note').value=b.note||'';
+  document.getElementById('edit-overlay').classList.add('open');
 }
+function closeEdit(){document.getElementById('edit-overlay').classList.remove('open');editId=null;}
+function saveEdit(){
+  if(!editId)return;
+  bookingsRef.child(editId).update({
+    hospital:document.getElementById('e-hospital').value.trim(),
+    contact:document.getElementById('e-contact').value.trim(),
+    phone:document.getElementById('e-phone').value.trim(),
+    date:document.getElementById('e-date').value,
+    time:document.getElementById('e-time').value,
+    status:document.getElementById('e-status').value,
+    note:document.getElementById('e-note').value.trim(),
+  }).then(()=>{showToast('แก้ไขแล้ว ✓','success');closeEdit();})
+  .catch(()=>showToast('เกิดข้อผิดพลาด','error'));
+}
+
+/* ===== REPORT ===== */
+function renderReport(){
+  const list=Object.values(allBookings);
+  const c={pending:0,active:0,done:0,cancel:0};
+  list.forEach(b=>{if(c[b.status]!==undefined)c[b.status]++;});
+  document.getElementById('r-total').textContent=list.length;
+  document.getElementById('r-ps').textContent=list.filter(b=>b.role==='ps').length;
+  document.getElementById('r-sales').textContent=list.filter(b=>b.role==='sales').length;
+  document.getElementById('r-pend').textContent=c.pending;
+  document.getElementById('r-act').textContent=c.active;
+  document.getElementById('r-done').textContent=c.done;
+  // Per person
+  const byPerson={};
+  list.forEach(b=>{
+    const k=b.staff||'ไม่ระบุ';
+    if(!byPerson[k]) byPerson[k]={name:k,dept:b.role,total:0,pending:0,done:0};
+    byPerson[k].total++;
+    if(b.status==='pending') byPerson[k].pending++;
+    if(b.status==='done') byPerson[k].done++;
+  });
+  const persons=Object.values(byPerson).sort((a,b)=>b.total-a.total);
+  const el=document.getElementById('per-person-report');
+  if(!persons.length){el.innerHTML='<div class="empty">ยังไม่มีข้อมูล</div>';return;}
+  el.innerHTML=`<table style="width:100%;border-collapse:collapse;">
+    <thead><tr style="border-bottom:1px solid var(--gray-200);">
+      <th style="text-align:left;padding:8px 6px;font-size:12px;color:var(--gray-400);font-weight:500;">ชื่อ</th>
+      <th style="text-align:left;padding:8px 6px;font-size:12px;color:var(--gray-400);font-weight:500;">แผนก</th>
+      <th style="text-align:center;padding:8px 6px;font-size:12px;color:var(--gray-400);font-weight:500;">ทั้งหมด</th>
+      <th style="text-align:center;padding:8px 6px;font-size:12px;color:var(--gray-400);font-weight:500;">รอ</th>
+      <th style="text-align:center;padding:8px 6px;font-size:12px;color:var(--gray-400);font-weight:500;">เสร็จ</th>
+    </tr></thead>
+    <tbody>${persons.map(p=>`
+      <tr style="border-bottom:1px solid var(--gray-100);">
+        <td style="padding:8px 6px;font-size:13px;font-weight:500;">${esc(p.name)}</td>
+        <td style="padding:8px 6px;"><span class="badge ${p.dept==='ps'?'bg-ps':'bg-sales'}">${p.dept==='ps'?'PS':'Sales'}</span></td>
+        <td style="text-align:center;padding:8px 6px;font-size:13px;font-weight:600;">${p.total}</td>
+        <td style="text-align:center;padding:8px 6px;font-size:13px;color:#b45309;">${p.pending}</td>
+        <td style="text-align:center;padding:8px 6px;font-size:13px;color:var(--primary);">${p.done}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+}
+
+/* ===== UTILS ===== */
 function showToast(msg,type=''){
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast show '+type;
   setTimeout(()=>{t.className='toast';},3000);
 }
-function esc(s){
-  if(!s)return'';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// RESTORE SESSION
+const savedUser=sessionStorage.getItem('pes_user');
+const savedAdmin=sessionStorage.getItem('pes_admin');
+if(savedAdmin==='1'){startAdminApp();}
+else if(savedUser){try{currentUser=JSON.parse(savedUser);startUserApp();}catch(e){sessionStorage.removeItem('pes_user');}}
 </script>
 </body>
 </html>
