@@ -2630,23 +2630,10 @@ addNotification = function(type, booking, extra){
     newDate:  extra?.newDate ? fmt(extra.newDate) : undefined,
     // message สำเร็จรูปสำหรับใช้ใน n8n ได้เลย
     message: type==='cancel'
-      ? `❌ ยกเลิกนัดหมาย
-Sales: ${booking.staff||'—'}
-โรงพยาบาล: ${booking.hospital||'—'}
-วันที่: ${fmt(booking.date)}
-ผู้ติดต่อ: ${booking.contact||'—'}${booking.product?'
-สินค้า: '+booking.product:''}`
+      ? `❌ ยกเลิกนัดหมาย\nSales: ${booking.staff||'—'}\nโรงพยาบาล: ${booking.hospital||'—'}\nวันที่: ${fmt(booking.date)}\nผู้ติดต่อ: ${booking.contact||'—'}${booking.product?'\nสินค้า: '+booking.product:''}`
       : type==='postpone'
-      ? `📅 เลื่อนนัดหมาย
-Sales: ${booking.staff||'—'}
-โรงพยาบาล: ${booking.hospital||'—'}
-จากวันที่: ${extra?.oldDate?fmt(extra.oldDate):'—'}
-เป็นวันที่: ${extra?.newDate?fmt(extra.newDate):'—'}
-ผู้ติดต่อ: ${booking.contact||'—'}`
-      : `🗑️ ลบนัดหมาย
-Sales: ${booking.staff||'—'}
-โรงพยาบาล: ${booking.hospital||'—'}
-วันที่: ${fmt(booking.date)}`
+      ? `📅 เลื่อนนัดหมาย\nSales: ${booking.staff||'—'}\nโรงพยาบาล: ${booking.hospital||'—'}\nจากวันที่: ${extra?.oldDate?fmt(extra.oldDate):'—'}\nเป็นวันที่: ${extra?.newDate?fmt(extra.newDate):'—'}\nผู้ติดต่อ: ${booking.contact||'—'}`
+      : `🗑️ ลบนัดหมาย\nSales: ${booking.staff||'—'}\nโรงพยาบาล: ${booking.hospital||'—'}\nวันที่: ${fmt(booking.date)}`
   };
   callN8nWebhook(payload);
 };
