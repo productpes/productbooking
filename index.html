@@ -6,264 +6,185 @@
 <title>Prapatsorn Engineering — ระบบจองนัดหมาย</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --primary: #1a6b3c;
-    --primary-dark: #124d2b;
-    --primary-light: #e8f5ee;
-    --primary-mid: #2d9658;
-    --accent: #0d4f2c;
-    --navy: #1a3a5c;
-    --green2: #27ae60;
-    --green3: #6fcf97;
-    --white: #ffffff;
-    --gray-50: #f7faf8;
-    --gray-100: #eef3f0;
-    --gray-200: #d6e4db;
-    --gray-400: #8aab97;
-    --gray-600: #4a7060;
-    --gray-800: #1f3328;
-    --gray-900: #0f1f18;
-    --amber: #b45309;
-    --amber-light: #fef3c7;
-    --red: #be123c;
-    --red-light: #fee2e2;
-    --blue: #1e5fa8;
-    --blue-light: #dbeafe;
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'IBM Plex Sans Thai', sans-serif;
-    background: var(--gray-50);
-    color: var(--gray-800);
-    font-size: 14px;
-    min-height: 100vh;
-  }
+:root{
+  --primary:#1a6b3c;--primary-dark:#124d2b;--primary-light:#e8f5ee;--primary-mid:#2d9658;
+  --navy:#1a3a5c;--white:#fff;--gray-50:#f7faf8;--gray-100:#eef3f0;--gray-200:#d6e4db;
+  --gray-400:#8aab97;--gray-600:#4a7060;--gray-800:#1f3328;--gray-900:#0f1f18;
+  --amber:#b45309;--amber-light:#fef3c7;--red:#be123c;--red-light:#fee2e2;
+  --blue:#1e5fa8;--blue-light:#dbeafe;--radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color:var(--gray-800);font-size:14px;min-height:100vh;}
 
-  /* TOPBAR */
-  .topbar {
-    background: var(--white);
-    border-bottom: 2px solid var(--primary);
-    padding: 0 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 62px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .logo-area { display: flex; align-items: center; gap: 12px; }
-  .logo-img { height: 38px; width: auto; object-fit: contain; }
-  .logo-divider { width: 1px; height: 28px; background: var(--gray-200); }
-  .logo-text-area {}
-  .logo-title { font-size: 14px; font-weight: 600; color: var(--primary-dark); }
-  .logo-sub { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+/* TOPBAR */
+.topbar{background:var(--white);border-bottom:2px solid var(--primary);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;}
+.logo-area{display:flex;align-items:center;gap:10px;}
+.logo-img{height:36px;width:auto;object-fit:contain;}
+.logo-divider{width:1px;height:26px;background:var(--gray-200);}
+.logo-title{font-size:13px;font-weight:600;color:var(--primary-dark);}
+.logo-sub{font-size:11px;color:var(--gray-400);}
+.nav{display:flex;gap:2px;}
+.nav-btn{padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;font-weight:500;transition:all .15s;}
+.nav-btn:hover{background:var(--primary-light);color:var(--primary);}
+.nav-btn.active{background:var(--primary);color:var(--white);}
+.realtime-dot{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--primary);}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--primary-mid);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-  .nav { display: flex; gap: 2px; }
-  .nav-btn {
-    padding: 7px 18px; border-radius: var(--radius-sm); font-size: 13px;
-    cursor: pointer; border: none; background: transparent;
-    color: var(--gray-600); font-family: inherit; font-weight: 500;
-    transition: all 0.15s;
-  }
-  .nav-btn:hover { background: var(--primary-light); color: var(--primary); }
-  .nav-btn.active { background: var(--primary); color: var(--white); }
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 60%,var(--primary-mid) 100%);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;color:var(--white);}
+.hero-title{font-size:16px;font-weight:600;}
+.hero-sub{font-size:12px;opacity:.8;margin-top:2px;}
+.hero-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;}
 
-  .realtime-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--primary); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary-mid); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+/* LAYOUT */
+.main{max-width:960px;margin:0 auto;padding:20px 16px;}
+.view{display:none;}
+.view.active{display:block;}
 
-  /* HERO BANNER */
-  .hero {
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-mid) 100%);
-    padding: 20px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--white);
-  }
-  .hero-left {}
-  .hero-title { font-size: 18px; font-weight: 600; margin-bottom: 2px; }
-  .hero-sub { font-size: 13px; opacity: 0.8; }
-  .hero-badge {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 12px;
-    font-weight: 500;
-  }
+/* CARD */
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.card-title::before{content:'';display:inline-block;width:3px;height:13px;background:var(--primary);border-radius:2px;}
 
-  /* LAYOUT */
-  .main { max-width: 920px; margin: 0 auto; padding: 24px 16px; }
-  .view { display: none; }
-  .view.active { display: block; }
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 14px;border-top:3px solid var(--gray-200);}
+.stat-card.all{border-top-color:var(--primary);}
+.stat-card.pending{border-top-color:#f59e0b;}
+.stat-card.active{border-top-color:var(--blue);}
+.stat-card.done{border-top-color:var(--primary-mid);}
+.stat-label{font-size:11px;color:var(--gray-400);margin-bottom:3px;}
+.stat-val{font-size:24px;font-weight:600;color:var(--gray-900);}
+.stat-card.pending .stat-val{color:#b45309;}
+.stat-card.active .stat-val{color:var(--blue);}
+.stat-card.done .stat-val{color:var(--primary);}
 
-  /* CARDS */
-  .card {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-size: 11px; font-weight: 600; color: var(--primary);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
-  }
-  .card-title::before {
-    content: ''; display: inline-block; width: 3px; height: 14px;
-    background: var(--primary); border-radius: 2px;
-  }
+/* CALENDAR VIEW TOGGLE */
+.cal-toggle{display:flex;gap:4px;background:var(--gray-100);border-radius:var(--radius-sm);padding:3px;width:fit-content;margin-bottom:14px;}
+.cal-toggle-btn{padding:5px 16px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;transition:all .15s;}
+.cal-toggle-btn.active{background:var(--white);color:var(--primary);border:0.5px solid var(--gray-200);}
 
-  /* STATS */
-  .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
-  .stat-card {
-    background: var(--white); border: 1px solid var(--gray-200);
-    border-radius: var(--radius); padding: 14px 16px;
-    border-top: 3px solid var(--gray-200);
-  }
-  .stat-card.all { border-top-color: var(--primary); }
-  .stat-card.pending { border-top-color: #f59e0b; }
-  .stat-card.active { border-top-color: var(--blue); }
-  .stat-card.done { border-top-color: var(--primary-mid); }
-  .stat-label { font-size: 11px; color: var(--gray-400); margin-bottom: 4px; }
-  .stat-val { font-size: 28px; font-weight: 600; color: var(--gray-900); }
-  .stat-card.pending .stat-val { color: #b45309; }
-  .stat-card.active .stat-val { color: var(--blue); }
-  .stat-card.done .stat-val { color: var(--primary); }
+/* MONTH CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-nav{display:flex;align-items:center;gap:8px;}
+.cal-nav-btn{width:30px;height:30px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);cursor:pointer;font-size:16px;color:var(--gray-600);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cal-nav-btn:hover{border-color:var(--primary);color:var(--primary);}
+.cal-month-label{font-size:15px;font-weight:600;color:var(--gray-900);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-day-header{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);padding:6px 0;text-transform:uppercase;}
+.cal-day{min-height:72px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:6px;cursor:pointer;transition:all .15s;background:var(--white);position:relative;vertical-align:top;}
+.cal-day:hover{border-color:var(--primary);background:var(--primary-light);}
+.cal-day.other-month{background:var(--gray-50);opacity:.5;}
+.cal-day.today{border-color:var(--primary);border-width:2px;}
+.cal-day.has-booking{background:var(--primary-light);}
+.cal-day-num{font-size:12px;font-weight:500;color:var(--gray-700);margin-bottom:3px;}
+.cal-day.today .cal-day-num{color:var(--primary);font-weight:700;}
+.cal-event{font-size:10px;padding:1px 5px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.cal-event.ev-ps{background:var(--primary-light);color:var(--primary-dark);}
+.cal-event.ev-sales{background:var(--blue-light);color:var(--navy);}
+.cal-event.ev-pending{border-left:2px solid #f59e0b;}
+.cal-event.ev-done{border-left:2px solid var(--primary-mid);}
+.cal-more{font-size:10px;color:var(--gray-400);padding-left:4px;}
 
-  /* ROLE SELECTOR */
-  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-  .role-card {
-    border: 2px solid var(--gray-200); border-radius: var(--radius);
-    padding: 14px 16px; cursor: pointer; transition: all 0.15s;
-    background: var(--white);
-  }
-  .role-card:hover { border-color: var(--primary-mid); }
-  .role-card.selected-ps { border-color: var(--primary); background: var(--primary-light); }
-  .role-card.selected-sales { border-color: var(--navy); background: #eef3fa; }
-  .role-icon { font-size: 22px; margin-bottom: 6px; }
-  .role-name { font-size: 14px; font-weight: 600; color: var(--gray-800); }
-  .role-card.selected-ps .role-name { color: var(--primary-dark); }
-  .role-card.selected-sales .role-name { color: var(--navy); }
-  .role-desc { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+/* WEEK CALENDAR */
+.week-header{display:grid;grid-template-columns:60px repeat(7,1fr);gap:4px;margin-bottom:4px;}
+.week-day-hd{text-align:center;font-size:11px;font-weight:600;color:var(--gray-400);padding:4px 0;}
+.week-day-hd.today-hd{color:var(--primary);}
+.week-day-num-hd{font-size:18px;font-weight:600;color:var(--gray-800);display:block;margin-top:2px;}
+.week-day-num-hd.today-num{color:var(--white);background:var(--primary);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;margin:2px auto 0;}
+.week-grid{display:grid;grid-template-columns:60px repeat(7,1fr);gap:4px;}
+.week-time-col{display:flex;flex-direction:column;}
+.week-time-slot{height:48px;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:8px;padding-top:2px;font-size:10px;color:var(--gray-400);}
+.week-day-col{border-left:1px solid var(--gray-200);position:relative;min-height:576px;}
+.week-day-col.today-col{background:rgba(26,107,60,.03);}
+.week-hour-line{height:48px;border-bottom:1px solid var(--gray-100);}
+.week-event{position:absolute;left:2px;right:2px;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:500;cursor:pointer;overflow:hidden;z-index:10;}
+.week-event.ev-ps{background:var(--primary-light);color:var(--primary-dark);border-left:3px solid var(--primary);}
+.week-event.ev-sales{background:var(--blue-light);color:var(--navy);border-left:3px solid var(--blue);}
 
-  /* FORM */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-group.full { grid-column: 1 / -1; }
-  label { font-size: 12px; font-weight: 500; color: var(--gray-600); }
-  input, select, textarea {
-    width: 100%; padding: 8px 11px;
-    border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
-    font-size: 13px; font-family: inherit;
-    color: var(--gray-800); background: var(--white);
-    outline: none; transition: border-color 0.15s;
-  }
-  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,107,60,0.08); }
-  textarea { height: 72px; resize: none; }
+/* MODAL OVERLAY */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:var(--radius);padding:24px;width:100%;max-width:480px;margin:16px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{width:28px;height:28px;border:none;background:var(--gray-100);border-radius:var(--radius-sm);cursor:pointer;font-size:16px;color:var(--gray-600);display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:var(--red-light);color:var(--red);}
 
-  .submit-btn {
-    width: 100%; margin-top: 16px; padding: 12px;
-    background: var(--primary); color: white; border: none;
-    border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
-    font-family: inherit; cursor: pointer; transition: background 0.15s;
-    letter-spacing: 0.02em;
-  }
-  .submit-btn:hover { background: var(--primary-dark); }
-  .submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; }
+/* ROLE SELECTOR */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.role-card{border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;transition:all .15s;background:var(--white);}
+.role-card.selected-ps{border-color:var(--primary);background:var(--primary-light);}
+.role-card.selected-sales{border-color:var(--navy);background:#eef3fa;}
+.role-icon{font-size:18px;margin-bottom:4px;}
+.role-name{font-size:13px;font-weight:600;color:var(--gray-800);}
+.role-card.selected-ps .role-name{color:var(--primary-dark);}
+.role-card.selected-sales .role-name{color:var(--navy);}
+.role-desc{font-size:11px;color:var(--gray-400);margin-top:1px;}
 
-  /* FILTER */
-  .filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
-  .filter-label { font-size: 12px; color: var(--gray-400); }
-  .filter-chip {
-    padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
-    border: 1px solid var(--gray-200); background: var(--white);
-    color: var(--gray-600); transition: all 0.15s; font-family: inherit;
-  }
-  .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
-  .filter-chip.on { background: var(--primary); color: white; border-color: var(--primary); }
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:12px;font-weight:500;color:var(--gray-600);}
+input,select,textarea{width:100%;padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;color:var(--gray-800);background:var(--white);outline:none;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,107,60,.08);}
+textarea{height:60px;resize:none;}
+.submit-btn{width:100%;margin-top:14px;padding:10px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s;}
+.submit-btn:hover{background:var(--primary-dark);}
+.submit-btn:disabled{background:var(--gray-400);cursor:not-allowed;}
 
-  /* BOOKING LIST */
-  .booking-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 0; border-bottom: 1px solid var(--gray-100);
-  }
-  .booking-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; flex-shrink: 0;
-  }
-  .av-ps { background: var(--primary-light); color: var(--primary-dark); }
-  .av-sales { background: #dbeafe; color: var(--navy); }
-  .b-info { flex: 1; min-width: 0; }
-  .b-name { font-size: 13px; font-weight: 600; color: var(--gray-900); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .b-meta { font-size: 12px; color: var(--gray-400); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; }
+/* FILTER + LIST */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.filter-chip{padding:4px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-600);font-family:inherit;transition:all .15s;}
+.filter-chip:hover{border-color:var(--primary);color:var(--primary);}
+.filter-chip.on{background:var(--primary);color:white;border-color:var(--primary);}
+.booking-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100);}
+.booking-item:last-child{border-bottom:none;padding-bottom:0;}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.av-ps{background:var(--primary-light);color:var(--primary-dark);}
+.av-sales{background:#dbeafe;color:var(--navy);}
+.b-info{flex:1;min-width:0;}
+.b-name{font-size:13px;font-weight:600;color:var(--gray-900);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.b-meta{font-size:11px;color:var(--gray-400);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
+.badge-ps{background:var(--primary-light);color:var(--primary-dark);}
+.badge-sales{background:#dbeafe;color:var(--navy);}
+.product-tag{font-size:10px;padding:1px 6px;border-radius:20px;background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-200);}
+.status-select{padding:3px 7px;border-radius:20px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid transparent;outline:none;flex-shrink:0;}
+.status-pending{background:#fef3c7;color:#b45309;border-color:#fbbf24;}
+.status-active{background:#dbeafe;color:#1e40af;border-color:#93c5fd;}
+.status-done{background:var(--primary-light);color:var(--primary-dark);border-color:#6fcf97;}
+.status-cancel{background:#fee2e2;color:#be123c;border-color:#fca5a5;}
+.delete-btn{width:26px;height:26px;border-radius:var(--radius-sm);border:1px solid var(--gray-200);background:var(--white);color:var(--gray-400);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.delete-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-light);}
 
-  .badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
-  .badge-ps { background: var(--primary-light); color: var(--primary-dark); }
-  .badge-sales { background: #dbeafe; color: var(--navy); }
-  .product-tag { font-size: 11px; padding: 1px 7px; border-radius: 20px; background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
+.empty{text-align:center;padding:32px;color:var(--gray-400);}
+.loading{text-align:center;padding:24px;color:var(--gray-400);font-size:13px;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.section-count{font-size:12px;color:var(--gray-400);background:var(--gray-100);padding:2px 8px;border-radius:20px;}
 
-  .status-select {
-    padding: 4px 8px; border-radius: 20px; font-size: 11px;
-    font-weight: 600; font-family: inherit; cursor: pointer;
-    border: 1px solid transparent; outline: none; flex-shrink: 0;
-  }
-  .status-pending { background: #fef3c7; color: #b45309; border-color: #fbbf24; }
-  .status-active { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
-  .status-done { background: var(--primary-light); color: var(--primary-dark); border-color: var(--green3); }
-  .status-cancel { background: #fee2e2; color: #be123c; border-color: #fca5a5; }
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;}
+.toast.success{background:var(--primary);}
+.toast.error{background:var(--red);}
 
-  .delete-btn {
-    width: 28px; height: 28px; border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200); background: var(--white);
-    color: var(--gray-400); cursor: pointer; font-size: 13px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s; flex-shrink: 0;
-  }
-  .delete-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+.footer{text-align:center;padding:16px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-200);}
 
-  .empty { text-align: center; padding: 40px; color: var(--gray-400); }
-  .empty-icon { font-size: 36px; margin-bottom: 10px; }
-  .loading { text-align: center; padding: 30px; color: var(--gray-400); font-size: 13px; }
-
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .section-count { font-size: 12px; color: var(--gray-400); background: var(--gray-100); padding: 2px 8px; border-radius: 20px; }
-
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: var(--gray-900); color: white; padding: 10px 20px;
-    border-radius: 20px; font-size: 13px; font-weight: 500;
-    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; }
-  .toast.success { background: var(--primary); }
-  .toast.error { background: var(--red); }
-
-  /* FOOTER */
-  .footer {
-    text-align: center; padding: 20px; font-size: 11px;
-    color: var(--gray-400); border-top: 1px solid var(--gray-200);
-    margin-top: 8px;
-  }
-
-  @media (max-width: 600px) {
-    .stat-grid { grid-template-columns: repeat(2,1fr); }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-group.full { grid-column: 1; }
-    .role-grid { grid-template-columns: 1fr; }
-    .topbar { padding: 0 14px; }
-    .hero { padding: 16px 14px; flex-direction: column; align-items: flex-start; gap: 10px; }
-    .main { padding: 16px 12px; }
-  }
+@media(max-width:640px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  .role-grid{grid-template-columns:1fr 1fr;}
+  .topbar{padding:0 12px;}
+  .hero{padding:14px 12px;flex-direction:column;align-items:flex-start;gap:8px;}
+  .main{padding:14px 10px;}
+  .cal-day{min-height:52px;}
+  .cal-event{display:none;}
+  .cal-more{display:block!important;}
+  .week-header,.week-grid{grid-template-columns:40px repeat(7,1fr);}
+}
 </style>
 </head>
 <body>
@@ -271,26 +192,24 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo-area">
-    <img class="logo-img" src="data:image/jpeg;base64,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o45BM7yzEefoWdt/vHdf/wAWNmnDfGsryWz5LcI6uC8WdwNHV0lQYnt04OAdro4Ag9CCPqcOziD2CKVUkne5HJF+By9iwPH7PnF4zSnjqJb1dmtjqJ5pi8NYNaYxvZo01o6fpC/eJGCY7xBsUdnySmmlp4Z21ELoZnRSRyAEczXN6jo5w/n9l06JzyupXyOSNrWOIybhpZMhya1ZJcbhdzc7QB+z5Y6hrRAemyG8unEkbPNvf26LrrnRtuFrqbfLLNGyphdC6SJ3K9ocCCWn0PXoVkooc5O13sFFK9jQcP8AD7Hg2MwY7jtM+Chhe94D5C97nOcSS5x6nv8AyAA9Fi1OBY9PxFps+ENRFfYKY0vmRTFrJY9Eaezs783f4HsF1KJzyu3fccqslY5e6YHj1x4hWvO6iGo/bVsgdBTyNmIZyEPBDmdj0kd1+Vscuxqx5bYp7HkVuhr6CbXNFJsEEdnNcCC1w9HAghbdE55YzsOSOcbkOWrw2cLqG4Q1UlvuFfFC/nipKutc+Bp3v8o1zD3DiQfXalDI7BZcjsc9jvltp663TtDZKeVv09OxGuoI7gjRHotmiylVnNpyexEaUIqyRC9F4ZOFFNcxWG23GeMO5hSy1zzEPjppxH3cd+qlK645Z7jiVTistEyKz1FG6hdTU/7prYXM5OVvLrlAHQa7LbIkq1SdnJt2EaUId1WNDjWI2TH8Lhw+ip3S2eKCSDyah3mc8by4ua4nuDzEfZabEeF2LYvhl2w+2i4Psl1ZIyopqirdJyiRnI8Mcfqbtvse/XuST26KOpLOdyeSPkaPBcWtWGYvSY5ZGzNoKTn8oTSF7hzPLztx79XFaO2cLcUtXEOpzu0Q1VuvFXzfifIm/czBxaXgxkEDmLQTrR317kldwidSV2777jkjZK2wREWBkEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH//Z" alt="Prapatsorn Engineering Logo">
+    <img class="logo-img" src="data:image/jpeg;base64,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o45BM7yzEefoWdt/vHdf/wAWNmnDfGsryWz5LcI6uC8WdwNHV0lQYnt04OAdro4Ag9CCPqcOziD2CKVUkne5HJF+By9iwPH7PnF4zSnjqJb1dmtjqJ5pi8NYNaYxvZo01o6fpC/eJGCY7xBsUdnySmmlp4Z21ELoZnRSRyAEczXN6jo5w/n9l06JzyupXyOSNrWOIybhpZMhya1ZJcbhdzc7QB+z5Y6hrRAemyG8unEkbPNvf26LrrnRtuFrqbfLLNGyphdC6SJ3K9ocCCWn0PXoVkooc5O13sFFK9jQcP8AD7Hg2MwY7jtM+Chhe94D5C97nOcSS5x6nv8AyAA9Fi1OBY9PxFps+ENRFfYKY0vmRTFrJY9Eaezs783f4HsF1KJzyu3fccqslY5e6YHj1x4hWvO6iGo/bVsgdBTyNmIZyEPBDmdj0kd1+Vscuxqx5bYp7HkVuhr6CbXNFJsEEdnNcCC1w9HAghbdE55YzsOSOcbkOWrw2cLqG4Q1UlvuFfFC/nipKutc+Bp3v8o1zD3DiQfXalDI7BZcjsc9jvltp663TtDZKeVv09OxGuoI7gjRHotmiylVnNpyexEaUIqyRC9F4ZOFFNcxWG23GeMO5hSy1zzEPjppxH3cd+qlK645Z7jiVTistEyKz1FG6hdTU/7prYXM5OVvLrlAHQa7LbIkq1SdnJt2EaUId1WNDjWI2TH8Lhw+ip3S2eKCSDyah3mc8by4ua4nuDzEfZabEeF2LYvhl2w+2i4Psl1ZIyopqirdJyiRnI8Mcfqbtvse/XuST26KOpLOdyeSPkaPBcWtWGYvSY5ZGzNoKTn8oTSF7hzPLztx79XFaO2cLcUtXEOpzu0Q1VuvFXzfifIm/czBxaXgxkEDmLQTrR317kldwidSV2777jkjZK2wREWBkEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQH//Z" alt="Prapatsorn">
     <div class="logo-divider"></div>
-    <div class="logo-text-area">
+    <div>
       <div class="logo-title">Prapatsorn Engineering</div>
       <div class="logo-sub">ระบบจองนัดหมายทีม Sales &amp; PS</div>
     </div>
   </div>
   <div class="nav">
-    <button class="nav-btn active" onclick="switchView('book')">+ จองนัดหมาย</button>
+    <button class="nav-btn active" onclick="switchView('cal')">&#128197; Calendar</button>
     <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
+    <button class="nav-btn" onclick="openModal(null)">+ จอง</button>
   </div>
-  <div class="realtime-dot">
-    <div class="dot"></div>
-    <span id="conn-status">เชื่อมต่อแล้ว</span>
-  </div>
+  <div class="realtime-dot"><div class="dot"></div><span id="conn-status">เชื่อมต่อ</span></div>
 </div>
 
 <!-- HERO -->
-<div class="hero" id="hero-bar">
-  <div class="hero-left">
+<div class="hero">
+  <div>
     <div class="hero-title">ระบบจองนัดหมายลูกค้า</div>
     <div class="hero-sub">เครื่องมือตรวจสมรรถภาพปอด &amp; กายภาพบำบัด</div>
   </div>
@@ -299,15 +218,75 @@
 
 <div class="main">
 
-  <!-- BOOKING FORM -->
-  <div class="view active" id="view-book">
+  <!-- CALENDAR VIEW -->
+  <div class="view active" id="view-cal">
+    <div class="stat-grid">
+      <div class="stat-card all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="s-total">—</div></div>
+      <div class="stat-card pending"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="s-pending">—</div></div>
+      <div class="stat-card active"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="s-active">—</div></div>
+      <div class="stat-card done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="s-done">—</div></div>
+    </div>
+
     <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="cal-toggle">
+          <button class="cal-toggle-btn active" id="btn-month" onclick="switchCal('month')">รายเดือน</button>
+          <button class="cal-toggle-btn" id="btn-week" onclick="switchCal('week')">รายสัปดาห์</button>
+        </div>
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="navCal(-1)">&#8249;</button>
+          <span class="cal-month-label" id="cal-label">—</span>
+          <button class="cal-nav-btn" onclick="navCal(1)">&#8250;</button>
+          <button class="cal-nav-btn" onclick="goToday()" style="font-size:11px;width:auto;padding:0 10px;">วันนี้</button>
+        </div>
+      </div>
+      <div id="cal-container"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div class="view" id="view-dash">
+    <div class="stat-grid">
+      <div class="stat-card all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="d-total">—</div></div>
+      <div class="stat-card pending"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="d-pending">—</div></div>
+      <div class="stat-card active"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="d-active">—</div></div>
+      <div class="stat-card done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="d-done">—</div></div>
+    </div>
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0;">รายการนัดหมาย</div>
+        <span class="section-count" id="list-count">0 รายการ</span>
+      </div>
+      <div class="filter-row">
+        <span style="font-size:12px;color:var(--gray-400);">กรอง:</span>
+        <button class="filter-chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
+        <button class="filter-chip" onclick="setFilter(this,'ps')">Product Specialist</button>
+        <button class="filter-chip" onclick="setFilter(this,'sales')">Sales</button>
+        <button class="filter-chip" onclick="setFilter(this,'pending')">รอดำเนินการ</button>
+        <button class="filter-chip" onclick="setFilter(this,'done')">เสร็จสิ้น</button>
+      </div>
+      <div id="booking-list"><div class="loading">กำลังโหลด...</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; ระบบจองนัดหมาย &nbsp;|&nbsp; Powered by Firebase</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-title-text">จองนัดหมาย</span>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div style="margin-bottom:12px;">
       <div class="card-title">ตำแหน่งผู้จอง</div>
       <div class="role-grid">
         <div class="role-card selected-ps" id="role-ps" onclick="selectRole('ps')">
           <div class="role-icon">&#128203;</div>
           <div class="role-name">Product Specialist</div>
-          <div class="role-desc">สาธิต &amp; ให้ความรู้เครื่องมือ</div>
+          <div class="role-desc">สาธิต &amp; ให้ความรู้</div>
         </div>
         <div class="role-card" id="role-sales" onclick="selectRole('sales')">
           <div class="role-icon">&#128200;</div>
@@ -315,102 +294,56 @@
           <div class="role-desc">นำเสนอ &amp; ปิดการขาย</div>
         </div>
       </div>
-
-      <div class="card-title">ข้อมูลการนัดหมาย</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>ชื่อโรงพยาบาล / คลินิก *</label>
-          <input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ ลาดพร้าว">
-        </div>
-        <div class="form-group">
-          <label>ชื่อผู้ติดต่อ *</label>
-          <input type="text" id="f-contact" placeholder="เช่น คุณสมชาย วงศ์ดี">
-        </div>
-        <div class="form-group">
-          <label>เบอร์โทรศัพท์</label>
-          <input type="tel" id="f-phone" placeholder="0812345678">
-        </div>
-        <div class="form-group">
-          <label>ชื่อผู้จอง (ทีม)</label>
-          <input type="text" id="f-staff" placeholder="เช่น คุณนภา">
-        </div>
-        <div class="form-group">
-          <label>วันที่นัดหมาย *</label>
-          <input type="date" id="f-date">
-        </div>
-        <div class="form-group">
-          <label>เวลา *</label>
-          <input type="time" id="f-time" value="09:00">
-        </div>
-        <div class="form-group full">
-          <label>สินค้าที่สนใจ</label>
-          <select id="f-product">
-            <option value="">-- เลือกสินค้า --</option>
-            <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
-            <option>เครื่อง Ultrasound กายภาพบำบัด</option>
-            <option>เครื่อง TENS / EMS</option>
-            <option>เครื่องเลเซอร์กายภาพบำบัด</option>
-            <option>ชุด Pulmonary Rehabilitation</option>
-            <option>Peak Flow Meter</option>
-            <option>อื่น ๆ</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label>หมายเหตุ / รายละเอียดเพิ่มเติม</label>
-          <textarea id="f-note" placeholder="เช่น ลูกค้าสนใจทดลองใช้จริง มีแพทย์เข้าร่วม 2 ท่าน..."></textarea>
-        </div>
-      </div>
-      <button class="submit-btn" id="submit-btn" onclick="submitBooking()">บันทึกการจอง</button>
     </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>ชื่อโรงพยาบาล / คลินิก *</label>
+        <input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ">
+      </div>
+      <div class="form-group">
+        <label>ชื่อผู้ติดต่อ *</label>
+        <input type="text" id="f-contact" placeholder="เช่น คุณสมชาย">
+      </div>
+      <div class="form-group">
+        <label>เบอร์โทรศัพท์</label>
+        <input type="tel" id="f-phone" placeholder="0812345678">
+      </div>
+      <div class="form-group">
+        <label>ชื่อผู้จอง</label>
+        <input type="text" id="f-staff" placeholder="เช่น คุณนภา">
+      </div>
+      <div class="form-group">
+        <label>วันที่นัดหมาย *</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="form-group">
+        <label>เวลา *</label>
+        <input type="time" id="f-time" value="09:00">
+      </div>
+      <div class="form-group full">
+        <label>สินค้าที่สนใจ</label>
+        <select id="f-product">
+          <option value="">-- เลือกสินค้า --</option>
+          <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
+          <option>เครื่อง Ultrasound กายภาพบำบัด</option>
+          <option>เครื่อง TENS / EMS</option>
+          <option>เครื่องเลเซอร์กายภาพบำบัด</option>
+          <option>ชุด Pulmonary Rehabilitation</option>
+          <option>Peak Flow Meter</option>
+          <option>อื่น ๆ</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>หมายเหตุ</label>
+        <textarea id="f-note" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
+      </div>
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="submitBooking()">บันทึกการจอง</button>
   </div>
-
-  <!-- DASHBOARD -->
-  <div class="view" id="view-dash">
-    <div class="stat-grid">
-      <div class="stat-card all">
-        <div class="stat-label">นัดทั้งหมด</div>
-        <div class="stat-val" id="s-total">—</div>
-      </div>
-      <div class="stat-card pending">
-        <div class="stat-label">รอดำเนินการ</div>
-        <div class="stat-val" id="s-pending">—</div>
-      </div>
-      <div class="stat-card active">
-        <div class="stat-label">กำลังดำเนินการ</div>
-        <div class="stat-val" id="s-active">—</div>
-      </div>
-      <div class="stat-card done">
-        <div class="stat-label">เสร็จสิ้น</div>
-        <div class="stat-val" id="s-done">—</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-header">
-        <div class="card-title" style="margin:0;">รายการนัดหมาย</div>
-        <span class="section-count" id="list-count">0 รายการ</span>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">กรอง:</span>
-        <button class="filter-chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
-        <button class="filter-chip" onclick="setFilter(this,'ps')">Product Specialist</button>
-        <button class="filter-chip" onclick="setFilter(this,'sales')">Sales</button>
-        <button class="filter-chip" onclick="setFilter(this,'pending')">รอดำเนินการ</button>
-        <button class="filter-chip" onclick="setFilter(this,'done')">เสร็จสิ้น</button>
-      </div>
-      <div id="booking-list"><div class="loading">กำลังโหลดข้อมูล...</div></div>
-    </div>
-  </div>
-
-</div>
-
-<div class="footer">
-  Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; ระบบจองนัดหมาย &nbsp;|&nbsp; Powered by Firebase
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -423,100 +356,230 @@ const firebaseConfig = {
   messagingSenderId: "000000000000",
   appId: "1:000000000000:web:placeholder"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const bookingsRef = db.ref('bookings');
 
-let currentRole = 'ps';
-let currentFilter = 'all';
-let allBookings = {};
+let currentRole='ps', currentFilter='all', allBookings={};
+let calMode='month', calDate=new Date();
 
-db.ref('.info/connected').on('value', snap => {
-  const el = document.getElementById('conn-status');
-  el.textContent = snap.val() ? 'เชื่อมต่อแล้ว' : 'ออฟไลน์';
-  el.style.color = snap.val() ? 'var(--primary)' : '#ef4444';
+db.ref('.info/connected').on('value',snap=>{
+  const el=document.getElementById('conn-status');
+  el.textContent=snap.val()?'เชื่อมต่อ':'ออฟไลน์';
+  el.style.color=snap.val()?'var(--primary)':'#ef4444';
 });
 
-function switchView(v) {
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  document.querySelectorAll('.nav-btn')[v === 'book' ? 0 : 1].classList.add('active');
-  document.getElementById('hero-bar').style.display = v === 'book' ? 'flex' : 'none';
+bookingsRef.on('value',snap=>{
+  allBookings=snap.val()||{};
+  renderStats();
+  renderCalendar();
+  renderList();
+});
+
+/* ---- VIEWS ---- */
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  const idx={cal:0,dash:1}[v];
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
 }
 
-function selectRole(r) {
-  currentRole = r;
-  document.getElementById('role-ps').className = 'role-card' + (r === 'ps' ? ' selected-ps' : '');
-  document.getElementById('role-sales').className = 'role-card' + (r === 'sales' ? ' selected-sales' : '');
+/* ---- STATS ---- */
+function renderStats(){
+  const list=Object.values(allBookings);
+  const c={pending:0,active:0,done:0,cancel:0};
+  list.forEach(b=>{if(c[b.status]!==undefined)c[b.status]++;});
+  ['s-total','d-total'].forEach(id=>document.getElementById(id).textContent=list.length);
+  ['s-pending','d-pending'].forEach(id=>document.getElementById(id).textContent=c.pending);
+  ['s-active','d-active'].forEach(id=>document.getElementById(id).textContent=c.active);
+  ['s-done','d-done'].forEach(id=>document.getElementById(id).textContent=c.done);
 }
 
-function submitBooking() {
-  const hospital = document.getElementById('f-hospital').value.trim();
-  const contact  = document.getElementById('f-contact').value.trim();
-  const date     = document.getElementById('f-date').value;
-  const time     = document.getElementById('f-time').value;
-  if (!hospital || !contact || !date || !time) {
-    showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ', 'error'); return;
+/* ---- CALENDAR ---- */
+function switchCal(mode){
+  calMode=mode;
+  document.getElementById('btn-month').classList.toggle('active',mode==='month');
+  document.getElementById('btn-week').classList.toggle('active',mode==='week');
+  renderCalendar();
+}
+function navCal(dir){
+  if(calMode==='month'){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+dir,1);}
+  else{calDate=new Date(calDate.getTime()+dir*7*86400000);}
+  renderCalendar();
+}
+function goToday(){calDate=new Date();renderCalendar();}
+
+function getBookingsForDate(dateStr){
+  return Object.entries(allBookings).filter(([,b])=>b.date===dateStr).map(([id,b])=>({id,...b}));
+}
+
+function renderCalendar(){
+  if(calMode==='month') renderMonth();
+  else renderWeek();
+}
+
+function renderMonth(){
+  const today=new Date();
+  const y=calDate.getFullYear(), m=calDate.getMonth();
+  const thMonths=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('cal-label').textContent=thMonths[m]+' '+(y+543);
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const daysInPrev=new Date(y,m,0).getDate();
+  const thDays=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  let html='<div class="cal-grid">';
+  thDays.forEach(d=>{html+=`<div class="cal-day-header">${d}</div>`;});
+  for(let i=firstDay-1;i>=0;i--){
+    const d=daysInPrev-i;
+    html+=`<div class="cal-day other-month"><div class="cal-day-num">${d}</div></div>`;
   }
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
-  const booking = {
-    role: currentRole, hospital, contact,
-    phone: document.getElementById('f-phone').value.trim(),
-    staff: document.getElementById('f-staff').value.trim(),
-    date, time,
-    product: document.getElementById('f-product').value,
-    note: document.getElementById('f-note').value.trim(),
-    status: 'pending', createdAt: Date.now()
-  };
-  bookingsRef.push(booking)
-    .then(() => {
-      showToast('บันทึกสำเร็จ! อัปเดต Real-time แล้ว ✓', 'success');
-      clearForm(); btn.disabled = false; btn.textContent = 'บันทึกการจอง';
-    })
-    .catch(err => {
-      showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
-      btn.disabled = false; btn.textContent = 'บันทึกการจอง';
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+    const bkgs=getBookingsForDate(dateStr);
+    const hasB=bkgs.length>0;
+    html+=`<div class="cal-day${isToday?' today':''}${hasB?' has-booking':''}" onclick="openModal('${dateStr}')">`;
+    html+=`<div class="cal-day-num">${d}</div>`;
+    bkgs.slice(0,2).forEach(b=>{
+      html+=`<div class="cal-event ev-${b.role} ev-${b.status}" title="${esc(b.hospital)}">${b.time||''} ${esc(b.hospital)}</div>`;
     });
+    if(bkgs.length>2) html+=`<div class="cal-more">+${bkgs.length-2} รายการ</div>`;
+    html+='</div>';
+  }
+  const remaining=(7-((firstDay+daysInMonth)%7))%7;
+  for(let d=1;d<=remaining;d++){
+    html+=`<div class="cal-day other-month"><div class="cal-day-num">${d}</div></div>`;
+  }
+  html+='</div>';
+  document.getElementById('cal-container').innerHTML=html;
 }
 
-function clearForm() {
-  ['f-hospital','f-contact','f-phone','f-staff','f-note'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-date').valueAsDate = new Date();
-  document.getElementById('f-time').value = '09:00';
-  document.getElementById('f-product').value = '';
+function renderWeek(){
+  const today=new Date();
+  const dow=calDate.getDay();
+  const weekStart=new Date(calDate);
+  weekStart.setDate(calDate.getDate()-dow);
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(weekStart.getDate()+i);days.push(d);}
+  const thDays=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const startLabel=days[0].getDate()+' '+thMonths[days[0].getMonth()];
+  const endLabel=days[6].getDate()+' '+thMonths[days[6].getMonth()]+' '+(days[6].getFullYear()+543);
+  document.getElementById('cal-label').textContent=startLabel+' — '+endLabel;
+  const hours=[];for(let h=7;h<=20;h++)hours.push(h);
+  let html='<div class="week-header"><div></div>';
+  days.forEach(d=>{
+    const isToday=d.toDateString()===today.toDateString();
+    html+=`<div class="week-day-hd${isToday?' today-hd':''}">
+      ${thDays[d.getDay()]}<br>
+      <span class="week-day-num-hd${isToday?' today-num':''}">${d.getDate()}</span>
+    </div>`;
+  });
+  html+='</div><div class="week-grid"><div class="week-time-col">';
+  hours.forEach(h=>{html+=`<div class="week-time-slot">${h}:00</div>`;});
+  html+='</div>';
+  days.forEach(d=>{
+    const dateStr=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const isToday=d.toDateString()===today.toDateString();
+    const bkgs=getBookingsForDate(dateStr);
+    html+=`<div class="week-day-col${isToday?' today-col':''}" onclick="openModal('${dateStr}')">`;
+    hours.forEach(()=>{html+=`<div class="week-hour-line"></div>`;});
+    bkgs.forEach(b=>{
+      if(!b.time)return;
+      const [hh,mm]=b.time.split(':').map(Number);
+      if(hh<7||hh>20)return;
+      const top=((hh-7)*48)+(mm/60*48);
+      html+=`<div class="week-event ev-${b.role}" style="top:${top}px;height:44px;" title="${esc(b.hospital)}" onclick="event.stopPropagation()">
+        ${b.time} ${esc(b.hospital)}
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('cal-container').innerHTML=html;
+}
+
+/* ---- MODAL ---- */
+function openModal(dateStr){
+  if(dateStr){
+    document.getElementById('f-date').value=dateStr;
+    document.getElementById('modal-title-text').textContent='จองนัดหมาย — '+formatDateTH(dateStr);
+  } else {
+    document.getElementById('f-date').valueAsDate=new Date();
+    document.getElementById('modal-title-text').textContent='จองนัดหมาย';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('f-hospital').focus();
+}
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  clearForm();
+}
+function closeModalOutside(e){if(e.target.id==='modal-overlay')closeModal();}
+
+function formatDateTH(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return d.getDate()+' '+thMonths[d.getMonth()]+' '+(d.getFullYear()+543);
+}
+
+/* ---- BOOKING ---- */
+function selectRole(r){
+  currentRole=r;
+  document.getElementById('role-ps').className='role-card'+(r==='ps'?' selected-ps':'');
+  document.getElementById('role-sales').className='role-card'+(r==='sales'?' selected-sales':'');
+}
+
+function submitBooking(){
+  const hospital=document.getElementById('f-hospital').value.trim();
+  const contact=document.getElementById('f-contact').value.trim();
+  const date=document.getElementById('f-date').value;
+  const time=document.getElementById('f-time').value;
+  if(!hospital||!contact||!date||!time){showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ','error');return;}
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.textContent='กำลังบันทึก...';
+  const booking={
+    role:currentRole,hospital,contact,
+    phone:document.getElementById('f-phone').value.trim(),
+    staff:document.getElementById('f-staff').value.trim(),
+    date,time,
+    product:document.getElementById('f-product').value,
+    note:document.getElementById('f-note').value.trim(),
+    status:'pending',createdAt:Date.now()
+  };
+  bookingsRef.push(booking).then(()=>{
+    showToast('บันทึกสำเร็จ! อัปเดต Real-time แล้ว ✓','success');
+    closeModal();btn.disabled=false;btn.textContent='บันทึกการจอง';
+  }).catch(err=>{
+    showToast('เกิดข้อผิดพลาด: '+err.message,'error');
+    btn.disabled=false;btn.textContent='บันทึกการจอง';
+  });
+}
+
+function clearForm(){
+  ['f-hospital','f-contact','f-phone','f-staff','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-time').value='09:00';
+  document.getElementById('f-product').value='';
   selectRole('ps');
 }
 
-bookingsRef.on('value', snap => { allBookings = snap.val() || {}; renderDashboard(); });
-
-function renderDashboard() {
-  const list = Object.entries(allBookings)
-    .map(([id,b]) => ({id,...b}))
-    .sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
-  let filtered = list;
-  if (currentFilter === 'ps') filtered = list.filter(b => b.role === 'ps');
-  else if (currentFilter === 'sales') filtered = list.filter(b => b.role === 'sales');
-  else if (currentFilter === 'pending') filtered = list.filter(b => b.status === 'pending');
-  else if (currentFilter === 'done') filtered = list.filter(b => b.status === 'done');
-  const counts = {pending:0, active:0, done:0, cancel:0};
-  list.forEach(b => { if (counts[b.status] !== undefined) counts[b.status]++; });
-  document.getElementById('s-total').textContent = list.length;
-  document.getElementById('s-pending').textContent = counts.pending;
-  document.getElementById('s-active').textContent = counts.active;
-  document.getElementById('s-done').textContent = counts.done;
-  document.getElementById('list-count').textContent = filtered.length + ' รายการ';
-  const container = document.getElementById('booking-list');
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">&#128203;</div><div>ยังไม่มีรายการนัดหมาย</div></div>';
-    return;
-  }
-  const scMap = {pending:'status-pending',active:'status-active',done:'status-done',cancel:'status-cancel'};
-  container.innerHTML = filtered.map(b => {
-    const ini = (b.contact||'??').slice(0,2);
-    const dateStr = b.date ? new Date(b.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}) : '';
+/* ---- LIST ---- */
+function renderList(){
+  const list=Object.entries(allBookings).map(([id,b])=>({id,...b}))
+    .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  let filtered=list;
+  if(currentFilter==='ps') filtered=list.filter(b=>b.role==='ps');
+  else if(currentFilter==='sales') filtered=list.filter(b=>b.role==='sales');
+  else if(currentFilter==='pending') filtered=list.filter(b=>b.status==='pending');
+  else if(currentFilter==='done') filtered=list.filter(b=>b.status==='done');
+  document.getElementById('list-count').textContent=filtered.length+' รายการ';
+  const container=document.getElementById('booking-list');
+  if(filtered.length===0){container.innerHTML='<div class="empty">ยังไม่มีรายการนัดหมาย</div>';return;}
+  const scMap={pending:'status-pending',active:'status-active',done:'status-done',cancel:'status-cancel'};
+  container.innerHTML=filtered.map(b=>{
+    const ini=(b.contact||'??').slice(0,2);
+    const dateStr=b.date?new Date(b.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}):'';
     return `<div class="booking-item">
       <div class="avatar ${b.role==='ps'?'av-ps':'av-sales'}">${ini}</div>
       <div class="b-info">
@@ -528,7 +591,7 @@ function renderDashboard() {
           ${b.staff?'<span>โดย '+esc(b.staff)+'</span>':''}
           ${b.product?'<span class="product-tag">'+esc(b.product)+'</span>':''}
         </div>
-        ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:3px;">'+esc(b.note)+'</div>':''}
+        ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
       </div>
       <select class="status-select ${scMap[b.status]||''}" onchange="changeStatus('${b.id}',this)">
         <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
@@ -541,36 +604,30 @@ function renderDashboard() {
   }).join('');
 }
 
-function changeStatus(id, sel) {
-  const scMap = {pending:'status-pending',active:'status-active',done:'status-done',cancel:'status-cancel'};
-  sel.className = 'status-select ' + (scMap[sel.value]||'');
-  bookingsRef.child(id).update({status: sel.value}).then(() => showToast('อัปเดตสถานะแล้ว','success'));
+function changeStatus(id,sel){
+  const scMap={pending:'status-pending',active:'status-active',done:'status-done',cancel:'status-cancel'};
+  sel.className='status-select '+(scMap[sel.value]||'');
+  bookingsRef.child(id).update({status:sel.value}).then(()=>showToast('อัปเดตสถานะแล้ว','success'));
 }
-
-function deleteBooking(id) {
-  if (!confirm('ยืนยันลบรายการนี้?')) return;
-  bookingsRef.child(id).remove().then(() => showToast('ลบรายการแล้ว'));
+function deleteBooking(id){
+  if(!confirm('ยืนยันลบรายการนี้?'))return;
+  bookingsRef.child(id).remove().then(()=>showToast('ลบรายการแล้ว'));
 }
-
-function setFilter(el, filter) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('on'));
+function setFilter(el,filter){
+  currentFilter=filter;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
-  renderDashboard();
+  renderList();
 }
-
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + type;
-  setTimeout(() => { t.className = 'toast'; }, 3000);
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+type;
+  setTimeout(()=>{t.className='toast';},3000);
 }
-
-function esc(s) {
-  if (!s) return '';
+function esc(s){
+  if(!s)return'';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-document.getElementById('f-date').valueAsDate = new Date();
 </script>
 </body>
 </html>
