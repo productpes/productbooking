@@ -307,6 +307,39 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .toast.error{background:var(--red);}
 .footer{text-align:center;padding:14px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-200);}
 
+/* RESOURCE BOOKING */
+.res-tabs{display:flex;gap:4px;background:var(--gray-100);border-radius:var(--radius-sm);padding:3px;margin-bottom:16px;flex-wrap:wrap;}
+.res-tab{flex:1;padding:6px 10px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;transition:all .15s;text-align:center;white-space:nowrap;}
+.res-tab.active{background:var(--white);color:var(--primary);border:0.5px solid var(--gray-200);}
+.res-section{display:none;}
+.res-section.active{display:block;}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px;}
+.res-card{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .15s;}
+.res-card:hover{border-color:var(--primary);box-shadow:0 2px 8px rgba(26,107,60,.1);}
+.res-card.available{border-left:4px solid var(--primary-mid);}
+.res-card.booked{border-left:4px solid #f59e0b;opacity:.8;}
+.res-card.mine-booked{border-left:4px solid var(--blue);}
+.res-icon{font-size:24px;margin-bottom:6px;}
+.res-name{font-size:13px;font-weight:600;color:var(--gray-900);margin-bottom:3px;}
+.res-detail{font-size:11px;color:var(--gray-400);margin-bottom:6px;}
+.res-status-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;display:inline-block;}
+.res-avail{background:var(--primary-light);color:var(--primary-dark);}
+.res-busy{background:#fef3c7;color:#92400e;}
+.res-mine{background:var(--blue-light);color:var(--navy);}
+.res-booking-list{display:flex;flex-direction:column;gap:0;}
+.rb-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-100);}
+.rb-item:last-child{border-bottom:none;}
+.rb-icon{font-size:22px;flex-shrink:0;width:36px;text-align:center;margin-top:2px;}
+.rb-info{flex:1;min-width:0;}
+.rb-name{font-size:13px;font-weight:600;color:var(--gray-900);}
+.rb-meta{font-size:11px;color:var(--gray-400);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;}
+.rb-who{font-size:11px;color:var(--gray-600);margin-top:3px;}
+.res-add-form{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:flex-end;padding-top:12px;border-top:1px solid var(--gray-100);}
+.res-add-form input,.res-add-form select{padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;background:var(--white);}
+.res-add-form input:focus,.res-add-form select:focus{border-color:var(--primary);}
+.res-add-form input.r-name{flex:1;min-width:140px;}
+.res-add-form input.r-detail{flex:1;min-width:120px;}
+
 @media(max-width:640px){
   .stat-grid{grid-template-columns:repeat(2,1fr);}
   .fgrid,.report-grid{grid-template-columns:1fr;}
@@ -317,6 +350,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
   .member-cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
   .add-member-form{flex-direction:column;}
   .add-member-form input,.add-member-form select{width:100%;}
+  .res-grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
@@ -375,6 +409,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="nav">
       <button class="nav-btn active" onclick="switchView('cal')">&#128197; Calendar</button>
       <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
+      <button class="nav-btn" onclick="switchView('res')">&#128230; ยืม/คืน</button>
       <button class="nav-btn" onclick="openModal(null)">+ จอง</button>
     </div>
     <div class="topbar-right">
@@ -454,6 +489,56 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <div id="booking-list"><div class="loading">กำลังโหลด...</div></div>
       </div>
     </div>
+    <!-- RESOURCE BOOKING VIEW -->
+    <div class="view" id="view-res">
+      <div class="card">
+        <div class="card-title">&#128230; จองทรัพยากร / ยืม-คืน</div>
+        <div class="res-tabs">
+          <button class="res-tab active" onclick="switchResTab('demo')">&#128200; เครื่อง Demo</button>
+          <button class="res-tab" onclick="switchResTab('accessory')">&#128268; อุปกรณ์เสริม</button>
+          <button class="res-tab" onclick="switchResTab('car')">&#128663; รถบริษัท</button>
+        </div>
+
+        <!-- DEMO MACHINES -->
+        <div class="res-section active" id="res-demo">
+          <div class="sec-hd" style="margin-bottom:10px;">
+            <span style="font-size:12px;font-weight:600;color:var(--gray-600);">&#128200; เครื่อง Demo</span>
+            <button class="filter-chip" onclick="openResBookModal('demo')" style="background:var(--primary);color:white;border-color:var(--primary);">+ จองเครื่อง Demo</button>
+          </div>
+          <div class="res-grid" id="demo-cards"><div class="loading">กำลังโหลด...</div></div>
+          <div class="card" style="background:var(--gray-50);margin-top:4px;">
+            <div class="card-title" style="margin-bottom:10px;">รายการจองเครื่อง Demo</div>
+            <div id="demo-booking-list"><div class="loading">กำลังโหลด...</div></div>
+          </div>
+        </div>
+
+        <!-- ACCESSORIES -->
+        <div class="res-section" id="res-accessory">
+          <div class="sec-hd" style="margin-bottom:10px;">
+            <span style="font-size:12px;font-weight:600;color:var(--gray-600);">&#128268; อุปกรณ์เสริม</span>
+            <button class="filter-chip" onclick="openResBookModal('accessory')" style="background:var(--primary);color:white;border-color:var(--primary);">+ จองอุปกรณ์</button>
+          </div>
+          <div class="res-grid" id="accessory-cards"><div class="loading">กำลังโหลด...</div></div>
+          <div class="card" style="background:var(--gray-50);margin-top:4px;">
+            <div class="card-title" style="margin-bottom:10px;">รายการจองอุปกรณ์เสริม</div>
+            <div id="accessory-booking-list"><div class="loading">กำลังโหลด...</div></div>
+          </div>
+        </div>
+
+        <!-- CARS -->
+        <div class="res-section" id="res-car">
+          <div class="sec-hd" style="margin-bottom:10px;">
+            <span style="font-size:12px;font-weight:600;color:var(--gray-600);">&#128663; รถบริษัท</span>
+            <button class="filter-chip" onclick="openResBookModal('car')" style="background:var(--primary);color:white;border-color:var(--primary);">+ จองรถ</button>
+          </div>
+          <div class="res-grid" id="car-cards"><div class="loading">กำลังโหลด...</div></div>
+          <div class="card" style="background:var(--gray-50);margin-top:4px;">
+            <div class="card-title" style="margin-bottom:10px;">รายการจองรถ</div>
+            <div id="car-booking-list"><div class="loading">กำลังโหลด...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; ระบบจองนัดหมาย &nbsp;|&nbsp; Powered by Firebase</div>
 </div>
@@ -470,6 +555,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       <button class="nav-btn a-active" onclick="switchAdminView('members')">&#128101; สมาชิก</button>
       <button class="nav-btn" onclick="switchAdminView('report')">&#128202; รายงาน</button>
       <button class="nav-btn" onclick="switchAdminView('bookings')">&#128203; การจองทั้งหมด</button>
+      <button class="nav-btn" onclick="switchAdminView('resources')">&#128230; ทรัพยากร</button>
     </div>
     <div class="topbar-right">
       <div class="user-chip-top">
@@ -550,6 +636,34 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <div id="admin-bkg-list"><div class="loading">กำลังโหลด...</div></div>
       </div>
     </div>
+    <div class="view" id="aview-resources">
+      <div class="card">
+        <div class="sec-hd" style="margin-bottom:14px;">
+          <div class="card-title purple" style="margin:0;">&#128230; จัดการทรัพยากร</div>
+          <button class="filter-chip" onclick="openResAdminModal()" style="background:var(--purple);color:white;border-color:var(--purple);">+ เพิ่มรายการ</button>
+        </div>
+        <div class="res-tabs">
+          <button class="res-tab active" onclick="switchAdminResTab('demo')">&#128200; เครื่อง Demo</button>
+          <button class="res-tab" onclick="switchAdminResTab('accessory')">&#128268; อุปกรณ์เสริม</button>
+          <button class="res-tab" onclick="switchAdminResTab('car')">&#128663; รถบริษัท</button>
+        </div>
+        <div class="res-section active" id="ares-demo">
+          <div class="res-grid" id="a-demo-cards"><div class="loading">กำลังโหลด...</div></div>
+          <div class="card-title" style="margin-top:10px;margin-bottom:8px;">รายการจอง</div>
+          <div id="a-demo-bklist"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+        <div class="res-section" id="ares-accessory">
+          <div class="res-grid" id="a-accessory-cards"><div class="loading">กำลังโหลด...</div></div>
+          <div class="card-title" style="margin-top:10px;margin-bottom:8px;">รายการจอง</div>
+          <div id="a-accessory-bklist"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+        <div class="res-section" id="ares-car">
+          <div class="res-grid" id="a-car-cards"><div class="loading">กำลังโหลด...</div></div>
+          <div class="card-title" style="margin-top:10px;margin-bottom:8px;">รายการจอง</div>
+          <div id="a-car-bklist"><div class="loading">กำลังโหลด...</div></div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; Admin Panel &nbsp;|&nbsp; Powered by Firebase</div>
 </div>
@@ -625,6 +739,47 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 </div>
 </div>
 
+<!-- RESOURCE BOOKING MODAL -->
+<div class="modal-overlay" id="res-modal-overlay" onclick="if(event.target.id==='res-modal-overlay')closeResModal()">
+<div class="modal">
+  <div class="modal-hd"><span id="res-modal-title">จองทรัพยากร</span><button class="modal-close" onclick="closeResModal()">&#10005;</button></div>
+  <div class="staff-tag" id="res-staff-tag"></div>
+  <div class="fgrid">
+    <div class="fgg full"><label>เลือกรายการ *</label>
+      <select id="rb-resource"></select>
+    </div>
+    <div class="fgg"><label>วันที่เริ่มยืม *</label><input type="date" id="rb-date-start"></div>
+    <div class="fgg"><label>วันที่คืน *</label><input type="date" id="rb-date-end"></div>
+    <div class="fgg full"><label>วัตถุประสงค์ / สถานที่นำไปใช้</label><textarea id="rb-purpose" placeholder="เช่น Demo ที่ รพ.กรุงเทพ / นำไปงาน Medica..."></textarea></div>
+  </div>
+  <button class="save-btn" id="res-submit-btn" onclick="submitResBooking()">บันทึกการจอง</button>
+</div>
+</div>
+
+<!-- RESOURCE ADMIN MODAL (Admin add/remove resources) -->
+<div class="modal-overlay" id="res-admin-overlay" onclick="if(event.target.id==='res-admin-overlay')closeResAdminModal()">
+<div class="modal">
+  <div class="modal-hd"><span>จัดการทรัพยากร</span><button class="modal-close" onclick="closeResAdminModal()">&#10005;</button></div>
+  <div style="margin-top:10px;">
+    <div style="margin-bottom:14px;">
+      <div class="card-title">เพิ่มรายการใหม่</div>
+      <div class="res-add-form" style="border-top:none;padding-top:0;margin-top:8px;">
+        <select id="ra-type" style="padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;background:var(--white);">
+          <option value="demo">&#128200; เครื่อง Demo</option>
+          <option value="accessory">&#128268; อุปกรณ์เสริม</option>
+          <option value="car">&#128663; รถบริษัท</option>
+        </select>
+        <input class="r-name" type="text" id="ra-name" placeholder="ชื่อ เช่น Spirometer #1">
+        <input class="r-detail" type="text" id="ra-detail" placeholder="รายละเอียด เช่น Contec SP10">
+        <button class="add-btn" onclick="addResource()">+ เพิ่ม</button>
+      </div>
+    </div>
+    <div class="card-title">รายการทั้งหมด</div>
+    <div id="res-admin-list" style="max-height:300px;overflow-y:auto;"><div class="loading">กำลังโหลด...</div></div>
+  </div>
+</div>
+</div>
+
 <!-- PHOTO UPLOAD MODAL -->
 <div class="modal-overlay" id="photo-overlay" onclick="if(event.target.id==='photo-overlay')closePhoto()">
 <div class="photo-modal">
@@ -660,13 +815,16 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const bookingsRef = db.ref('bookings');
 const membersRef = db.ref('members');
+const resourcesRef = db.ref('resources');
+const resBookingsRef = db.ref('resBookings');
 
 const ADMIN_PW = 'admin1234';
 let currentUser = null;
-let allBookings = {}, allMembers = {};
+let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {};
 let uFilter = 'all', aFilter = 'all';
 let calMode = 'month', calDate = new Date();
 let editId = null, photoMemberId = null, photoB64 = null;
+let resBookType = 'demo', adminResTab = 'demo';
 
 // FIREBASE
 db.ref('.info/connected').on('value', s => {
@@ -675,6 +833,8 @@ db.ref('.info/connected').on('value', s => {
 });
 bookingsRef.on('value', s => { allBookings = s.val()||{}; refreshAll(); });
 membersRef.on('value', s => { allMembers = s.val()||{}; renderMemberDropdown(); renderMemberCards(); refreshAll(); });
+resourcesRef.on('value', s => { allResources = s.val()||{}; renderResViews(); });
+resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews(); });
 
 function refreshAll(){
   renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner();
@@ -805,14 +965,17 @@ function switchView(v){
   document.querySelectorAll('#user-screen .view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('#user-screen .nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  document.querySelectorAll('#user-screen .nav-btn')[{cal:0,dash:1}[v]].classList.add('active');
+  const idx={cal:0,dash:1,res:2};
+  if(idx[v]!==undefined) document.querySelectorAll('#user-screen .nav-btn')[idx[v]].classList.add('active');
+  if(v==='res') renderResViews();
 }
 function switchAdminView(v){
   document.querySelectorAll('#admin-screen .view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('#admin-screen .nav-btn').forEach((el,i)=>{
-    el.className='nav-btn'+([0,1,2][i]==={members:0,report:1,bookings:2}[v]?' a-active':'');
+    el.className='nav-btn'+([0,1,2,3][i]==={members:0,report:1,bookings:2,resources:3}[v]?' a-active':'');
   });
   document.getElementById('aview-'+v).classList.add('active');
+  if(v==='resources') renderAdminResViews();
 }
 
 // MEMBER CARDS
@@ -1132,6 +1295,231 @@ function renderReport(){
     </div>`;
   }).join('');
 }
+
+// ===================== RESOURCE BOOKING =====================
+
+const resTypeLabel = {demo:'เครื่อง Demo', accessory:'อุปกรณ์เสริม', car:'รถบริษัท'};
+const resTypeIcon  = {demo:'📊', accessory:'🔌', car:'🚗'};
+
+function switchResTab(t){
+  document.querySelectorAll('#view-res .res-tab').forEach((b,i)=>b.classList.toggle('active',['demo','accessory','car'][i]===t));
+  document.querySelectorAll('#view-res .res-section').forEach((s,i)=>s.classList.toggle('active',['demo','accessory','car'][i]===t));
+  resBookType = t;
+}
+
+function switchAdminResTab(t){
+  adminResTab = t;
+  document.querySelectorAll('#aview-resources .res-tab').forEach((b,i)=>b.classList.toggle('active',['demo','accessory','car'][i]===t));
+  document.querySelectorAll('#aview-resources .res-section').forEach((s,i)=>s.classList.toggle('active',['demo','accessory','car'][i]===t));
+  renderAdminResViews();
+}
+
+// --- Get active resBookings for a resource (not returned/cancelled) ---
+function getActiveResBooking(resourceId){
+  const today = new Date().toISOString().slice(0,10);
+  return Object.entries(allResBookings).find(([,rb])=>rb.resourceId===resourceId && rb.status!=='returned' && rb.status!=='cancel' && rb.dateEnd>=today)||null;
+}
+
+// --- Render resource cards for user view ---
+function renderResViews(){
+  ['demo','accessory','car'].forEach(type=>{
+    const resources = Object.entries(allResources).filter(([,r])=>r.type===type).map(([id,r])=>({id,...r}));
+    const cardsEl = document.getElementById(type+'-cards');
+    if(!cardsEl) return;
+    if(!resources.length){
+      cardsEl.innerHTML='<div class="empty" style="grid-column:1/-1;">ยังไม่มีรายการ — ติดต่อ Admin เพื่อเพิ่ม</div>';
+    } else {
+      cardsEl.innerHTML = resources.map(r=>{
+        const activeEntry = getActiveResBooking(r.id);
+        const active = activeEntry ? activeEntry[1] : null;
+        const isMine = active && currentUser && active.staffId===currentUser.id;
+        let statusBadge, cardCls;
+        if(!active){ statusBadge=`<span class="res-status-badge res-avail">ว่าง</span>`; cardCls='available'; }
+        else if(isMine){ statusBadge=`<span class="res-status-badge res-mine">ของฉัน (${fmtTH(active.dateStart)}–${fmtTH(active.dateEnd)})</span>`; cardCls='mine-booked'; }
+        else { statusBadge=`<span class="res-status-badge res-busy">ถูกจอง โดย ${esc(active.staff||'?')} (คืน ${fmtTH(active.dateEnd)})</span>`; cardCls='booked'; }
+        return `<div class="res-card ${cardCls}" onclick="openResBookModal('${type}','${r.id}')">
+          <div class="res-icon">${resTypeIcon[type]}</div>
+          <div class="res-name">${esc(r.name)}</div>
+          <div class="res-detail">${esc(r.detail||'')}</div>
+          ${statusBadge}
+        </div>`;
+      }).join('');
+    }
+    // booking list
+    const listEl = document.getElementById(type+'-booking-list');
+    if(!listEl) return;
+    const bks = Object.entries(allResBookings)
+      .filter(([,rb])=>{ const res=allResources[rb.resourceId]; return res && res.type===type; })
+      .map(([id,rb])=>({id,...rb}))
+      .sort((a,b)=>a.dateStart.localeCompare(b.dateStart));
+    if(!bks.length){ listEl.innerHTML='<div class="empty">ยังไม่มีการจอง</div>'; return; }
+    listEl.innerHTML = bks.map(rb=>resBookRow(rb,false)).join('');
+  });
+}
+
+// --- Render resource cards for admin view ---
+function renderAdminResViews(){
+  ['demo','accessory','car'].forEach(type=>{
+    const resources = Object.entries(allResources).filter(([,r])=>r.type===type).map(([id,r])=>({id,...r}));
+    const cardsEl = document.getElementById('a-'+type+'-cards');
+    if(!cardsEl) return;
+    if(!resources.length){
+      cardsEl.innerHTML='<div class="empty" style="grid-column:1/-1;">ยังไม่มีรายการ</div>';
+    } else {
+      cardsEl.innerHTML = resources.map(r=>{
+        const activeEntry = getActiveResBooking(r.id);
+        const active = activeEntry ? activeEntry[1] : null;
+        let statusBadge = active
+          ? `<span class="res-status-badge res-busy">ถูกจอง: ${esc(active.staff||'?')}</span>`
+          : `<span class="res-status-badge res-avail">ว่าง</span>`;
+        return `<div class="res-card ${active?'booked':'available'}">
+          <div class="res-icon">${resTypeIcon[type]}</div>
+          <div class="res-name">${esc(r.name)}</div>
+          <div class="res-detail">${esc(r.detail||'')}</div>
+          ${statusBadge}
+          <div style="margin-top:8px;">
+            <button class="mc-del" onclick="deleteResource('${r.id}','${esc(r.name)}')">&#10005; ลบ</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    const listEl = document.getElementById('a-'+type+'-bklist');
+    if(!listEl) return;
+    const bks = Object.entries(allResBookings)
+      .filter(([,rb])=>{ const res=allResources[rb.resourceId]; return res && res.type===type; })
+      .map(([id,rb])=>({id,...rb}))
+      .sort((a,b)=>a.dateStart.localeCompare(b.dateStart));
+    if(!bks.length){ listEl.innerHTML='<div class="empty">ยังไม่มีการจอง</div>'; return; }
+    listEl.innerHTML = bks.map(rb=>resBookRow(rb,true)).join('');
+  });
+}
+
+function resBookRow(rb, isAdmin){
+  const res = allResources[rb.resourceId]||{name:'?',type:'demo'};
+  const type = res.type||'demo';
+  const statusMap = {active:'pending',returned:'done',cancel:'cancel'};
+  const statusLabel = {active:'กำลังใช้งาน',returned:'คืนแล้ว',cancel:'ยกเลิก'};
+  const scCls = {active:'active',returned:'done',cancel:'cancel'};
+  const isMine = currentUser && rb.staffId===currentUser.id;
+  return `<div class="rb-item${isMine&&!isAdmin?' is-mine':''}">
+    <div class="rb-icon">${resTypeIcon[type]||'📦'}</div>
+    <div class="rb-info">
+      <div class="rb-name">${esc(res.name)}</div>
+      <div class="rb-meta">
+        <span>&#128197; ${fmtTH(rb.dateStart)} → ${fmtTH(rb.dateEnd)}</span>
+        ${rb.purpose?'<span>'+esc(rb.purpose)+'</span>':''}
+      </div>
+      <div class="rb-who">&#128100; ${esc(rb.staff||'?')} ${rb.staffPosition?'· '+esc(rb.staffPosition):''}</div>
+    </div>
+    <select class="sts ${scCls[rb.status]||''}" onchange="changeResStatus('${rb.id}',this)">
+      <option value="active" ${rb.status==='active'?'selected':''}>กำลังใช้งาน</option>
+      <option value="returned" ${rb.status==='returned'?'selected':''}>คืนแล้ว</option>
+      <option value="cancel" ${rb.status==='cancel'?'selected':''}>ยกเลิก</option>
+    </select>
+    ${(isAdmin||isMine)?`<button class="del-btn" onclick="deleteResBooking('${rb.id}')">&#10005;</button>`:''}
+  </div>`;
+}
+
+// --- Open resource booking modal ---
+function openResBookModal(type, preselectId){
+  if(!currentUser){ showToast('กรุณาเข้าสู่ระบบก่อน','error'); return; }
+  resBookType = type;
+  // Update staff tag
+  const st = document.getElementById('res-staff-tag');
+  st.innerHTML = avatarHTML(currentUser,32,'st-av')+`<div><div class="st-name">${esc(currentUser.name)}</div><div class="st-pos">${esc(currentUser.position||'')} ${currentUser.level?'· '+currentUser.level:''}</div></div>`;
+  // Update title
+  document.getElementById('res-modal-title').textContent = 'จอง '+resTypeLabel[type];
+  // Populate resource dropdown
+  const sel = document.getElementById('rb-resource');
+  const resources = Object.entries(allResources).filter(([,r])=>r.type===type).map(([id,r])=>({id,...r}));
+  sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
+  resources.forEach(r=>{
+    const active = getActiveResBooking(r.id);
+    const opt = document.createElement('option');
+    opt.value = r.id;
+    opt.textContent = r.name + (r.detail?' ('+r.detail+')':'') + (active?' — ⚠ ถูกจองอยู่':'');
+    if(preselectId && r.id===preselectId) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  // Default dates
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('rb-date-start').value = today;
+  document.getElementById('rb-date-end').value = today;
+  document.getElementById('rb-purpose').value = '';
+  document.getElementById('res-modal-overlay').classList.add('open');
+}
+function closeResModal(){ document.getElementById('res-modal-overlay').classList.remove('open'); }
+
+// --- Submit resource booking ---
+function submitResBooking(){
+  const resourceId = document.getElementById('rb-resource').value;
+  const dateStart = document.getElementById('rb-date-start').value;
+  const dateEnd = document.getElementById('rb-date-end').value;
+  const purpose = document.getElementById('rb-purpose').value.trim();
+  if(!resourceId||!dateStart||!dateEnd){ showToast('กรุณากรอกข้อมูลให้ครบ','error'); return; }
+  if(dateEnd<dateStart){ showToast('วันคืนต้องไม่ก่อนวันยืม','error'); return; }
+  const btn = document.getElementById('res-submit-btn');
+  btn.disabled=true; btn.textContent='กำลังบันทึก...';
+  resBookingsRef.push({
+    resourceId, resourceName:(allResources[resourceId]||{}).name||'',
+    staffId:currentUser.id, staff:currentUser.name,
+    staffPosition:currentUser.position||'', staffLevel:currentUser.level||'',
+    dateStart, dateEnd, purpose, status:'active', createdAt:Date.now()
+  }).then(()=>{
+    showToast('จองสำเร็จ ✓','success');
+    closeResModal();
+    btn.disabled=false; btn.textContent='บันทึกการจอง';
+    renderResViews();
+  }).catch(()=>{ showToast('เกิดข้อผิดพลาด','error'); btn.disabled=false; btn.textContent='บันทึกการจอง'; });
+}
+
+function changeResStatus(id,sel){
+  const clsMap={active:'active',returned:'done',cancel:'cancel'};
+  sel.className='sts '+(clsMap[sel.value]||'');
+  resBookingsRef.child(id).update({status:sel.value}).then(()=>showToast('อัปเดตสถานะแล้ว','success'));
+}
+function deleteResBooking(id){ if(!confirm('ยืนยันลบรายการจองนี้?'))return; resBookingsRef.child(id).remove().then(()=>showToast('ลบแล้ว')); }
+
+// --- Admin: add / delete resource items ---
+function openResAdminModal(){
+  renderResAdminList();
+  document.getElementById('res-admin-overlay').classList.add('open');
+}
+function closeResAdminModal(){ document.getElementById('res-admin-overlay').classList.remove('open'); }
+
+function renderResAdminList(){
+  const el = document.getElementById('res-admin-list');
+  const all = Object.entries(allResources).map(([id,r])=>({id,...r})).sort((a,b)=>(a.type+a.name).localeCompare(b.type+b.name));
+  if(!all.length){ el.innerHTML='<div class="empty">ยังไม่มีรายการ</div>'; return; }
+  el.innerHTML = all.map(r=>`
+    <div class="rb-item">
+      <div class="rb-icon">${resTypeIcon[r.type]||'📦'}</div>
+      <div class="rb-info"><div class="rb-name">${esc(r.name)}</div><div class="rb-meta"><span>${resTypeLabel[r.type]||r.type}</span>${r.detail?'<span>'+esc(r.detail)+'</span>':''}</div></div>
+      <button class="del-btn" onclick="deleteResource('${r.id}','${esc(r.name)}')">&#10005;</button>
+    </div>`).join('');
+}
+
+function addResource(){
+  const type = document.getElementById('ra-type').value;
+  const name = document.getElementById('ra-name').value.trim();
+  const detail = document.getElementById('ra-detail').value.trim();
+  if(!name){ showToast('กรุณาใส่ชื่อรายการ','error'); return; }
+  resourcesRef.push({type,name,detail,createdAt:Date.now()}).then(()=>{
+    document.getElementById('ra-name').value='';
+    document.getElementById('ra-detail').value='';
+    showToast('เพิ่ม '+name+' แล้ว ✓','success');
+    renderResAdminList();
+    renderAdminResViews();
+    renderResViews();
+  });
+}
+
+function deleteResource(id,name){
+  if(!confirm('ลบ "'+name+'" ออกจากระบบ?'))return;
+  resourcesRef.child(id).remove().then(()=>{ showToast('ลบแล้ว'); renderResAdminList(); });
+}
+
+// ===================== END RESOURCE BOOKING =====================
 
 function showToast(msg,type=''){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>{t.className='toast';},3000); }
 function esc(s){ if(!s)return''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
