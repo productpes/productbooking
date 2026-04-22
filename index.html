@@ -447,6 +447,28 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .cov-cold{background:var(--gray-100);color:var(--gray-600);}
 .cov-new{background:var(--teal-light);color:var(--teal);}
 
+/* TRIP */
+.trip-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;margin-bottom:10px;border-left:4px solid var(--navy);}
+.trip-card.tc-done{border-left-color:var(--primary);opacity:.8;}
+.trip-card.tc-cancel{border-left-color:var(--red);opacity:.7;}
+.trip-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.trip-title{font-size:14px;font-weight:700;color:var(--gray-900);}
+.trip-meta{font-size:11px;color:var(--gray-400);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
+.trip-bookings{margin-top:10px;border-top:1px solid var(--gray-100);padding-top:10px;}
+.trip-bk-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12px;}
+.trip-bk-item:last-child{border-bottom:none;}
+.trip-bk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.trip-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.trip-action-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid transparent;}
+.trip-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;align-items:center;justify-content:center;}
+.trip-modal-overlay.open{display:flex;}
+.trip-modal{background:var(--white);border-radius:var(--radius);padding:0;width:100%;max-width:640px;margin:16px;max-height:92vh;overflow-y:auto;display:flex;flex-direction:column;}
+.trip-modal-hd{padding:16px 20px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:10;}
+.trip-modal-body{padding:18px 20px;flex:1;}
+.trip-bk-list-edit{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.trip-bk-edit-row{display:flex;gap:8px;align-items:flex-start;background:var(--gray-50);border-radius:var(--radius-sm);padding:10px;}
+.trip-bk-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+
 /* TERRITORY */
 .territory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
 .territory-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;border-top:3px solid var(--primary);}
@@ -547,6 +569,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
       <button class="nav-btn" onclick="switchView('res')">&#128230; ยืม/คืน</button>
       <button class="nav-btn" id="nav-territory-btn" style="display:none;" onclick="switchView('territory')">&#128205; Territory</button>
+      <button class="nav-btn" onclick="switchView('trips')">&#9992;&#65039; Trips</button>
       <button class="nav-btn" id="nav-book-btn" onclick="openModal(null)">+ จอง</button>
     </div>
     <div class="topbar-right">
@@ -681,6 +704,25 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       </div>
     </div>
   </div>
+    <!-- TRIPS VIEW -->
+    <div class="view" id="view-trips">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--gray-900);">&#9992;&#65039; การเดินทาง (Trips)</div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">จัดกลุ่มนัดหมายหลายแห่งในการเดินทางเดียว</div>
+        </div>
+        <button onclick="openTripModal()" id="create-trip-btn" style="padding:8px 16px;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">+ สร้าง Trip</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+        <button class="filter-chip on" onclick="setTripFilter(this,'all')">ทั้งหมด</button>
+        <button class="filter-chip" onclick="setTripFilter(this,'mine')">ของฉัน</button>
+        <button class="filter-chip" onclick="setTripFilter(this,'active')">กำลังดำเนินการ</button>
+        <button class="filter-chip" onclick="setTripFilter(this,'done')">เสร็จสิ้น</button>
+        <button class="filter-chip" onclick="setTripFilter(this,'cancel')">ยกเลิก</button>
+      </div>
+      <div id="trips-list"><div class="loading">กำลังโหลด...</div></div>
+    </div>
+
     <!-- TERRITORY VIEW (PS Manager only) -->
     <div class="view" id="view-territory">
       <div class="card">
@@ -1245,6 +1287,57 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
   <div class="footer">Prapatsorn Engineering Co., Ltd. &nbsp;|&nbsp; Admin Panel &nbsp;|&nbsp; Powered by Firebase</div>
 </div>
 
+
+<!-- TRIP MODAL -->
+<div class="trip-modal-overlay" id="trip-modal-overlay" onclick="if(event.target.id==='trip-modal-overlay')closeTripModal()">
+<div class="trip-modal">
+  <div class="trip-modal-hd">
+    <span style="font-size:15px;font-weight:700;color:var(--navy);">&#9992;&#65039; <span id="trip-modal-title">สร้าง Trip ใหม่</span></span>
+    <button class="modal-close" onclick="closeTripModal()">&#10005;</button>
+  </div>
+  <div class="trip-modal-body">
+    <!-- Trip info -->
+    <div class="fgrid" style="margin-bottom:14px;">
+      <div class="fgg full">
+        <label>ชื่อ Trip *</label>
+        <input type="text" id="trip-title" placeholder="เช่น ขอนแก่น 2 วัน 3 ก.ค. 68">
+      </div>
+      <div class="fgg">
+        <label>วันที่เริ่ม *</label>
+        <input type="date" id="trip-date-start">
+      </div>
+      <div class="fgg">
+        <label>วันที่สิ้นสุด *</label>
+        <input type="date" id="trip-date-end">
+      </div>
+      <div class="fgg">
+        <label>จังหวัด/พื้นที่หลัก</label>
+        <select id="trip-province">
+          <option value="">-- เลือกจังหวัด --</option>
+          <option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option>
+        </select>
+      </div>
+      <div class="fgg" id="trip-ps-wrap">
+        <label>PS ร่วมเดินทาง</label>
+        <select id="trip-ps"><option value="">-- ไม่ระบุ --</option></select>
+      </div>
+      <div class="fgg full">
+        <label>หมายเหตุ Trip</label>
+        <input type="text" id="trip-note" placeholder="เช่น เดินทางโดยรถยนต์ส่วนตัว">
+      </div>
+    </div>
+
+    <!-- Bookings in trip -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div style="font-size:12px;font-weight:700;color:var(--navy);">&#128203; นัดหมายใน Trip</div>
+      <button onclick="addTripBookingRow()" style="padding:4px 12px;background:var(--navy);color:white;border:none;border-radius:20px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;">+ เพิ่มนัด</button>
+    </div>
+    <div class="trip-bk-list-edit" id="trip-bk-list-edit"></div>
+    <button onclick="saveTripWithBookings()" style="width:100%;margin-top:16px;padding:11px;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;" id="trip-save-btn">&#128190; บันทึก Trip</button>
+  </div>
+</div>
+</div>
+
 <!-- BOOKING MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target.id==='modal-overlay')closeModal()">
 <div class="modal">
@@ -1423,11 +1516,12 @@ const membersRef = db.ref('members');
 const resourcesRef = db.ref('resources');
 const resBookingsRef = db.ref('resBookings');
 const territoriesRef = db.ref('territories');
+const tripsRef = db.ref('trips');
 
 const ADMIN_PW = 'admin1234';
 const MGR_PW = 'manager2026';
 let currentUser = null;
-let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {}, allTerritories = {};
+let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {}, allTerritories = {}, allTrips = {};
 
 // ROLE HELPERS
 function isSales(){ return currentUser && currentUser.dept==='sales'; }
@@ -1450,6 +1544,7 @@ membersRef.on('value', s => { allMembers = s.val()||{}; renderMemberDropdown(); 
 resourcesRef.on('value', s => { allResources = s.val()||{}; renderResViews(); });
 resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews(); });
 territoriesRef.on('value', s => { allTerritories = s.val()||{}; });
+tripsRef.on('value', s => { allTrips = s.val()||{}; if(document.getElementById('view-trips')?.classList.contains('active')) renderTripsView(); });
 
 function refreshAll(){
   renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner();
@@ -1596,6 +1691,11 @@ function switchView(v){
   if(idx[v]!==undefined) document.querySelectorAll('#user-screen .nav-btn')[idx[v]].classList.add('active');
   if(v==='res') renderResViews();
   if(v==='territory'){ renderTerritoryUserView(); populateTerritoryMemberSelects(); }
+  if(v==='trips'){
+    renderTripsView();
+    const cb = document.getElementById('create-trip-btn');
+    if(cb) cb.style.display = canAssign() ? '' : 'none';
+  }
 }
 function switchAdminView(v){
   document.querySelectorAll('#admin-screen .view').forEach(el=>el.classList.remove('active'));
@@ -3125,6 +3225,291 @@ function clearTerritoryForm(){
 // Re-render territory when data changes
 territoriesRef.on('value', s=>{ allTerritories=s.val()||{}; });
 
+// ===================== TRIP SYSTEM =====================
+let tripFilter = 'all';
+let editingTripId = null;
+let tripBookingRows = []; // [{hospital,contact,date,time,category,product,note,psId}]
+
+const TRIP_STATUS_MAP = {active:'กำลังดำเนินการ', done:'เสร็จสิ้น', cancel:'ยกเลิก'};
+const TRIP_STATUS_CLS = {active:'active', done:'done', cancel:'cancel'};
+
+function setTripFilter(el, f){
+  tripFilter = f;
+  document.querySelectorAll('#view-trips .filter-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderTripsView();
+}
+
+function renderTripsView(){
+  const list = document.getElementById('trips-list');
+  if(!list) return;
+  let trips = Object.entries(allTrips).map(([id,t])=>({id,...t}))
+    .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  // Sales เห็นเฉพาะ Trip ที่ตัวเองเป็น salesId
+  if(isSales()) trips=trips.filter(t=>currentUser&&t.salesId===currentUser.id);
+  if(tripFilter==='mine') trips=trips.filter(t=>currentUser&&(t.salesId===currentUser.id||t.psId===currentUser.id||t.createdBy===currentUser.id));
+  else if(tripFilter==='active') trips=trips.filter(t=>t.status==='active');
+  else if(tripFilter==='done') trips=trips.filter(t=>t.status==='done');
+  else if(tripFilter==='cancel') trips=trips.filter(t=>t.status==='cancel');
+
+  if(!trips.length){ list.innerHTML='<div class="empty">ไม่พบ Trip</div>'; return; }
+  list.innerHTML = trips.map(t=>{
+    const bks = Object.entries(allBookings).filter(([,b])=>b.tripId===t.id).map(([id,b])=>({id,...b})).sort((a,b)=>a.date?.localeCompare(b.date)||0);
+    const salesM = t.salesId?allMembers[t.salesId]:null;
+    const psM    = t.psId?allMembers[t.psId]:null;
+    const stCls  = TRIP_STATUS_CLS[t.status]||'active';
+    const stLabel= TRIP_STATUS_MAP[t.status]||'กำลังดำเนินการ';
+    const dStart = t.dateStart?fmtTH(t.dateStart):'—';
+    const dEnd   = t.dateEnd?fmtTH(t.dateEnd):'—';
+    const canEdit= !isSales()||(currentUser&&t.salesId===currentUser.id);
+    const canCancel= !isSales()||(currentUser&&t.salesId===currentUser.id);
+    return `<div class="trip-card tc-${stCls}">
+      <div class="trip-header">
+        <div>
+          <div class="trip-title">&#9992;&#65039; ${esc(t.title||'ไม่มีชื่อ')}</div>
+          <div class="trip-meta">
+            <span>&#128197; ${dStart}${t.dateEnd&&t.dateEnd!==t.dateStart?' — '+dEnd:''}</span>
+            ${t.province?`<span>&#128205; ${esc(t.province)}</span>`:''}
+            ${salesM?`<span>&#128100; Sales: ${esc(salesM.name)}</span>`:''}
+            ${psM?`<span>&#128101; PS: ${esc(psM.name)}</span>`:''}
+          </div>
+          ${t.note?`<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">${esc(t.note)}</div>`:''}
+        </div>
+        <span class="sts ${stCls}" style="flex-shrink:0;">${stLabel}</span>
+      </div>
+      <div class="trip-bookings">
+        ${bks.length?bks.map((b,i)=>{
+          const dot_color=b.status==='done'?'var(--primary)':b.status==='cancel'?'var(--red)':'var(--amber)';
+          const bPs=b.staffId?allMembers[b.staffId]:null;
+          return `<div class="trip-bk-item">
+            <div class="trip-bk-dot" style="background:${dot_color};"></div>
+            <div style="flex:1;">
+              <span style="font-weight:600;">${esc(b.hospital)}</span>
+              <span style="color:var(--gray-400);"> — ${b.date?fmtTH(b.date):'?'} ${b.time||''}</span>
+              ${b.category?`<span class="cat-tag" style="margin-left:4px;">${catTag(b.category)}</span>`:''}
+              ${bPs?`<span style="color:var(--gray-400);font-size:10px;margin-left:4px;">PS: ${esc(bPs.name)}</span>`:''}
+            </div>
+            <span class="sts ${TRIP_STATUS_CLS[b.status]||'pending'}" style="font-size:10px;">${b.status==='done'?'เสร็จ':b.status==='cancel'?'ยกเลิก':b.status==='active'?'ดำเนินการ':'รอ'}</span>
+          </div>`;
+        }).join(''):'<div style="font-size:12px;color:var(--gray-400);">ยังไม่มีนัดหมาย</div>'}
+        ${canAssign()?`<button onclick="openAddBookingToTrip('${t.id}')" style="margin-top:8px;padding:3px 12px;border:1px dashed var(--navy);color:var(--navy);background:transparent;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">+ เพิ่มนัดใน Trip นี้</button>`:''}
+      </div>
+      <div class="trip-actions">
+        ${canEdit&&t.status!=='cancel'?`<button class="trip-action-btn" style="background:var(--navy-light);color:var(--navy);border-color:var(--navy-light);" onclick="openTripModal('${t.id}')">&#9998; แก้ไข Trip</button>`:''}
+        ${canCancel&&t.status!=='cancel'?`<button class="trip-action-btn" style="background:var(--amber-light);color:var(--amber);border-color:var(--amber-light);" onclick="postponeTrip('${t.id}')">&#128197; เลื่อน Trip</button>`:''}
+        ${canCancel&&t.status!=='cancel'?`<button class="trip-action-btn" style="background:var(--red-light);color:var(--red);border-color:var(--red-light);" onclick="cancelTrip('${t.id}')">&#10060; ยกเลิก Trip</button>`:''}
+        ${!isSales()&&t.status==='active'?`<button class="trip-action-btn" style="background:var(--primary-light);color:var(--primary);border-color:var(--primary-light);" onclick="doneTrip('${t.id}')">&#10003; เสร็จสิ้น</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- Open/Close Trip Modal ----
+function openTripModal(tripId){
+  if(!canAssign()){ showToast('เฉพาะ PS Manager/Supervisor เท่านั้นที่สร้างหรือแก้ไข Trip ได้','error'); return; }
+  editingTripId = tripId||null;
+  const title = document.getElementById('trip-modal-title');
+  if(title) title.textContent = tripId ? 'แก้ไข Trip' : 'สร้าง Trip ใหม่';
+
+  // Populate PS dropdown
+  const psSel = document.getElementById('trip-ps');
+  if(psSel){
+    psSel.innerHTML='<option value="">-- ไม่ระบุ --</option>';
+    Object.entries(allMembers).filter(([,m])=>m.dept==='ps').forEach(([id,m])=>{
+      psSel.innerHTML+=`<option value="${id}">${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
+    });
+  }
+  // Show/hide PS field for non-Sales
+  const psWrap = document.getElementById('trip-ps-wrap');
+  if(psWrap) psWrap.style.display = isSales()?'none':'';
+
+  if(tripId){
+    const t = allTrips[tripId];
+    if(!t) return;
+    document.getElementById('trip-title').value = t.title||'';
+    document.getElementById('trip-date-start').value = t.dateStart||'';
+    document.getElementById('trip-date-end').value = t.dateEnd||'';
+    document.getElementById('trip-province').value = t.province||'';
+    document.getElementById('trip-note').value = t.note||'';
+    if(psSel) psSel.value = t.psId||'';
+    // Load existing bookings
+    tripBookingRows = Object.entries(allBookings).filter(([,b])=>b.tripId===tripId)
+      .map(([id,b])=>({_id:id,...b})).sort((a,b)=>a.date?.localeCompare(b.date)||0);
+  } else {
+    ['trip-title','trip-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('trip-date-start').valueAsDate=new Date();
+    document.getElementById('trip-date-end').valueAsDate=new Date();
+    document.getElementById('trip-province').value='';
+    tripBookingRows = [];
+  }
+  renderTripBookingRows();
+  document.getElementById('trip-modal-overlay').classList.add('open');
+}
+
+function closeTripModal(){
+  document.getElementById('trip-modal-overlay').classList.remove('open');
+  editingTripId = null; tripBookingRows = [];
+}
+
+// ---- Trip booking rows in modal ----
+function addTripBookingRow(){
+  tripBookingRows.push({hospital:'',contact:'',date:document.getElementById('trip-date-start')?.value||'',time:'09:00',category:'',product:'',note:'',psId:''});
+  renderTripBookingRows();
+}
+
+function removeTripBookingRow(i){
+  tripBookingRows.splice(i,1);
+  renderTripBookingRows();
+}
+
+function renderTripBookingRows(){
+  const container = document.getElementById('trip-bk-list-edit');
+  if(!container) return;
+  const psOptions = Object.entries(allMembers).filter(([,m])=>m.dept==='ps')
+    .map(([id,m])=>`<option value="${id}">${esc(m.name)}</option>`).join('');
+
+  container.innerHTML = tripBookingRows.length ? tripBookingRows.map((b,i)=>`
+    <div class="trip-bk-edit-row">
+      <div class="trip-bk-num">${i+1}</div>
+      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <input type="text" placeholder="ชื่อโรงพยาบาล *" value="${esc(b.hospital||'')}" oninput="tripBookingRows[${i}].hospital=this.value" style="padding:6px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+        <input type="text" placeholder="ผู้ติดต่อ *" value="${esc(b.contact||'')}" oninput="tripBookingRows[${i}].contact=this.value" style="padding:6px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+        <input type="date" value="${b.date||''}" onchange="tripBookingRows[${i}].date=this.value" style="padding:6px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+        <input type="time" value="${b.time||'09:00'}" onchange="tripBookingRows[${i}].time=this.value" style="padding:6px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+        <select onchange="tripBookingRows[${i}].category=this.value" style="padding:6px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+          <option value="">ประเภท *</option>
+          <option value="case_support" ${b.category==='case_support'?'selected':''}>Case Support</option>
+          <option value="clinical_demo" ${b.category==='clinical_demo'?'selected':''}>Clinical Demo</option>
+          <option value="inservice_training" ${b.category==='inservice_training'?'selected':''}>Training</option>
+          <option value="maintenance" ${b.category==='maintenance'?'selected':''}>Maintenance</option>
+        </select>
+        ${!isSales()?`<select onchange="tripBookingRows[${i}].psId=this.value" style="padding:6px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+          <option value="">PS (ไม่ระบุ)</option>${psOptions}
+        </select>`:'<div></div>'}
+      </div>
+      <button onclick="removeTripBookingRow(${i})" style="padding:4px 8px;border:none;background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;flex-shrink:0;">&#10005;</button>
+    </div>`).join('')
+  : '<div style="font-size:12px;color:var(--gray-400);text-align:center;padding:16px;">กด "+ เพิ่มนัด" เพื่อเพิ่มนัดหมายใน Trip นี้</div>';
+}
+
+// ---- Save Trip ----
+async function saveTripWithBookings(){
+  const title = document.getElementById('trip-title').value.trim();
+  const dateStart = document.getElementById('trip-date-start').value;
+  const dateEnd = document.getElementById('trip-date-end').value;
+  if(!title||!dateStart||!dateEnd){ showToast('กรุณากรอกชื่อ Trip และวันที่','error'); return; }
+  if(tripBookingRows.some(b=>!b.hospital||!b.contact||!b.category)){ showToast('กรุณากรอกข้อมูลนัดให้ครบ (โรงพยาบาล ผู้ติดต่อ ประเภท)','error'); return; }
+
+  const btn = document.getElementById('trip-save-btn');
+  btn.disabled=true; btn.textContent='กำลังบันทึก...';
+
+  const psId = document.getElementById('trip-ps')?.value||'';
+  const psM  = psId?allMembers[psId]:null;
+  const tripData = {
+    title,
+    dateStart, dateEnd,
+    province: document.getElementById('trip-province').value||'',
+    note: document.getElementById('trip-note').value.trim(),
+    salesId: currentUser.id, salesName: currentUser.name,
+    psId, psName: psM?.name||'',
+    status: 'active',
+    createdBy: currentUser.id,
+    createdAt: editingTripId ? (allTrips[editingTripId]?.createdAt||Date.now()) : Date.now(),
+    updatedAt: Date.now()
+  };
+
+  try {
+    let tripId = editingTripId;
+    if(tripId){
+      await tripsRef.child(tripId).update(tripData);
+    } else {
+      const ref = await tripsRef.push(tripData);
+      tripId = ref.key;
+    }
+
+    // Save each booking
+    for(const b of tripBookingRows){
+      if(b._id){
+        // Update existing
+        await bookingsRef.child(b._id).update({
+          hospital:b.hospital, contact:b.contact, date:b.date, time:b.time,
+          category:b.category, product:b.product||'', note:b.note||'',
+          staffId:b.psId||currentUser.id, staff:b.psId?(allMembers[b.psId]?.name||currentUser.name):currentUser.name,
+          staffPosition:b.psId?(allMembers[b.psId]?.position||''):currentUser.position||'',
+          tripId
+        });
+      } else {
+        // Create new booking linked to trip
+        const psForBk = b.psId ? allMembers[b.psId] : null;
+        await bookingsRef.push({
+          role:'ps', dept:'ps',
+          staffId: b.psId||currentUser.id,
+          staff: psForBk?psForBk.name:currentUser.name,
+          staffPosition: psForBk?psForBk.position||'':currentUser.position||'',
+          staffLevel: psForBk?psForBk.level||'':currentUser.level||'',
+          hospital:b.hospital, contact:b.contact,
+          date:b.date, time:b.time,
+          category:b.category, product:b.product||'', note:b.note||'',
+          phone:'', province:tripData.province,
+          tripId, status:'pending', createdAt:Date.now()
+        });
+      }
+    }
+    showToast('บันทึก Trip แล้ว ✓','success');
+    closeTripModal();
+    renderTripsView();
+  } catch(e){
+    showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+  }
+  btn.disabled=false; btn.textContent='&#128190; บันทึก Trip';
+}
+
+// ---- Add booking to existing trip ----
+function openAddBookingToTrip(tripId){
+  editingTripId = tripId;
+  openTripModal(tripId);
+}
+
+// ---- Cancel / Postpone / Done Trip ----
+function cancelTrip(tripId){
+  const t = allTrips[tripId];
+  if(!confirm(`ยืนยันยกเลิก Trip "${t?.title||''}"?
+จะยกเลิกนัดหมายทั้งหมดใน Trip นี้ด้วย`)) return;
+  const updates = {};
+  updates[`trips/${tripId}/status`] = 'cancel';
+  updates[`trips/${tripId}/updatedAt`] = Date.now();
+  // Cancel all bookings in trip
+  Object.entries(allBookings).filter(([,b])=>b.tripId===tripId).forEach(([id])=>{
+    updates[`bookings/${id}/status`] = 'cancel';
+  });
+  db.ref().update(updates).then(()=>{
+    showToast('ยกเลิก Trip แล้ว','error');
+    // Trigger notification
+    addNotification('cancel', {...(t||{}), hospital:'[Trip] '+(t?.title||''), staff:currentUser.name});
+    renderTripsView();
+  });
+}
+
+function postponeTrip(tripId){
+  const t = allTrips[tripId];
+  const newDate = prompt(`เลื่อน Trip "${t?.title||''}" ไปวันที่ใหม่?
+ใส่วันเริ่มต้นใหม่ (YYYY-MM-DD):`, t?.dateStart||'');
+  if(!newDate) return;
+  const oldDate = t?.dateStart;
+  tripsRef.child(tripId).update({dateStart:newDate, updatedAt:Date.now()}).then(()=>{
+    showToast('เลื่อน Trip แล้ว ✓','success');
+    addNotification('postpone', {...(t||{}), hospital:'[Trip] '+(t?.title||''), staff:currentUser.name}, {oldDate, newDate});
+    renderTripsView();
+  });
+}
+
+function doneTrip(tripId){
+  if(!confirm('ยืนยันว่า Trip นี้เสร็จสิ้นแล้ว?')) return;
+  tripsRef.child(tripId).update({status:'done', updatedAt:Date.now()}).then(()=>{
+    showToast('Trip เสร็จสิ้นแล้ว ✓','success');
+    renderTripsView();
+  });
+}
 </script>
 </body>
 </html>
