@@ -447,6 +447,19 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .cov-cold{background:var(--gray-100);color:var(--gray-600);}
 .cov-new{background:var(--teal-light);color:var(--teal);}
 
+/* TERRITORY */
+.territory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
+.territory-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;border-top:3px solid var(--primary);}
+.territory-card.sales-t{border-top-color:var(--navy);}
+.territory-region{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:6px;}
+.territory-provinces{font-size:11px;color:var(--gray-400);margin-bottom:10px;line-height:1.6;}
+.territory-owners{display:flex;flex-direction:column;gap:5px;}
+.territory-owner-row{display:flex;align-items:center;gap:7px;font-size:12px;}
+.territory-badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;flex-shrink:0;}
+.t-ps-badge{background:var(--primary-light);color:var(--primary-dark);}
+.t-sales-badge{background:var(--blue-light);color:var(--navy);}
+.t-empty{color:var(--gray-400);font-style:italic;}
+
 /* DATE RANGE FILTER */
 .mgr-filter{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
 .mgr-filter label{font-size:12px;font-weight:500;color:var(--gray-600);}
@@ -533,6 +546,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       <button class="nav-btn active" onclick="switchView('cal')">&#128197; Calendar</button>
       <button class="nav-btn" onclick="switchView('dash')">&#9783; Dashboard</button>
       <button class="nav-btn" onclick="switchView('res')">&#128230; ยืม/คืน</button>
+      <button class="nav-btn" id="nav-territory-btn" style="display:none;" onclick="switchView('territory')">&#128205; Territory</button>
       <button class="nav-btn" id="nav-book-btn" onclick="openModal(null)">+ จอง</button>
     </div>
     <div class="topbar-right">
@@ -662,6 +676,83 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
           <div class="card" style="background:var(--gray-50);margin-top:4px;">
             <div class="card-title" style="margin-bottom:10px;">รายการจองรถ</div>
             <div id="car-booking-list"><div class="loading">กำลังโหลด...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- TERRITORY VIEW (PS Manager only) -->
+    <div class="view" id="view-territory">
+      <div class="card">
+        <div class="card-title">&#128205; Territory — Sales &amp; PS ประจำพื้นที่</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+          <button class="filter-chip on" id="t-tab-region" onclick="switchTerritoryTab('region',this)">&#127758; ระดับภาค</button>
+          <button class="filter-chip" id="t-tab-province" onclick="switchTerritoryTab('province',this)">&#128204; ระดับจังหวัด</button>
+        </div>
+        <!-- ระดับภาค -->
+        <div id="t-view-region">
+          <div class="territory-grid" id="territory-grid-user"></div>
+        </div>
+        <!-- ระดับจังหวัด -->
+        <div id="t-view-province" style="display:none;">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+            <select id="t-filter-region" onchange="renderProvinceTerritory()" style="padding:6px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">
+              <option value="">-- ทุกภาค --</option>
+              <option>กรุงเทพและปริมณฑล</option>
+              <option>ภาคเหนือ</option>
+              <option>ภาคกลาง</option>
+              <option>ภาคตะวันออก</option>
+              <option>ภาคตะวันออกเฉียงเหนือ</option>
+              <option>ภาคตะวันตก</option>
+              <option>ภาคใต้</option>
+            </select>
+          </div>
+          <div id="territory-province-list"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#10133; กำหนด Territory</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+          <button class="filter-chip on" id="tf-tab-region" onclick="switchTerritoryFormTab('region',this)">ระดับภาค</button>
+          <button class="filter-chip" id="tf-tab-province" onclick="switchTerritoryFormTab('province',this)">ระดับจังหวัด</button>
+        </div>
+        <!-- ฟอร์มระดับภาค -->
+        <div id="tf-form-region" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:640px;">
+          <div class="fgg">
+            <label>ภาค *</label>
+            <select id="t-region" onchange="updateTerritoryProvinces()">
+              <option value="">-- เลือกภาค --</option>
+              <option>กรุงเทพและปริมณฑล</option><option>ภาคเหนือ</option><option>ภาคกลาง</option>
+              <option>ภาคตะวันออก</option><option>ภาคตะวันออกเฉียงเหนือ</option>
+              <option>ภาคตะวันตก</option><option>ภาคใต้</option>
+            </select>
+          </div>
+          <div class="fgg"><label>Sales ประจำภาค</label><select id="t-sales"><option value="">-- ไม่ระบุ --</option></select></div>
+          <div class="fgg"><label>PS ประจำภาค</label><select id="t-ps"><option value="">-- ไม่ระบุ --</option></select></div>
+          <div class="fgg"><label>PS สำรอง</label><select id="t-ps2"><option value="">-- ไม่ระบุ --</option></select></div>
+          <div class="fgg" style="grid-column:1/-1;">
+            <label>จังหวัดในภาคนี้</label>
+            <div id="t-province-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;max-height:150px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px;"></div>
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;">
+            <button onclick="saveTerritory()" style="padding:9px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">&#128190; บันทึก</button>
+            <button onclick="clearTerritoryForm()" style="padding:9px 16px;background:var(--white);color:var(--gray-600);border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer;">ล้าง</button>
+          </div>
+        </div>
+        <!-- ฟอร์มระดับจังหวัด -->
+        <div id="tf-form-province" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:640px;">
+          <div class="fgg">
+            <label>จังหวัด *</label>
+            <select id="tp-province" onchange="loadProvinceTerritoryData()">
+              <option value="">-- เลือกจังหวัด --</option>
+              <option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1;"></div>
+          <div class="fgg"><label>Sales ประจำจังหวัด</label><select id="tp-sales"><option value="">-- ใช้ระดับภาค --</option></select></div>
+          <div class="fgg"><label>PS ประจำจังหวัด</label><select id="tp-ps"><option value="">-- ใช้ระดับภาค --</option></select></div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;margin-top:4px;">
+            <button onclick="saveProvinceTerritory()" style="padding:9px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">&#128190; บันทึก</button>
           </div>
         </div>
       </div>
@@ -972,6 +1063,63 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       </div>
     </div>
   </div>
+    <!-- TERRITORY VIEW -->
+    <div class="view" id="aview-territory">
+      <div class="card">
+        <div class="card-title">&#128205; Territory Management — กำหนด Sales/PS ประจำพื้นที่</div>
+        <div style="font-size:12px;color:var(--gray-600);margin-bottom:16px;line-height:1.8;">
+          กำหนดว่าแต่ละภาค/จังหวัด มี Sales และ PS ประจำพื้นที่คนใด — ข้อมูลนี้ช่วย Manager ใน Assign งานได้ถูกต้อง
+        </div>
+        <div class="territory-grid" id="territory-grid">
+          <div class="loading">กำลังโหลด...</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#10133; เพิ่ม / แก้ไข Territory</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:640px;">
+          <div class="fgg">
+            <label>ภาค *</label>
+            <select id="t-region" onchange="updateTerritoryProvinces()">
+              <option value="">-- เลือกภาค --</option>
+              <option value="กรุงเทพและปริมณฑล">กรุงเทพและปริมณฑล</option>
+              <option value="ภาคเหนือ">ภาคเหนือ</option>
+              <option value="ภาคกลาง">ภาคกลาง</option>
+              <option value="ภาคตะวันออก">ภาคตะวันออก</option>
+              <option value="ภาคตะวันออกเฉียงเหนือ">ภาคตะวันออกเฉียงเหนือ</option>
+              <option value="ภาคตะวันตก">ภาคตะวันตก</option>
+              <option value="ภาคใต้">ภาคใต้</option>
+            </select>
+          </div>
+          <div class="fgg">
+            <label>Sales ประจำพื้นที่</label>
+            <select id="t-sales">
+              <option value="">-- ไม่ระบุ --</option>
+            </select>
+          </div>
+          <div class="fgg">
+            <label>PS ประจำพื้นที่</label>
+            <select id="t-ps">
+              <option value="">-- ไม่ระบุ --</option>
+            </select>
+          </div>
+          <div class="fgg">
+            <label>PS สำรอง (ถ้ามี)</label>
+            <select id="t-ps2">
+              <option value="">-- ไม่ระบุ --</option>
+            </select>
+          </div>
+          <div class="fgg" style="grid-column:1/-1;">
+            <label>จังหวัดในพื้นที่นี้ (เลือกได้หลายจังหวัด)</label>
+            <div id="t-province-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;max-height:160px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px;"></div>
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;">
+            <button onclick="saveTerritory()" style="padding:9px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">&#128190; บันทึก Territory</button>
+            <button onclick="clearTerritoryForm()" style="padding:9px 16px;background:var(--white);color:var(--gray-600);border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer;">ล้างฟอร์ม</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- SETTINGS VIEW -->
     <div class="view" id="aview-settings">
       <div class="card">
@@ -1274,11 +1422,12 @@ const bookingsRef = db.ref('bookings');
 const membersRef = db.ref('members');
 const resourcesRef = db.ref('resources');
 const resBookingsRef = db.ref('resBookings');
+const territoriesRef = db.ref('territories');
 
 const ADMIN_PW = 'admin1234';
 const MGR_PW = 'manager2026';
 let currentUser = null;
-let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {};
+let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {}, allTerritories = {};
 
 // ROLE HELPERS
 function isSales(){ return currentUser && currentUser.dept==='sales'; }
@@ -1300,6 +1449,7 @@ bookingsRef.on('value', s => { allBookings = s.val()||{}; refreshAll(); refreshM
 membersRef.on('value', s => { allMembers = s.val()||{}; renderMemberDropdown(); renderMemberCards(); refreshAll(); refreshMgr(); });
 resourcesRef.on('value', s => { allResources = s.val()||{}; renderResViews(); });
 resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews(); });
+territoriesRef.on('value', s => { allTerritories = s.val()||{}; });
 
 function refreshAll(){
   renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner();
@@ -1423,6 +1573,8 @@ function startUserApp(){
   // ปรับ UI ตาม role
   const bookBtn = document.getElementById('nav-book-btn');
   if(bookBtn) bookBtn.style.display = isSales() ? 'none' : '';
+  const terrBtn = document.getElementById('nav-territory-btn');
+  if(terrBtn) terrBtn.style.display = canAssign() ? '' : 'none';
   // Sales: default filter = mine
   if(isSales()){ uFilter = 'mine'; }
 }
@@ -1438,10 +1590,12 @@ function startAdminApp(){
 function switchView(v){
   document.querySelectorAll('#user-screen .view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('#user-screen .nav-btn').forEach(el=>el.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
+  const viewEl = document.getElementById('view-'+v);
+  if(viewEl) viewEl.classList.add('active');
   const idx={cal:0,dash:1,res:2};
   if(idx[v]!==undefined) document.querySelectorAll('#user-screen .nav-btn')[idx[v]].classList.add('active');
   if(v==='res') renderResViews();
+  if(v==='territory'){ renderTerritoryUserView(); populateTerritoryMemberSelects(); }
 }
 function switchAdminView(v){
   document.querySelectorAll('#admin-screen .view').forEach(el=>el.classList.remove('active'));
@@ -2759,6 +2913,217 @@ addNotification = function(type, booking, extra){
   };
   callN8nWebhook(payload);
 };
+
+// ===================== TERRITORY MANAGEMENT =====================
+const REGION_PROVINCES = {
+  'กรุงเทพและปริมณฑล': ['กรุงเทพมหานคร','นนทบุรี','ปทุมธานี','สมุทรปราการ','สมุทรสาคร','นครปฐม'],
+  'ภาคเหนือ': ['เชียงใหม่','เชียงราย','แม่ฮ่องสอน','ลำปาง','ลำพูน','แพร่','น่าน','พะเยา','อุตรดิตถ์','สุโขทัย','พิษณุโลก','เพชรบูรณ์','พิจิตร','กำแพงเพชร','นครสวรรค์','อุทัยธานี','ตาก'],
+  'ภาคกลาง': ['พระนครศรีอยุธยา','สระบุรี','ลพบุรี','สิงห์บุรี','อ่างทอง','ชัยนาท','สุพรรณบุรี','ราชบุรี','สมุทรสงคราม'],
+  'ภาคตะวันออก': ['ชลบุรี','ระยอง','จันทบุรี','ตราด','ฉะเชิงเทรา','ปราจีนบุรี','สระแก้ว','นครนายก'],
+  'ภาคตะวันออกเฉียงเหนือ': ['นครราชสีมา','บุรีรัมย์','สุรินทร์','ศรีสะเกษ','อุบลราชธานี','ยโสธร','ชัยภูมิ','อำนาจเจริญ','หนองบัวลำภู','ขอนแก่น','อุดรธานี','เลย','หนองคาย','มหาสารคาม','ร้อยเอ็ด','กาฬสินธุ์','สกลนคร','นครพนม','มุกดาหาร','บึงกาฬ'],
+  'ภาคตะวันตก': ['กาญจนบุรี','ราชบุรี','เพชรบุรี','ประจวบคีรีขันธ์'],
+  'ภาคใต้': ['ชุมพร','สุราษฎร์ธานี','นครศรีธรรมราช','พัทลุง','สงขลา','ตรัง','สตูล','กระบี่','พังงา','ภูเก็ต','ระนอง','ยะลา','ปัตตานี','นราธิวาส']
+};
+
+// ---- Tab switching ----
+function switchTerritoryTab(tab, el){
+  document.querySelectorAll('#view-territory .filter-chip').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('t-view-region').style.display = tab==='region' ? '' : 'none';
+  document.getElementById('t-view-province').style.display = tab==='province' ? '' : 'none';
+  if(tab==='province') renderProvinceTerritory();
+}
+
+function switchTerritoryFormTab(tab, el){
+  ['tf-tab-region','tf-tab-province'].forEach(id=>document.getElementById(id)?.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('tf-form-region').style.display = tab==='region' ? 'grid' : 'none';
+  document.getElementById('tf-form-province').style.display = tab==='province' ? 'grid' : 'none';
+}
+
+// ---- Populate member dropdowns ----
+function populateTerritoryMemberSelects(){
+  const salesIds = ['t-sales','tp-sales'];
+  const psIds = ['t-ps','t-ps2','tp-ps'];
+  salesIds.forEach(id=>{
+    const sel = document.getElementById(id); if(!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = `<option value="">-- ไม่ระบุ --</option>`;
+    Object.entries(allMembers).filter(([,m])=>m.dept==='sales').forEach(([mid,m])=>{
+      sel.innerHTML += `<option value="${mid}">${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
+    });
+    sel.value = cur;
+  });
+  psIds.forEach(id=>{
+    const sel = document.getElementById(id); if(!sel) return;
+    const cur = sel.value;
+    const isProvince = id.startsWith('tp-');
+    sel.innerHTML = isProvince ? `<option value="">-- ใช้ระดับภาค --</option>` : `<option value="">-- ไม่ระบุ --</option>`;
+    Object.entries(allMembers).filter(([,m])=>m.dept==='ps').forEach(([mid,m])=>{
+      sel.innerHTML += `<option value="${mid}">${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
+    });
+    sel.value = cur;
+  });
+}
+
+// ---- Render region-level territory cards ----
+function renderTerritoryUserView(){
+  const grid = document.getElementById('territory-grid-user');
+  if(!grid) return;
+  const regions = Object.keys(REGION_PROVINCES);
+  grid.innerHTML = regions.map(region => {
+    const t = Object.values(allTerritories).find(x=>x.region===region&&!x.province)||{};
+    const salesM = t.salesId ? allMembers[t.salesId] : null;
+    const psM    = t.psId    ? allMembers[t.psId]    : null;
+    const ps2M   = t.ps2Id   ? allMembers[t.ps2Id]   : null;
+    const provs  = (REGION_PROVINCES[region]||[]).slice(0,4).join(', ')+'...';
+    return `<div class="territory-card" onclick="loadTerritoryForm('${region}')" style="cursor:pointer;">
+      <div class="territory-region">&#128205; ${region}</div>
+      <div class="territory-provinces">${provs}</div>
+      <div class="territory-owners">
+        <div class="territory-owner-row">
+          <span class="territory-badge t-sales-badge">Sales</span>
+          ${salesM ? `<span>${esc(salesM.name)}</span>` : '<span class="t-empty">ยังไม่กำหนด</span>'}
+        </div>
+        <div class="territory-owner-row">
+          <span class="territory-badge t-ps-badge">PS</span>
+          ${psM ? `<span>${esc(psM.name)}</span>` : '<span class="t-empty">ยังไม่กำหนด</span>'}
+        </div>
+        ${ps2M?`<div class="territory-owner-row"><span class="territory-badge t-ps-badge">PS สำรอง</span><span>${esc(ps2M.name)}</span></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- Render province-level territory table ----
+function renderProvinceTerritory(){
+  const filterRegion = document.getElementById('t-filter-region')?.value||'';
+  const list = document.getElementById('territory-province-list');
+  if(!list) return;
+  // รวม province overrides จาก Firebase
+  const provOverrides = Object.values(allTerritories).filter(t=>t.province);
+  const regions = filterRegion ? [filterRegion] : Object.keys(REGION_PROVINCES);
+  let rows = '';
+  regions.forEach(region=>{
+    (REGION_PROVINCES[region]||[]).forEach(prov=>{
+      const override = provOverrides.find(t=>t.province===prov);
+      const regionT = Object.values(allTerritories).find(t=>t.region===region&&!t.province)||{};
+      const salesM = override?.salesId ? allMembers[override.salesId] : (regionT.salesId ? allMembers[regionT.salesId] : null);
+      const psM    = override?.psId    ? allMembers[override.psId]    : (regionT.psId    ? allMembers[regionT.psId]    : null);
+      const isOverride = !!override;
+      rows += `<tr>
+        <td style="font-size:12px;color:var(--gray-400);">${region}</td>
+        <td style="font-size:12px;font-weight:600;">${prov}${isOverride?'<span style="font-size:10px;color:var(--primary);margin-left:4px;">★</span>':''}</td>
+        <td style="font-size:12px;">${salesM?esc(salesM.name):'<span style="color:var(--gray-400);">—</span>'}</td>
+        <td style="font-size:12px;">${psM?esc(psM.name):'<span style="color:var(--gray-400);">—</span>'}</td>
+        <td><button onclick="quickLoadProvince('${prov}')" style="font-size:10px;padding:2px 8px;border:1px solid var(--primary);color:var(--primary);background:var(--white);border-radius:20px;cursor:pointer;">แก้ไข</button></td>
+      </tr>`;
+    });
+  });
+  list.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead><tr>
+      <th style="text-align:left;padding:6px 8px;background:var(--gray-50);color:var(--gray-600);border-bottom:2px solid var(--gray-200);">ภาค</th>
+      <th style="text-align:left;padding:6px 8px;background:var(--gray-50);color:var(--gray-600);border-bottom:2px solid var(--gray-200);">จังหวัด</th>
+      <th style="text-align:left;padding:6px 8px;background:var(--gray-50);color:var(--gray-600);border-bottom:2px solid var(--gray-200);">Sales</th>
+      <th style="text-align:left;padding:6px 8px;background:var(--gray-50);color:var(--gray-600);border-bottom:2px solid var(--gray-200);">PS</th>
+      <th style="padding:6px 8px;background:var(--gray-50);border-bottom:2px solid var(--gray-200);"></th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div style="font-size:11px;color:var(--gray-400);margin-top:8px;">★ = กำหนดแยกจากระดับภาค | ค่าปกติสืบทอดจากระดับภาค</div>`;
+}
+
+function quickLoadProvince(prov){
+  // Switch to province form tab
+  switchTerritoryFormTab('province', document.getElementById('tf-tab-province'));
+  const sel = document.getElementById('tp-province');
+  if(sel){ sel.value = prov; loadProvinceTerritoryData(); }
+  // scroll to form
+  document.getElementById('tp-province')?.scrollIntoView({behavior:'smooth'});
+}
+
+function loadProvinceTerritoryData(){
+  const prov = document.getElementById('tp-province')?.value;
+  if(!prov) return;
+  const override = Object.values(allTerritories).find(t=>t.province===prov);
+  if(override){
+    const tSales = document.getElementById('tp-sales');
+    const tPs    = document.getElementById('tp-ps');
+    if(tSales) tSales.value = override.salesId||'';
+    if(tPs)    tPs.value    = override.psId||'';
+  }
+}
+
+// ---- Load region data into form ----
+function updateTerritoryProvinces(){
+  const region = document.getElementById('t-region')?.value;
+  const box = document.getElementById('t-province-checkboxes');
+  if(!box) return;
+  const provinces = REGION_PROVINCES[region]||[];
+  const existing = Object.values(allTerritories).find(t=>t.region===region&&!t.province);
+  const selectedProvs = existing?.provinces||provinces;
+  box.innerHTML = provinces.map(p=>`
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;min-width:140px;">
+      <input type="checkbox" value="${p}" ${selectedProvs.includes(p)?'checked':''} style="accent-color:var(--primary);">
+      ${p}
+    </label>`).join('');
+  if(existing){
+    const el = (id)=>document.getElementById(id);
+    if(el('t-sales')) el('t-sales').value=existing.salesId||'';
+    if(el('t-ps'))    el('t-ps').value=existing.psId||'';
+    if(el('t-ps2'))   el('t-ps2').value=existing.ps2Id||'';
+  }
+}
+
+function loadTerritoryForm(region){
+  switchTerritoryFormTab('region', document.getElementById('tf-tab-region'));
+  const rSel = document.getElementById('t-region');
+  if(rSel){ rSel.value=region; updateTerritoryProvinces(); }
+}
+
+// ---- Save region territory ----
+function saveTerritory(){
+  const region = document.getElementById('t-region')?.value;
+  if(!region){ showToast('กรุณาเลือกภาคก่อน','error'); return; }
+  const salesId = document.getElementById('t-sales')?.value||'';
+  const psId    = document.getElementById('t-ps')?.value||'';
+  const ps2Id   = document.getElementById('t-ps2')?.value||'';
+  const checked = [...document.querySelectorAll('#t-province-checkboxes input:checked')].map(cb=>cb.value);
+  const salesM = salesId?allMembers[salesId]:null;
+  const psM    = psId?allMembers[psId]:null;
+  const ps2M   = ps2Id?allMembers[ps2Id]:null;
+  const data = { region, provinces:checked, salesId, salesName:salesM?.name||'', psId, psName:psM?.name||'', ps2Id, ps2Name:ps2M?.name||'', updatedAt:Date.now(), updatedBy:currentUser?.name||'' };
+  const existing = Object.entries(allTerritories).find(([,t])=>t.region===region&&!t.province);
+  const ref = existing ? territoriesRef.child(existing[0]) : territoriesRef.push();
+  (existing?ref.update(data):ref.set(data))
+    .then(()=>{ showToast('บันทึก Territory ระดับภาคแล้ว ✓','success'); renderTerritoryUserView(); })
+    .catch(()=>showToast('เกิดข้อผิดพลาด','error'));
+}
+
+// ---- Save province territory ----
+function saveProvinceTerritory(){
+  const prov    = document.getElementById('tp-province')?.value;
+  if(!prov){ showToast('กรุณาเลือกจังหวัดก่อน','error'); return; }
+  const salesId = document.getElementById('tp-sales')?.value||'';
+  const psId    = document.getElementById('tp-ps')?.value||'';
+  const salesM  = salesId?allMembers[salesId]:null;
+  const psM     = psId?allMembers[psId]:null;
+  const data    = { province:prov, salesId, salesName:salesM?.name||'', psId, psName:psM?.name||'', updatedAt:Date.now(), updatedBy:currentUser?.name||'' };
+  const existing = Object.entries(allTerritories).find(([,t])=>t.province===prov);
+  const ref = existing ? territoriesRef.child(existing[0]) : territoriesRef.push();
+  (existing?ref.update(data):ref.set(data))
+    .then(()=>{ showToast('บันทึก Territory ระดับจังหวัดแล้ว ✓','success'); renderProvinceTerritory(); })
+    .catch(()=>showToast('เกิดข้อผิดพลาด','error'));
+}
+
+function clearTerritoryForm(){
+  ['t-region','t-sales','t-ps','t-ps2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const box = document.getElementById('t-province-checkboxes');
+  if(box) box.innerHTML='<span style="font-size:12px;color:var(--gray-400);">เลือกภาคก่อน</span>';
+}
+
+// Re-render territory when data changes
+territoriesRef.on('value', s=>{ allTerritories=s.val()||{}; });
 
 </script>
 </body>
