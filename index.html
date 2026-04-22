@@ -2958,15 +2958,27 @@ function showN8nStatus(msg, type){
 async function callN8nWebhook(payload){
   if(!n8nWebhookUrl) return;
   try {
-    await fetch(n8nWebhookUrl, {
+    // ใช้ text/plain เพื่อหลีกเลี่ยง CORS preflight — n8n รับได้ทั้งสองแบบ
+    const res = await fetch(n8nWebhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload),
-      mode: 'no-cors', // n8n webhook รองรับ CORS แล้ว แต่ใส่ไว้กันสะดุด
     });
-    console.log('[n8n] webhook called:', payload.type);
+    console.log('[n8n] webhook sent OK, status:', res.status);
+    return true;
   } catch(e) {
-    console.warn('[n8n] webhook error:', e);
+    console.warn('[n8n] CORS error, trying no-cors fallback:', e.message);
+    try {
+      await fetch(n8nWebhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload),
+      });
+      console.log('[n8n] sent via no-cors fallback');
+    } catch(e2) {
+      console.warn('[n8n] fallback failed:', e2.message);
+    }
   }
 }
 
@@ -2975,15 +2987,19 @@ async function testN8nWebhook(){
   if(!url){ showN8nStatus('⚠️ ยังไม่ได้กรอก Webhook URL','error'); return; }
   n8nWebhookUrl = url;
   showN8nStatus('กำลังส่ง...','');
-  await callN8nWebhook({
+  const ok = await callN8nWebhook({
     type: 'test',
     staff: 'ทดสอบระบบ',
     hospital: 'โรงพยาบาลทดสอบ',
     date: new Date().toISOString().slice(0,10),
     contact: 'ผู้ทดสอบ',
-    message: '✅ ระบบแจ้งเตือน PES เชื่อมต่อ n8n สำเร็จ!'
+    message: '\n[PES] ✅ ทดสอบระบบแจ้งเตือน\nระบบจองนัดหมาย Prapatsorn Engineering\nการเชื่อมต่อ n8n → Line OA สำเร็จ!'
   });
-  showN8nStatus('✅ ส่งข้อมูลทดสอบไป n8n แล้ว — ตรวจสอบใน n8n Executions','success');
+  if(ok === true){
+    showN8nStatus('✅ ส่งสำเร็จ! ตรวจสอบข้อความในกลุ่ม Line','success');
+  } else {
+    showN8nStatus('⚠️ ส่งแล้ว (no-cors mode) — ตรวจสอบใน n8n Executions ว่าถึงไหม','');
+  }
 }
 
 // Hook เข้ากับ addNotification — ส่ง webhook ทุกครั้งที่มี event
