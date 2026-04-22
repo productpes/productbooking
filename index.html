@@ -1113,6 +1113,8 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
   <div class="fgrid">
     <div class="fgg"><label>ชื่อโรงพยาบาล / คลินิก *</label><input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ"></div>
     <div class="fgg"><label>ชื่อผู้ติดต่อ *</label><input type="text" id="f-contact" placeholder="เช่น คุณสมชาย"></div>
+    <div class="fgg"><label>จังหวัด</label><select id="f-province"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
+    <div class="fgg"><label>เขตพื้นที่</label><select id="f-region"><option value="">-- เลือกเขต --</option><option>กรุงเทพและปริมณฑล</option><option>ภาคเหนือ</option><option>ภาคกลาง</option><option>ภาคตะวันออก</option><option>ภาคตะวันออกเฉียงเหนือ</option><option>ภาคตะวันตก</option><option>ภาคใต้</option></select></div>
     <div class="fgg"><label>เบอร์โทร</label><input type="tel" id="f-phone" placeholder="0812345678"></div>
     <div class="fgg"><label>วันที่นัดหมาย *</label><input type="date" id="f-date"></div>
     <div class="fgg"><label>เวลา *</label><input type="time" id="f-time" value="09:00"></div>
@@ -1170,6 +1172,8 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <option value="cancel">ยกเลิก</option>
       </select>
     </div>
+    <div class="fgg"><label>จังหวัด</label><select id="e-province"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
+    <div class="fgg"><label>เขตพื้นที่</label><select id="e-region"><option value="">-- เลือกเขต --</option><option>กรุงเทพและปริมณฑล</option><option>ภาคเหนือ</option><option>ภาคกลาง</option><option>ภาคตะวันออก</option><option>ภาคตะวันออกเฉียงเหนือ</option><option>ภาคตะวันตก</option><option>ภาคใต้</option></select></div>
     <div class="fgg full"><label>หมายเหตุ</label><textarea id="e-note"></textarea></div>
   </div>
   <button class="save-btn purple-btn" onclick="saveEdit()">บันทึกการแก้ไข</button>
@@ -1671,6 +1675,8 @@ function submitBooking(){
     staffPosition: assignedPos, staffLevel: assignedLevel,
     assignedBy: assignedMember ? currentUser.name : '',
     hospital, contact,
+    province:document.getElementById('f-province').value,
+    region:document.getElementById('f-region').value,
     phone:document.getElementById('f-phone').value.trim(),
     date, time,
     category:document.getElementById('f-category').value,
@@ -1680,7 +1686,7 @@ function submitBooking(){
   }).then(()=>{ showToast('บันทึกสำเร็จ ✓','success'); closeModal(); btn.disabled=false; btn.textContent='บันทึกการจอง'; })
   .catch(()=>{ showToast('เกิดข้อผิดพลาด','error'); btn.disabled=false; btn.textContent='บันทึกการจอง'; });
 }
-function clearForm(){ ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f-time').value='09:00'; document.getElementById('f-product').value=''; document.getElementById('f-category').value=''; }
+function clearForm(){ ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value=''); ['f-province','f-region'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); document.getElementById('f-time').value='09:00'; document.getElementById('f-product').value=''; document.getElementById('f-category').value=''; }
 
 // BOOKING LIST
 const scMap={pending:'pending',active:'active',done:'done',cancel:'cancel'};
@@ -1728,7 +1734,7 @@ function bkgRow(b, isAdmin){
     </div>
     <div class="b-info">
       <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}${isAdmin?'<span class="badge bg-admin">Admin</span>':''}${catTag(b.category)}</div>
-      <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
+      <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
     </div>
@@ -1959,7 +1965,7 @@ function openEdit(id){
   const b=allBookings[id]; if(!b) return;
   // Sales: เห็นเฉพาะนัดของตัวเอง
   if(isSales() && b.staffId !== currentUser.id){ showToast('ไม่มีสิทธิ์แก้ไขนัดของผู้อื่น','error'); return; }
-  document.getElementById('e-hospital').value=b.hospital||'';
+  document.getElementById('e-hospital').value=b.hospital||''; const ep=document.getElementById('e-province'); if(ep) ep.value=b.province||''; const er=document.getElementById('e-region'); if(er) er.value=b.region||'';
   document.getElementById('e-contact').value=b.contact||'';
   document.getElementById('e-phone').value=b.phone||'';
   document.getElementById('e-date').value=b.date||'';
@@ -2007,6 +2013,8 @@ function saveEdit(){
     phone:document.getElementById('e-phone').value.trim(),
     date:newDate,
     time:document.getElementById('e-time').value,
+    province:(document.getElementById('e-province')?.value||''),
+    region:(document.getElementById('e-region')?.value||''),
     category:document.getElementById('e-category').value,
     status:newStatus,
     note:document.getElementById('e-note').value.trim(),
