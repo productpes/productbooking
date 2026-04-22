@@ -2183,11 +2183,18 @@ function startRealtimeNotifListener(){
 function changeStatus(id, sel){
   sel.className='sts '+(scMap[sel.value]||'');
   const newStatus = sel.value;
+  const booking = allBookings[id];
   // บันทึกว่าเราเพิ่งเขียน id นี้เอง → listener จะข้ามไป
   recentWrites.add(id);
   setTimeout(()=>recentWrites.delete(id), 3000);
   bookingsRef.child(id).update({status: newStatus, lastUpdatedBy: currentUser?currentUser.name:'', lastUpdatedAt: Date.now()})
-    .then(()=>showToast('อัปเดตสถานะแล้ว','success'));
+    .then(()=>{
+      showToast('อัปเดตสถานะแล้ว','success');
+      // ส่ง webhook โดยตรง ไม่รอ listener
+      if(booking && newStatus === 'cancel'){
+        addNotification('cancel', {...booking, id, lastUpdatedBy: currentUser?.name||''});
+      }
+    });
 }
 
 function deleteBooking(id){
