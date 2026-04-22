@@ -1809,7 +1809,7 @@ function updateMyBanner(){
 function switchCal(m){ calMode=m; document.getElementById('btn-month').classList.toggle('active',m==='month'); document.getElementById('btn-week').classList.toggle('active',m==='week'); renderCalendar(); }
 function navCal(d){ if(calMode==='month') calDate=new Date(calDate.getFullYear(),calDate.getMonth()+d,1); else calDate=new Date(calDate.getTime()+d*7*86400000); renderCalendar(); }
 function goToday(){ calDate=new Date(); renderCalendar(); }
-function getBkgs(ds){ return Object.entries(allBookings).filter(([,b])=>b.date===ds).map(([id,b])=>({id,...b})); }
+function getBkgs(ds){ return Object.entries(allBookings).filter(([,b])=>b.date===ds && (!isSales() || b.staffId===currentUser?.id)).map(([id,b])=>({id,...b})); }
 
 function renderCalendar(){ if(!currentUser) return; calMode==='month'?renderMonth():renderWeek(); }
 
