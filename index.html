@@ -2919,7 +2919,19 @@ function refreshMgr(){
 }
 
 // ===================== N8N WEBHOOK — LINE OA =====================
-let n8nWebhookUrl = localStorage.getItem('pes_n8n_url') || '';
+// เก็บ URL ใน Firebase แทน localStorage — sync ทุกเครื่อง ไม่หาย
+let n8nWebhookUrl = '';
+const configRef = db.ref('config');
+
+// โหลด URL จาก Firebase ตั้งแต่เริ่ม
+configRef.child('n8nWebhookUrl').on('value', s => {
+  n8nWebhookUrl = s.val() || '';
+  // อัปเดต UI ถ้าหน้า settings เปิดอยู่
+  const inp = document.getElementById('n8n-webhook-url');
+  if(inp) inp.value = n8nWebhookUrl;
+  const dot = document.getElementById('line-configured-dot');
+  if(dot) dot.style.display = n8nWebhookUrl ? 'block' : 'none';
+});
 
 function initSettingsView(){
   const inp = document.getElementById('n8n-webhook-url');
@@ -2933,22 +2945,29 @@ function saveN8nUrl(){
   const v = (document.getElementById('n8n-webhook-url')?.value || '').trim();
   if(!v || !v.startsWith('http')){ showN8nStatus('กรุณากรอก Webhook URL ที่ถูกต้อง','error'); return; }
   n8nWebhookUrl = v;
-  localStorage.setItem('pes_n8n_url', n8nWebhookUrl);
-  const dot = document.getElementById('line-configured-dot');
-  if(dot) dot.style.display = 'block';
-  showN8nStatus('✅ บันทึก URL แล้ว','success');
-  showToast('บันทึก n8n Webhook URL แล้ว ✓','success');
+  // บันทึกลง Firebase — ทุกเครื่องได้ค่าเดียวกัน
+  configRef.child('n8nWebhookUrl').set(v).then(() => {
+    const dot = document.getElementById('line-configured-dot');
+    if(dot) dot.style.display = 'block';
+    showN8nStatus('✅ บันทึก URL ลง Firebase แล้ว (sync ทุกเครื่อง)','success');
+    showToast('บันทึก n8n Webhook URL แล้ว ✓','success');
+  }).catch(e => {
+    showN8nStatus('❌ บันทึกไม่สำเร็จ: '+e.message,'error');
+  });
 }
 
 function clearN8nUrl(){
   if(!confirm('ลบ Webhook URL?')) return;
-  n8nWebhookUrl = '';
-  localStorage.removeItem('pes_n8n_url');
-  const inp = document.getElementById('n8n-webhook-url');
-  if(inp) inp.value = '';
-  const dot = document.getElementById('line-configured-dot');
-  if(dot) dot.style.display = 'none';
-  showN8nStatus('ลบ URL แล้ว','');
+  configRef.child('n8nWebhookUrl').remove().then(() => {
+    n8nWebhookUrl = '';
+    const inp = document.getElementById('n8n-webhook-url');
+    if(inp) inp.value = '';
+    const dot = document.getElementById('line-configured-dot');
+    if(dot) dot.style.display = 'none';
+    showN8nStatus('ลบ URL แล้ว','');
+  }).catch(e => {
+    showN8nStatus('❌ ลบไม่สำเร็จ: '+e.message,'error');
+  });
 }
 
 function showN8nStatus(msg, type){
