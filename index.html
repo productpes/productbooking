@@ -308,6 +308,27 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .toast.error{background:var(--red);}
 .footer{text-align:center;padding:14px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-200);}
 
+/* DOCUMENT ATTACHMENT */
+.doc-section{margin-top:6px;padding-top:6px;border-top:1px dashed var(--gray-200);}
+.doc-item{display:flex;align-items:center;gap:6px;padding:4px 6px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);margin-bottom:4px;font-size:11px;}
+.doc-item a{color:var(--primary);text-decoration:none;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.doc-item a:hover{text-decoration:underline;}
+.doc-icon{font-size:13px;flex-shrink:0;}
+.doc-del{border:none;background:none;color:var(--gray-400);cursor:pointer;font-size:12px;padding:0 2px;flex-shrink:0;}
+.doc-del:hover{color:var(--red);}
+.attach-btn{font-size:11px;padding:3px 10px;border:1px solid var(--primary);background:var(--primary-light);color:var(--primary);border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;}
+.attach-btn:hover{background:var(--primary);color:white;}
+/* Doc modal */
+.doc-modal{background:var(--white);border-radius:var(--radius);padding:22px;width:100%;max-width:440px;margin:16px;max-height:90vh;overflow-y:auto;}
+.doc-tab-row{display:flex;gap:4px;background:var(--gray-100);border-radius:var(--radius-sm);padding:3px;margin-bottom:16px;}
+.doc-tab{flex:1;padding:6px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--gray-600);font-family:inherit;text-align:center;transition:all .15s;}
+.doc-tab.active{background:var(--white);color:var(--primary);}
+.doc-tab-panel{display:none;}
+.doc-tab-panel.active{display:block;}
+.doc-drop-area{border:2px dashed var(--gray-200);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all .15s;background:var(--gray-50);}
+.doc-drop-area:hover,.doc-drop-area.drag-over{border-color:var(--primary);background:var(--primary-light);}
+.doc-drop-area input{display:none;}
+
 /* NOTIFICATION BELL */
 .notif-bell-wrap{position:relative;cursor:pointer;}
 .notif-bell{width:34px;height:34px;border-radius:50%;border:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s;}
@@ -1479,6 +1500,66 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 </div>
 </div>
 
+<!-- DOCUMENT ATTACHMENT MODAL -->
+<div class="modal-overlay" id="doc-overlay" onclick="if(event.target.id==='doc-overlay')closeDocModal()">
+<div class="doc-modal">
+  <div class="modal-hd">
+    <span>📎 แนบเอกสาร</span>
+    <button class="modal-close" onclick="closeDocModal()">&#10005;</button>
+  </div>
+  <div style="font-size:12px;color:var(--gray-400);margin-bottom:14px;" id="doc-modal-booking-name">—</div>
+  <div class="doc-tab-row">
+    <button class="doc-tab active" onclick="switchDocTab('file',this)">📄 อัปโหลดไฟล์</button>
+    <button class="doc-tab" onclick="switchDocTab('link',this)">🔗 Google Drive Link</button>
+  </div>
+
+  <!-- FILE UPLOAD TAB -->
+  <div class="doc-tab-panel active" id="doc-tab-file">
+    <div class="doc-drop-area" id="doc-drop-area" onclick="document.getElementById('doc-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="onDocFileDrop(event)">
+      <input type="file" id="doc-file-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" onchange="onDocFileSelected(event)">
+      <div style="font-size:28px;margin-bottom:8px;">📂</div>
+      <div style="font-size:13px;font-weight:500;color:var(--gray-600);">คลิกหรือลากไฟล์มาวางที่นี่</div>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">รองรับ PDF, Word (.doc/.docx), Excel, PowerPoint<br>ขนาดไม่เกิน 5 MB</div>
+    </div>
+    <div id="doc-file-preview" style="display:none;margin-top:12px;padding:10px 12px;background:var(--primary-light);border:1px solid var(--primary);border-radius:var(--radius-sm);font-size:12px;display:flex;align-items:center;gap:8px;">
+      <span id="doc-file-icon" style="font-size:18px;"></span>
+      <div style="flex:1;min-width:0;">
+        <div id="doc-file-name" style="font-weight:600;color:var(--primary-dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+        <div id="doc-file-size" style="color:var(--gray-400);font-size:11px;margin-top:1px;"></div>
+      </div>
+      <button onclick="clearDocFileSelection()" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:14px;">✕</button>
+    </div>
+    <div id="doc-upload-progress" style="display:none;margin-top:8px;">
+      <div style="font-size:12px;color:var(--gray-600);margin-bottom:4px;">กำลังแปลงไฟล์...</div>
+      <div style="height:4px;background:var(--gray-200);border-radius:2px;overflow:hidden;"><div id="doc-progress-bar" style="height:100%;background:var(--primary);width:0%;transition:width .3s;"></div></div>
+    </div>
+    <button class="save-btn" style="margin-top:14px;" onclick="submitDocFile()">📤 แนบไฟล์นี้</button>
+  </div>
+
+  <!-- GOOGLE DRIVE LINK TAB -->
+  <div class="doc-tab-panel" id="doc-tab-link">
+    <div class="fgg" style="margin-bottom:12px;">
+      <label>ชื่อเอกสาร *</label>
+      <input type="text" id="doc-link-name" placeholder="เช่น คู่มือการใช้งาน Spirometer" style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
+    </div>
+    <div class="fgg" style="margin-bottom:12px;">
+      <label>Google Drive Link *</label>
+      <input type="url" id="doc-link-url" placeholder="https://drive.google.com/file/d/..." style="width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
+    </div>
+    <div style="font-size:11px;color:var(--gray-400);background:var(--gray-50);padding:8px 12px;border-radius:var(--radius-sm);margin-bottom:12px;line-height:1.7;">
+      💡 วิธีรับ Link: เปิดไฟล์ใน Google Drive → คลิก Share → Copy link → วางที่นี่
+    </div>
+    <button class="save-btn" onclick="submitDocLink()">🔗 แนบลิงก์นี้</button>
+  </div>
+
+  <!-- EXISTING DOCS LIST -->
+  <div id="doc-modal-existing" style="margin-top:16px;display:none;">
+    <div style="font-size:11px;font-weight:600;color:var(--gray-600);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">เอกสารที่แนบแล้ว</div>
+    <div id="doc-modal-list"></div>
+  </div>
+</div>
+</div>
+
 <!-- NOTIFICATION PANEL -->
 <div class="notif-panel" id="notif-panel">
   <div class="notif-panel-hd">
@@ -1991,13 +2072,16 @@ function bkgRow(b, isAdmin){
       <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
+      ${renderDocList(b, isAdmin || canAttachDoc())}
     </div>
     ${statusSelect}
     ${assignBtn}
     ${isAdmin?`<button class="edit-btn" onclick="openEdit('${b.id}')">&#9998;</button>`:''}
+    ${canAttachDoc()&&!isAdmin?`<button class="attach-btn" onclick="openDocModal('${b.id}')" title="แนบเอกสาร">📎</button>`:''}
+    ${isAdmin?`<button class="attach-btn" onclick="openDocModal('${b.id}')" title="แนบเอกสาร" style="margin-top:2px;">📎</button>`:''}
     ${salesOnly
       ? `<button class="edit-btn" onclick="openEdit('${b.id}')" title="เลื่อนนัด" style="background:var(--amber-light);color:var(--amber);border-color:var(--amber-light);">&#128197;</button>`
-      : `<button class="del-btn" onclick="deleteBooking('${b.id}')">&#10005;</button>`}
+      : (!isAdmin?`<button class="del-btn" onclick="deleteBooking('${b.id}')">&#10005;</button>`:'')}
   </div>`;
 }
 
@@ -2918,20 +3002,179 @@ function refreshMgr(){
     renderMgrView(active.id.replace('mview-',''));
 }
 
-// ===================== N8N WEBHOOK — LINE OA =====================
-// เก็บ URL ใน Firebase แทน localStorage — sync ทุกเครื่อง ไม่หาย
-let n8nWebhookUrl = '';
-const configRef = db.ref('config');
+// ===================== DOCUMENT ATTACHMENT =====================
+const docsRef = db.ref('bookingDocs');
+let allDocs = {}; // { bookingId: [{id, name, type, url, uploadedBy, uploadedAt}] }
+docsRef.on('value', s => { allDocs = s.val()||{}; refreshAll(); refreshMgr(); });
 
-// โหลด URL จาก Firebase ตั้งแต่เริ่ม
-configRef.child('n8nWebhookUrl').on('value', s => {
-  n8nWebhookUrl = s.val() || '';
-  // อัปเดต UI ถ้าหน้า settings เปิดอยู่
-  const inp = document.getElementById('n8n-webhook-url');
-  if(inp) inp.value = n8nWebhookUrl;
-  const dot = document.getElementById('line-configured-dot');
-  if(dot) dot.style.display = n8nWebhookUrl ? 'block' : 'none';
-});
+// สิทธิ์แนบเอกสาร: Admin, PS Manager, PS Supervisor
+function canAttachDoc(){
+  if(sessionStorage.getItem('pes_admin')==='1') return true;
+  if(!currentUser) return false;
+  if(currentUser.dept==='ps' && (currentUser.level==='Manager'||currentUser.level==='Supervisor')) return true;
+  return false;
+}
+
+function getDocIcon(name, type){
+  if(type==='link') return '🔗';
+  const ext = (name||'').split('.').pop().toLowerCase();
+  if(ext==='pdf') return '📄';
+  if(['doc','docx'].includes(ext)) return '📝';
+  if(['xls','xlsx'].includes(ext)) return '📊';
+  if(['ppt','pptx'].includes(ext)) return '📋';
+  return '📎';
+}
+
+function renderDocList(b, canManage){
+  const docs = (allDocs[b.id]||[]);
+  if(!docs.length && !canManage) return '';
+  if(!docs.length) return `<div class="doc-section"><button class="attach-btn" onclick="openDocModal('${b.id}')">📎 แนบเอกสาร</button></div>`;
+  const list = docs.map((d,i)=>`
+    <div class="doc-item">
+      <span class="doc-icon">${getDocIcon(d.name,d.type)}</span>
+      <a href="${esc(d.url)}" target="_blank" title="${esc(d.name)}">${esc(d.name)}</a>
+      ${canManage?`<button class="doc-del" onclick="deleteDoc('${b.id}',${i})" title="ลบ">✕</button>`:''}
+    </div>`).join('');
+  return `<div class="doc-section">${list}${canManage?`<button class="attach-btn" style="margin-top:4px;" onclick="openDocModal('${b.id}')">+ แนบเพิ่ม</button>`:''}</div>`;
+}
+
+// ---- Doc Modal ----
+let docModalBookingId = null;
+let docSelectedFile = null;
+let docSelectedFileB64 = null;
+
+function openDocModal(bookingId){
+  docModalBookingId = bookingId;
+  docSelectedFile = null; docSelectedFileB64 = null;
+  clearDocFileSelection();
+  document.getElementById('doc-link-name').value = '';
+  document.getElementById('doc-link-url').value = '';
+  // ชื่อ booking
+  const b = allBookings[bookingId];
+  document.getElementById('doc-modal-booking-name').textContent = b ? `นัดหมาย: ${b.hospital||''} — ${b.contact||''}` : '';
+  // existing docs
+  renderDocModalList(bookingId);
+  // switch to file tab
+  switchDocTab('file', document.querySelector('.doc-tab'));
+  document.getElementById('doc-overlay').classList.add('open');
+}
+function closeDocModal(){ document.getElementById('doc-overlay').classList.remove('open'); docModalBookingId=null; }
+
+function switchDocTab(tab, btn){
+  document.querySelectorAll('.doc-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.doc-tab-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('doc-tab-'+tab).classList.add('active');
+}
+
+function renderDocModalList(bookingId){
+  const docs = (allDocs[bookingId]||[]);
+  const wrap = document.getElementById('doc-modal-existing');
+  const list = document.getElementById('doc-modal-list');
+  if(!docs.length){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  list.innerHTML = docs.map((d,i)=>`
+    <div class="doc-item">
+      <span class="doc-icon">${getDocIcon(d.name,d.type)}</span>
+      <a href="${esc(d.url)}" target="_blank">${esc(d.name)}</a>
+      <button class="doc-del" onclick="deleteDoc('${bookingId}',${i});renderDocModalList('${bookingId}')">✕</button>
+    </div>`).join('');
+}
+
+// ---- File Upload ----
+function onDocFileDrop(e){
+  e.preventDefault();
+  document.getElementById('doc-drop-area').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if(file) processDocFile(file);
+}
+function onDocFileSelected(e){ const file=e.target.files[0]; if(file) processDocFile(file); }
+
+function processDocFile(file){
+  const maxSize = 5*1024*1024;
+  if(file.size > maxSize){ showToast('ไฟล์ใหญ่เกิน 5 MB','error'); return; }
+  const allowed = ['pdf','doc','docx','xls','xlsx','ppt','pptx'];
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!allowed.includes(ext)){ showToast('ไฟล์ประเภทนี้ไม่รองรับ','error'); return; }
+  docSelectedFile = file;
+  // preview
+  const prev = document.getElementById('doc-file-preview');
+  prev.style.display='flex';
+  document.getElementById('doc-file-icon').textContent = getDocIcon(file.name,'file');
+  document.getElementById('doc-file-name').textContent = file.name;
+  document.getElementById('doc-file-size').textContent = (file.size/1024).toFixed(1)+' KB';
+  // read as base64
+  const reader = new FileReader();
+  reader.onload = e => { docSelectedFileB64 = e.target.result; };
+  reader.readAsDataURL(file);
+}
+
+function clearDocFileSelection(){
+  docSelectedFile=null; docSelectedFileB64=null;
+  const prev=document.getElementById('doc-file-preview');
+  if(prev) prev.style.display='none';
+  const inp=document.getElementById('doc-file-input');
+  if(inp) inp.value='';
+}
+
+async function submitDocFile(){
+  if(!docSelectedFileB64||!docModalBookingId){ showToast('กรุณาเลือกไฟล์','error'); return; }
+  // เก็บ base64 ลง Firebase (สำหรับไฟล์เล็ก ≤ 5MB)
+  const prog = document.getElementById('doc-upload-progress');
+  prog.style.display='block';
+  document.getElementById('doc-progress-bar').style.width='60%';
+  const docEntry = {
+    name: docSelectedFile.name,
+    type: 'file',
+    url: docSelectedFileB64,
+    uploadedBy: currentUser.name,
+    uploadedAt: Date.now()
+  };
+  const existing = allDocs[docModalBookingId]||[];
+  existing.push(docEntry);
+  try {
+    await docsRef.child(docModalBookingId).set(existing);
+    document.getElementById('doc-progress-bar').style.width='100%';
+    setTimeout(()=>{ prog.style.display='none'; document.getElementById('doc-progress-bar').style.width='0%'; },500);
+    showToast('แนบไฟล์สำเร็จ ✓','success');
+    clearDocFileSelection();
+    renderDocModalList(docModalBookingId);
+  } catch(e){
+    showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+    prog.style.display='none';
+  }
+}
+
+async function submitDocLink(){
+  const name = document.getElementById('doc-link-name').value.trim();
+  const url  = document.getElementById('doc-link-url').value.trim();
+  if(!name){ showToast('กรุณากรอกชื่อเอกสาร','error'); return; }
+  if(!url || !url.startsWith('http')){ showToast('กรุณากรอก Link ที่ถูกต้อง','error'); return; }
+  if(!docModalBookingId) return;
+  const docEntry = { name, type:'link', url, uploadedBy: currentUser.name, uploadedAt: Date.now() };
+  const existing = allDocs[docModalBookingId]||[];
+  existing.push(docEntry);
+  try {
+    await docsRef.child(docModalBookingId).set(existing);
+    showToast('แนบลิงก์สำเร็จ ✓','success');
+    document.getElementById('doc-link-name').value='';
+    document.getElementById('doc-link-url').value='';
+    renderDocModalList(docModalBookingId);
+  } catch(e){
+    showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+  }
+}
+
+async function deleteDoc(bookingId, index){
+  if(!confirm('ลบเอกสารนี้?')) return;
+  const docs = [...(allDocs[bookingId]||[])];
+  docs.splice(index,1);
+  await docsRef.child(bookingId).set(docs.length?docs:null);
+  showToast('ลบเอกสารแล้ว','');
+}
+
+// ===================== N8N WEBHOOK — LINE OA =====================
+let n8nWebhookUrl = localStorage.getItem('pes_n8n_url') || '';
 
 function initSettingsView(){
   const inp = document.getElementById('n8n-webhook-url');
@@ -2945,29 +3188,22 @@ function saveN8nUrl(){
   const v = (document.getElementById('n8n-webhook-url')?.value || '').trim();
   if(!v || !v.startsWith('http')){ showN8nStatus('กรุณากรอก Webhook URL ที่ถูกต้อง','error'); return; }
   n8nWebhookUrl = v;
-  // บันทึกลง Firebase — ทุกเครื่องได้ค่าเดียวกัน
-  configRef.child('n8nWebhookUrl').set(v).then(() => {
-    const dot = document.getElementById('line-configured-dot');
-    if(dot) dot.style.display = 'block';
-    showN8nStatus('✅ บันทึก URL ลง Firebase แล้ว (sync ทุกเครื่อง)','success');
-    showToast('บันทึก n8n Webhook URL แล้ว ✓','success');
-  }).catch(e => {
-    showN8nStatus('❌ บันทึกไม่สำเร็จ: '+e.message,'error');
-  });
+  localStorage.setItem('pes_n8n_url', n8nWebhookUrl);
+  const dot = document.getElementById('line-configured-dot');
+  if(dot) dot.style.display = 'block';
+  showN8nStatus('✅ บันทึก URL แล้ว','success');
+  showToast('บันทึก n8n Webhook URL แล้ว ✓','success');
 }
 
 function clearN8nUrl(){
   if(!confirm('ลบ Webhook URL?')) return;
-  configRef.child('n8nWebhookUrl').remove().then(() => {
-    n8nWebhookUrl = '';
-    const inp = document.getElementById('n8n-webhook-url');
-    if(inp) inp.value = '';
-    const dot = document.getElementById('line-configured-dot');
-    if(dot) dot.style.display = 'none';
-    showN8nStatus('ลบ URL แล้ว','');
-  }).catch(e => {
-    showN8nStatus('❌ ลบไม่สำเร็จ: '+e.message,'error');
-  });
+  n8nWebhookUrl = '';
+  localStorage.removeItem('pes_n8n_url');
+  const inp = document.getElementById('n8n-webhook-url');
+  if(inp) inp.value = '';
+  const dot = document.getElementById('line-configured-dot');
+  if(dot) dot.style.display = 'none';
+  showN8nStatus('ลบ URL แล้ว','');
 }
 
 function showN8nStatus(msg, type){
