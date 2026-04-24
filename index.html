@@ -308,6 +308,13 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .toast.error{background:var(--red);}
 .footer{text-align:center;padding:14px;font-size:11px;color:var(--gray-400);border-top:1px solid var(--gray-200);}
 
+/* DOC REQUEST BADGE */
+.doc-req-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;background:#fef3c7;color:#b45309;border:1px solid #fcd34d;cursor:default;}
+.doc-req-badge.fulfilled{background:var(--primary-light);color:var(--primary-dark);border-color:#6fcf97;}
+.req-doc-btn{font-size:11px;padding:3px 10px;border:1px solid var(--amber);background:#fef3c7;color:#b45309;border-radius:20px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;}
+.req-doc-btn:hover{background:var(--amber);color:white;}
+.req-doc-btn.requested{background:#fef3c7;color:#b45309;cursor:default;opacity:.7;}
+
 /* DOCUMENT ATTACHMENT */
 .doc-section{margin-top:6px;padding-top:6px;border-top:1px dashed var(--gray-200);}
 .doc-item{display:flex;align-items:center;gap:6px;padding:4px 6px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);margin-bottom:4px;font-size:11px;}
@@ -3004,8 +3011,25 @@ function refreshMgr(){
 
 // ===================== DOCUMENT ATTACHMENT =====================
 const docsRef = db.ref('bookingDocs');
-let allDocs = {}; // { bookingId: [{id, name, type, url, uploadedBy, uploadedAt}] }
+const docReqRef = db.ref('docRequests');
+let allDocs = {};
+let allDocRequests = {};
+
 docsRef.on('value', s => { allDocs = s.val()||{}; refreshAll(); refreshMgr(); });
+docReqRef.on('value', s => {
+  allDocRequests = s.val()||{};
+  refreshAll(); refreshMgr();
+  // แจ้งเตือน Admin/PS Manager เมื่อ Sales ขอเอกสาร (realtime)
+  if(canAttachDoc()){
+    Object.entries(allDocRequests).forEach(([bId, req])=>{
+      if(req.status==='pending' && !req.notified){
+        const b = allBookings[bId]||{};
+        showToast(`📋 ${req.salesName} ขอเอกสาร — ${b.hospital||''}`, '');
+        docReqRef.child(bId+'/notified').set(true);
+      }
+    });
+  }
+});
 
 // สิทธิ์แนบเอกสาร: Admin, PS Manager, PS Supervisor
 function canAttachDoc(){
@@ -3027,15 +3051,35 @@ function getDocIcon(name, type){
 
 function renderDocList(b, canManage){
   const docs = (allDocs[b.id]||[]);
+  const req = allDocRequests[b.id]; // {salesName, requestedAt, status:'pending'|'fulfilled'}
+  const salesView = isSales() && !canManage;
+
+  // Sales view
+  if(salesView){
+    const docList = docs.length ? docs.map((d,i)=>`
+      <div class="doc-item">
+        <span class="doc-icon">${getDocIcon(d.name,d.type)}</span>
+        <a href="${esc(d.url)}" target="_blank" title="${esc(d.name)}">${esc(d.name)}</a>
+      </div>`).join('') : '';
+    const reqBtn = req
+      ? `<span class="doc-req-badge${docs.length?' fulfilled':''}">📋 ${docs.length?'มีเอกสารแล้ว':'รอเอกสาร...'}</span>`
+      : `<button class="req-doc-btn" onclick="requestDoc('${b.id}')">📋 ขอเอกสาร</button>`;
+    return `<div class="doc-section">${docList}${reqBtn}</div>`;
+  }
+
+  // Admin/PS Manager/Supervisor view
   if(!docs.length && !canManage) return '';
-  if(!docs.length) return `<div class="doc-section"><button class="attach-btn" onclick="openDocModal('${b.id}')">📎 แนบเอกสาร</button></div>`;
+  const reqBadge = req && req.status==='pending'
+    ? `<span class="doc-req-badge">🔔 Sales ขอเอกสาร — ${esc(req.salesName)}</span> `
+    : '';
+  if(!docs.length) return `<div class="doc-section">${reqBadge}<button class="attach-btn" onclick="openDocModal('${b.id}')">📎 แนบเอกสาร</button></div>`;
   const list = docs.map((d,i)=>`
     <div class="doc-item">
       <span class="doc-icon">${getDocIcon(d.name,d.type)}</span>
       <a href="${esc(d.url)}" target="_blank" title="${esc(d.name)}">${esc(d.name)}</a>
       ${canManage?`<button class="doc-del" onclick="deleteDoc('${b.id}',${i})" title="ลบ">✕</button>`:''}
     </div>`).join('');
-  return `<div class="doc-section">${list}${canManage?`<button class="attach-btn" style="margin-top:4px;" onclick="openDocModal('${b.id}')">+ แนบเพิ่ม</button>`:''}</div>`;
+  return `<div class="doc-section">${reqBadge}${list}${canManage?`<button class="attach-btn" style="margin-top:4px;" onclick="openDocModal('${b.id}')">+ แนบเพิ่ม</button>`:''}</div>`;
 }
 
 // ---- Doc Modal ----
@@ -3134,6 +3178,8 @@ async function submitDocFile(){
   existing.push(docEntry);
   try {
     await docsRef.child(docModalBookingId).set(existing);
+    // mark request as fulfilled if exists
+    if(allDocRequests[docModalBookingId]) docReqRef.child(docModalBookingId+'/status').set('fulfilled');
     document.getElementById('doc-progress-bar').style.width='100%';
     setTimeout(()=>{ prog.style.display='none'; document.getElementById('doc-progress-bar').style.width='0%'; },500);
     showToast('แนบไฟล์สำเร็จ ✓','success');
@@ -3156,6 +3202,8 @@ async function submitDocLink(){
   existing.push(docEntry);
   try {
     await docsRef.child(docModalBookingId).set(existing);
+    // mark request as fulfilled if exists
+    if(allDocRequests[docModalBookingId]) docReqRef.child(docModalBookingId+'/status').set('fulfilled');
     showToast('แนบลิงก์สำเร็จ ✓','success');
     document.getElementById('doc-link-name').value='';
     document.getElementById('doc-link-url').value='';
@@ -3171,6 +3219,22 @@ async function deleteDoc(bookingId, index){
   docs.splice(index,1);
   await docsRef.child(bookingId).set(docs.length?docs:null);
   showToast('ลบเอกสารแล้ว','');
+}
+
+async function requestDoc(bookingId){
+  if(!currentUser) return;
+  const existing = allDocRequests[bookingId];
+  if(existing){ showToast('ส่งคำขอแล้ว รอเอกสารจาก PS Manager',''); return; }
+  const b = allBookings[bookingId]||{};
+  await docReqRef.child(bookingId).set({
+    salesId: currentUser.id,
+    salesName: currentUser.name,
+    bookingHospital: b.hospital||'',
+    requestedAt: Date.now(),
+    status: 'pending',
+    notified: false
+  });
+  showToast('📋 ส่งคำขอเอกสารแล้ว PS Manager จะได้รับแจ้ง','success');
 }
 
 // ===================== N8N WEBHOOK — LINE OA =====================
