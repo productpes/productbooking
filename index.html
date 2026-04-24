@@ -757,11 +757,16 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <div class="card-title">&#128205; Territory — Sales &amp; PS ประจำพื้นที่</div>
         <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
           <button class="filter-chip on" id="t-tab-region" onclick="switchTerritoryTab('region',this)">&#127758; ระดับภาค</button>
+          <button class="filter-chip" id="t-tab-healthzone" onclick="switchTerritoryTab('healthzone',this)">🏥 เขตสุขภาพ</button>
           <button class="filter-chip" id="t-tab-province" onclick="switchTerritoryTab('province',this)">&#128204; ระดับจังหวัด</button>
         </div>
         <!-- ระดับภาค -->
         <div id="t-view-region">
           <div class="territory-grid" id="territory-grid-user"></div>
+        </div>
+        <!-- เขตสุขภาพ -->
+        <div id="t-view-healthzone" style="display:none;">
+          <div class="territory-grid" id="territory-grid-healthzone"></div>
         </div>
         <!-- ระดับจังหวัด -->
         <div id="t-view-province" style="display:none;">
@@ -1385,8 +1390,8 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
   <div class="fgrid">
     <div class="fgg"><label>ชื่อโรงพยาบาล / คลินิก *</label><input type="text" id="f-hospital" placeholder="เช่น รพ.กรุงเทพ"></div>
     <div class="fgg"><label>ชื่อผู้ติดต่อ *</label><input type="text" id="f-contact" placeholder="เช่น คุณสมชาย"></div>
-    <div class="fgg"><label>จังหวัด</label><select id="f-province"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
-    <div class="fgg"><label>เขตพื้นที่</label><select id="f-region"><option value="">-- เลือกเขต --</option><option>กรุงเทพและปริมณฑล</option><option>ภาคเหนือ</option><option>ภาคกลาง</option><option>ภาคตะวันออก</option><option>ภาคตะวันออกเฉียงเหนือ</option><option>ภาคตะวันตก</option><option>ภาคใต้</option></select></div>
+    <div class="fgg"><label>จังหวัด</label><select id="f-province" onchange="autoFillHealthZone('f-province','f-healthzone')"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
+    <div class="fgg"><label>เขตสุขภาพ</label><select id="f-healthzone"><option value="">-- เลือกเขตสุขภาพ --</option><option>เขต 1 (เชียงใหม่)</option><option>เขต 2 (พิษณุโลก)</option><option>เขต 3 (นครสวรรค์)</option><option>เขต 4 (สระบุรี)</option><option>เขต 5 (ราชบุรี)</option><option>เขต 6 (ระยอง)</option><option>เขต 7 (ขอนแก่น)</option><option>เขต 8 (อุดรธานี)</option><option>เขต 9 (นครราชสีมา)</option><option>เขต 10 (อุบลราชธานี)</option><option>เขต 11 (สุราษฎร์ธานี)</option><option>เขต 12 (สงขลา)</option><option>เขต 13 (กรุงเทพมหานคร)</option></select></div>
     <div class="fgg"><label>เบอร์โทร</label><input type="tel" id="f-phone" placeholder="0812345678"></div>
     <div class="fgg"><label>วันที่นัดหมาย *</label><input type="date" id="f-date"></div>
     <div class="fgg"><label>เวลา *</label><input type="time" id="f-time" value="09:00"></div>
@@ -1444,8 +1449,8 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <option value="cancel">ยกเลิก</option>
       </select>
     </div>
-    <div class="fgg"><label>จังหวัด</label><select id="e-province"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
-    <div class="fgg"><label>เขตพื้นที่</label><select id="e-region"><option value="">-- เลือกเขต --</option><option>กรุงเทพและปริมณฑล</option><option>ภาคเหนือ</option><option>ภาคกลาง</option><option>ภาคตะวันออก</option><option>ภาคตะวันออกเฉียงเหนือ</option><option>ภาคตะวันตก</option><option>ภาคใต้</option></select></div>
+    <div class="fgg"><label>จังหวัด</label><select id="e-province" onchange="autoFillHealthZone('e-province','e-healthzone')"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
+    <div class="fgg"><label>เขตสุขภาพ</label><select id="e-healthzone"><option value="">-- เลือกเขตสุขภาพ --</option><option>เขต 1 (เชียงใหม่)</option><option>เขต 2 (พิษณุโลก)</option><option>เขต 3 (นครสวรรค์)</option><option>เขต 4 (สระบุรี)</option><option>เขต 5 (ราชบุรี)</option><option>เขต 6 (ระยอง)</option><option>เขต 7 (ขอนแก่น)</option><option>เขต 8 (อุดรธานี)</option><option>เขต 9 (นครราชสีมา)</option><option>เขต 10 (อุบลราชธานี)</option><option>เขต 11 (สุราษฎร์ธานี)</option><option>เขต 12 (สงขลา)</option><option>เขต 13 (กรุงเทพมหานคร)</option></select></div>
     <div class="fgg full"><label>หมายเหตุ</label><textarea id="e-note"></textarea></div>
   </div>
   <button class="save-btn purple-btn" onclick="saveEdit()">บันทึกการแก้ไข</button>
@@ -2021,7 +2026,7 @@ function submitBooking(){
     assignedBy: assignedMember ? currentUser.name : '',
     hospital, contact,
     province:document.getElementById('f-province').value,
-    region:document.getElementById('f-region').value,
+    healthzone:document.getElementById('f-healthzone').value,
     phone:document.getElementById('f-phone').value.trim(),
     date, time,
     category:document.getElementById('f-category').value,
@@ -2031,7 +2036,7 @@ function submitBooking(){
   }).then(()=>{ showToast('บันทึกสำเร็จ ✓','success'); closeModal(); btn.disabled=false; btn.textContent='บันทึกการจอง'; })
   .catch(()=>{ showToast('เกิดข้อผิดพลาด','error'); btn.disabled=false; btn.textContent='บันทึกการจอง'; });
 }
-function clearForm(){ ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value=''); ['f-province','f-region'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); document.getElementById('f-time').value='09:00'; document.getElementById('f-product').value=''; document.getElementById('f-category').value=''; }
+function clearForm(){ ['f-hospital','f-contact','f-phone','f-note'].forEach(id=>document.getElementById(id).value=''); ['f-province','f-healthzone'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); document.getElementById('f-time').value='09:00'; document.getElementById('f-product').value=''; document.getElementById('f-category').value=''; }
 
 // BOOKING LIST
 const scMap={pending:'pending',active:'active',done:'done',cancel:'cancel'};
@@ -2320,7 +2325,7 @@ function openEdit(id){
   const b=allBookings[id]; if(!b) return;
   // Sales: เห็นเฉพาะนัดของตัวเอง
   if(isSales() && b.staffId !== currentUser.id){ showToast('ไม่มีสิทธิ์แก้ไขนัดของผู้อื่น','error'); return; }
-  document.getElementById('e-hospital').value=b.hospital||''; const ep=document.getElementById('e-province'); if(ep) ep.value=b.province||''; const er=document.getElementById('e-region'); if(er) er.value=b.region||'';
+  document.getElementById('e-hospital').value=b.hospital||''; const ep=document.getElementById('e-province'); if(ep) ep.value=b.province||''; const ez=document.getElementById('e-healthzone'); if(ez) ez.value=b.healthzone||(b.province?PROVINCE_TO_ZONE[b.province]||'':'');
   document.getElementById('e-contact').value=b.contact||'';
   document.getElementById('e-phone').value=b.phone||'';
   document.getElementById('e-date').value=b.date||'';
@@ -2369,7 +2374,7 @@ function saveEdit(){
     date:newDate,
     time:document.getElementById('e-time').value,
     province:(document.getElementById('e-province')?.value||''),
-    region:(document.getElementById('e-region')?.value||''),
+    healthzone:(document.getElementById('e-healthzone')?.value||''),
     category:document.getElementById('e-category').value,
     status:newStatus,
     note:document.getElementById('e-note').value.trim(),
@@ -3359,6 +3364,33 @@ addNotification = function(type, booking, extra){
   callN8nWebhook(payload);
 };
 
+// ===================== HEALTH ZONE DATA (เขตสุขภาพ 1-13) =====================
+const HEALTH_ZONES = {
+  'เขต 1 (เชียงใหม่)': ['เชียงใหม่','เชียงราย','แม่ฮ่องสอน','ลำปาง','ลำพูน','แพร่','น่าน','พะเยา'],
+  'เขต 2 (พิษณุโลก)': ['พิษณุโลก','ตาก','สุโขทัย','อุตรดิตถ์','เพชรบูรณ์'],
+  'เขต 3 (นครสวรรค์)': ['นครสวรรค์','กำแพงเพชร','ชัยนาท','พิจิตร','อุทัยธานี'],
+  'เขต 4 (สระบุรี)': ['สระบุรี','นนทบุรี','ปทุมธานี','พระนครศรีอยุธยา','ลพบุรี','สิงห์บุรี','อ่างทอง','นครนายก'],
+  'เขต 5 (ราชบุรี)': ['ราชบุรี','กาญจนบุรี','นครปฐม','สมุทรสาคร','สมุทรสงคราม','สุพรรณบุรี','เพชรบุรี','ประจวบคีรีขันธ์'],
+  'เขต 6 (ระยอง)': ['ระยอง','ชลบุรี','ฉะเชิงเทรา','จันทบุรี','ตราด','ปราจีนบุรี','สระแก้ว'],
+  'เขต 7 (ขอนแก่น)': ['ขอนแก่น','กาฬสินธุ์','มหาสารคาม','ร้อยเอ็ด'],
+  'เขต 8 (อุดรธานี)': ['อุดรธานี','เลย','หนองคาย','หนองบัวลำภู','บึงกาฬ','สกลนคร','นครพนม'],
+  'เขต 9 (นครราชสีมา)': ['นครราชสีมา','บุรีรัมย์','ชัยภูมิ','สุรินทร์'],
+  'เขต 10 (อุบลราชธานี)': ['อุบลราชธานี','ศรีสะเกษ','ยโสธร','อำนาจเจริญ','มุกดาหาร'],
+  'เขต 11 (สุราษฎร์ธานี)': ['สุราษฎร์ธานี','ชุมพร','ระนอง','นครศรีธรรมราช','พัทลุง','กระบี่','ตรัง','พังงา','ภูเก็ต'],
+  'เขต 12 (สงขลา)': ['สงขลา','สตูล','ยะลา','ปัตตานี','นราธิวาส'],
+  'เขต 13 (กรุงเทพมหานคร)': ['กรุงเทพมหานคร','นนทบุรี','สมุทรปราการ']
+};
+
+// แปลงจังหวัด → เขตสุขภาพ
+const PROVINCE_TO_ZONE = {};
+Object.entries(HEALTH_ZONES).forEach(([zone, provs])=>{ provs.forEach(p=>{ PROVINCE_TO_ZONE[p]=zone; }); });
+
+function autoFillHealthZone(provinceSelId, zoneSelId){
+  const prov = document.getElementById(provinceSelId)?.value;
+  const zoneSel = document.getElementById(zoneSelId);
+  if(zoneSel && prov) zoneSel.value = PROVINCE_TO_ZONE[prov]||'';
+}
+
 // ===================== TERRITORY MANAGEMENT =====================
 const REGION_PROVINCES = {
   'กรุงเทพและปริมณฑล': ['กรุงเทพมหานคร','นนทบุรี','ปทุมธานี','สมุทรปราการ','สมุทรสาคร','นครปฐม'],
@@ -3370,13 +3402,53 @@ const REGION_PROVINCES = {
   'ภาคใต้': ['ชุมพร','สุราษฎร์ธานี','นครศรีธรรมราช','พัทลุง','สงขลา','ตรัง','สตูล','กระบี่','พังงา','ภูเก็ต','ระนอง','ยะลา','ปัตตานี','นราธิวาส']
 };
 
+// ---- Render Health Zone cards ----
+function renderHealthZoneView(){
+  const grid = document.getElementById('territory-grid-healthzone');
+  if(!grid) return;
+  grid.innerHTML = Object.entries(HEALTH_ZONES).map(([zone, provs])=>{
+    // หา pairs จาก territory ที่จังหวัดตรงกับเขตนี้
+    const allPairs = [];
+    provs.forEach(prov=>{
+      const override = Object.values(allTerritories).find(t=>t.province===prov);
+      if(override?.pairs) override.pairs.forEach(p=>{ if(!allPairs.find(x=>x.salesId===p.salesId)) allPairs.push(p); });
+    });
+    // fallback ดูจากระดับภาค
+    if(!allPairs.length){
+      Object.values(allTerritories).filter(t=>!t.province).forEach(t=>{
+        if(t.pairs) t.pairs.forEach(p=>{ if(!allPairs.find(x=>x.salesId===p.salesId)) allPairs.push(p); });
+      });
+    }
+    const pairRows = allPairs.length
+      ? allPairs.map(p=>{
+          const sM=p.salesId?allMembers[p.salesId]:null;
+          const pM=p.psId?allMembers[p.psId]:null;
+          return `<div class="territory-owner-row">
+            <span class="territory-badge t-sales-badge">Sales</span>
+            ${sM?`<span>${esc(sM.name)}</span>`:'<span class="t-empty">—</span>'}
+            <span style="color:var(--gray-300);font-size:10px;">↔</span>
+            <span class="territory-badge t-ps-badge">PS</span>
+            ${pM?`<span>${esc(pM.name)}</span>`:'<span class="t-empty">—</span>'}
+          </div>`;}).join('')
+      : '<div class="territory-owner-row"><span class="t-empty" style="font-size:11px;">ยังไม่กำหนด</span></div>';
+    const provText = provs.slice(0,4).join(', ')+(provs.length>4?'...':'');
+    return `<div class="territory-card" style="border-top-color:#0891b2;">
+      <div class="territory-region">🏥 ${zone}</div>
+      <div class="territory-provinces">${provText}</div>
+      <div class="territory-owners">${pairRows}</div>
+    </div>`;
+  }).join('');
+}
+
 // ---- Tab switching ----
 function switchTerritoryTab(tab, el){
   document.querySelectorAll('#view-territory .filter-chip').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  document.getElementById('t-view-region').style.display = tab==='region' ? '' : 'none';
-  document.getElementById('t-view-province').style.display = tab==='province' ? '' : 'none';
-  if(tab==='province') renderProvinceTerritory();
+  document.getElementById('t-view-region').style.display     = tab==='region'    ? '' : 'none';
+  document.getElementById('t-view-healthzone').style.display = tab==='healthzone' ? '' : 'none';
+  document.getElementById('t-view-province').style.display   = tab==='province'   ? '' : 'none';
+  if(tab==='province')   renderProvinceTerritory();
+  if(tab==='healthzone') renderHealthZoneView();
 }
 
 function switchTerritoryFormTab(tab, el){
