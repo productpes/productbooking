@@ -788,18 +788,21 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         </div>
         <!-- ฟอร์มระดับภาค -->
         <div id="tf-form-region" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:640px;">
-          <div class="fgg">
+          <div class="fgg" style="grid-column:1/-1;">
             <label>ภาค *</label>
-            <select id="t-region" onchange="updateTerritoryProvinces()">
+            <select id="t-region" onchange="updateTerritoryProvinces();renderSalesPsPairingForm()">
               <option value="">-- เลือกภาค --</option>
               <option>กรุงเทพและปริมณฑล</option><option>ภาคเหนือ</option><option>ภาคกลาง</option>
               <option>ภาคตะวันออก</option><option>ภาคตะวันออกเฉียงเหนือ</option>
               <option>ภาคตะวันตก</option><option>ภาคใต้</option>
             </select>
           </div>
-          <div class="fgg"><label>Sales ประจำภาค</label><select id="t-sales"><option value="">-- ไม่ระบุ --</option></select></div>
-          <div class="fgg"><label>PS ประจำภาค</label><select id="t-ps"><option value="">-- ไม่ระบุ --</option></select></div>
-          <div class="fgg"><label>PS สำรอง</label><select id="t-ps2"><option value="">-- ไม่ระบุ --</option></select></div>
+          <!-- Sales-PS Pairing dynamic rows -->
+          <div class="fgg" style="grid-column:1/-1;">
+            <label>จับคู่ Sales ↔ PS ประจำภาค</label>
+            <div id="sales-ps-pairs" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;"></div>
+            <button type="button" onclick="addSalesPsPairRow()" style="margin-top:8px;font-size:12px;padding:4px 14px;border:1px dashed var(--primary);color:var(--primary);background:var(--primary-light);border-radius:20px;cursor:pointer;font-family:inherit;">+ เพิ่ม Sales คนใหม่</button>
+          </div>
           <div class="fgg" style="grid-column:1/-1;">
             <label>จังหวัดในภาคนี้</label>
             <div id="t-province-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;max-height:150px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px;"></div>
@@ -3383,29 +3386,77 @@ function switchTerritoryFormTab(tab, el){
   document.getElementById('tf-form-province').style.display = tab==='province' ? 'grid' : 'none';
 }
 
-// ---- Populate member dropdowns ----
+// ---- Build Sales options HTML ----
+function buildSalesOptions(selectedId=''){
+  let html = `<option value="">-- ไม่ระบุ --</option>`;
+  Object.entries(allMembers).filter(([,m])=>m.dept==='sales').forEach(([mid,m])=>{
+    html += `<option value="${mid}" ${mid===selectedId?'selected':''}>${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
+  });
+  return html;
+}
+function buildPsOptions(selectedId='', blankLabel='-- ไม่ระบุ --'){
+  let html = `<option value="">${blankLabel}</option>`;
+  Object.entries(allMembers).filter(([,m])=>m.dept==='ps').forEach(([mid,m])=>{
+    html += `<option value="${mid}" ${mid===selectedId?'selected':''}>${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
+  });
+  return html;
+}
+
+// ---- Render Sales-PS pair rows ----
+function renderSalesPsPairingForm(pairs){
+  const wrap = document.getElementById('sales-ps-pairs');
+  if(!wrap) return;
+  const list = pairs || [];
+  if(!list.length) list.push({salesId:'', psId:''});
+  wrap.innerHTML = list.map((p,i)=>`
+    <div class="pair-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:8px 10px;">
+      <select class="pair-sales" style="padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">${buildSalesOptions(p.salesId)}</select>
+      <select class="pair-ps" style="padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">${buildPsOptions(p.psId)}</select>
+      <button type="button" onclick="removePairRow(this)" style="border:none;background:none;color:var(--red);font-size:16px;cursor:pointer;padding:0 4px;" title="ลบ">✕</button>
+    </div>`).join('');
+  // add header labels above first row
+  if(wrap.children.length){
+    const hdr = document.createElement('div');
+    hdr.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;font-size:11px;font-weight:600;color:var(--gray-500);padding:0 10px;';
+    hdr.innerHTML='<span>Sales</span><span>PS คู่กัน</span><span></span>';
+    wrap.insertBefore(hdr, wrap.firstChild);
+  }
+}
+
+function addSalesPsPairRow(){
+  const wrap = document.getElementById('sales-ps-pairs');
+  if(!wrap) return;
+  const div = document.createElement('div');
+  div.className='pair-row';
+  div.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:8px 10px;';
+  div.innerHTML=`
+    <select class="pair-sales" style="padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">${buildSalesOptions()}</select>
+    <select class="pair-ps" style="padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;">${buildPsOptions()}</select>
+    <button type="button" onclick="removePairRow(this)" style="border:none;background:none;color:var(--red);font-size:16px;cursor:pointer;padding:0 4px;">✕</button>`;
+  wrap.appendChild(div);
+}
+
+function removePairRow(btn){
+  const row = btn.closest('.pair-row');
+  if(row) row.remove();
+}
+
+function getPairsFromForm(){
+  return [...document.querySelectorAll('#sales-ps-pairs .pair-row')].map(row=>({
+    salesId: row.querySelector('.pair-sales')?.value||'',
+    psId:    row.querySelector('.pair-ps')?.value||''
+  })).filter(p=>p.salesId||p.psId);
+}
+
+// ---- Populate member dropdowns (province form only) ----
 function populateTerritoryMemberSelects(){
-  const salesIds = ['t-sales','tp-sales'];
-  const psIds = ['t-ps','t-ps2','tp-ps'];
-  salesIds.forEach(id=>{
-    const sel = document.getElementById(id); if(!sel) return;
-    const cur = sel.value;
-    sel.innerHTML = `<option value="">-- ไม่ระบุ --</option>`;
-    Object.entries(allMembers).filter(([,m])=>m.dept==='sales').forEach(([mid,m])=>{
-      sel.innerHTML += `<option value="${mid}">${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
-    });
-    sel.value = cur;
-  });
-  psIds.forEach(id=>{
-    const sel = document.getElementById(id); if(!sel) return;
-    const cur = sel.value;
-    const isProvince = id.startsWith('tp-');
-    sel.innerHTML = isProvince ? `<option value="">-- ใช้ระดับภาค --</option>` : `<option value="">-- ไม่ระบุ --</option>`;
-    Object.entries(allMembers).filter(([,m])=>m.dept==='ps').forEach(([mid,m])=>{
-      sel.innerHTML += `<option value="${mid}">${esc(m.name)}${m.position?' — '+esc(m.position):''}</option>`;
-    });
-    sel.value = cur;
-  });
+  // region form uses dynamic pair rows — only update province form selects
+  const tpSales = document.getElementById('tp-sales');
+  const tpPs    = document.getElementById('tp-ps');
+  if(tpSales){ tpSales.innerHTML=`<option value="">-- ใช้ระดับภาค --</option>`+Object.entries(allMembers).filter(([,m])=>m.dept==='sales').map(([mid,m])=>`<option value="${mid}">${esc(m.name)}</option>`).join(''); }
+  if(tpPs)   { tpPs.innerHTML   =`<option value="">-- ใช้ระดับภาค --</option>`+Object.entries(allMembers).filter(([,m])=>m.dept==='ps').map(([mid,m])=>`<option value="${mid}">${esc(m.name)}</option>`).join(''); }
+  // init pair rows if empty
+  if(!document.querySelectorAll('#sales-ps-pairs .pair-row').length) renderSalesPsPairingForm([]);
 }
 
 // ---- Render region-level territory cards ----
@@ -3415,24 +3466,24 @@ function renderTerritoryUserView(){
   const regions = Object.keys(REGION_PROVINCES);
   grid.innerHTML = regions.map(region => {
     const t = Object.values(allTerritories).find(x=>x.region===region&&!x.province)||{};
-    const salesM = t.salesId ? allMembers[t.salesId] : null;
-    const psM    = t.psId    ? allMembers[t.psId]    : null;
-    const ps2M   = t.ps2Id   ? allMembers[t.ps2Id]   : null;
-    const provs  = (REGION_PROVINCES[region]||[]).slice(0,4).join(', ')+'...';
+    const pairs = t.pairs||[];
+    const provs = (REGION_PROVINCES[region]||[]).slice(0,4).join(', ')+'...';
+    const pairRows = pairs.length
+      ? pairs.map(p=>{
+          const sM = p.salesId?allMembers[p.salesId]:null;
+          const pM = p.psId?allMembers[p.psId]:null;
+          return `<div class="territory-owner-row">
+            <span class="territory-badge t-sales-badge">Sales</span>
+            ${sM?`<span>${esc(sM.name)}</span>`:'<span class="t-empty">ยังไม่กำหนด</span>'}
+            <span style="color:var(--gray-300);font-size:10px;">↔</span>
+            <span class="territory-badge t-ps-badge">PS</span>
+            ${pM?`<span>${esc(pM.name)}</span>`:'<span class="t-empty">ยังไม่กำหนด</span>'}
+          </div>`;}).join('')
+      : `<div class="territory-owner-row"><span class="t-empty" style="font-size:11px;">ยังไม่กำหนด Sales/PS</span></div>`;
     return `<div class="territory-card" onclick="loadTerritoryForm('${region}')" style="cursor:pointer;">
       <div class="territory-region">&#128205; ${region}</div>
       <div class="territory-provinces">${provs}</div>
-      <div class="territory-owners">
-        <div class="territory-owner-row">
-          <span class="territory-badge t-sales-badge">Sales</span>
-          ${salesM ? `<span>${esc(salesM.name)}</span>` : '<span class="t-empty">ยังไม่กำหนด</span>'}
-        </div>
-        <div class="territory-owner-row">
-          <span class="territory-badge t-ps-badge">PS</span>
-          ${psM ? `<span>${esc(psM.name)}</span>` : '<span class="t-empty">ยังไม่กำหนด</span>'}
-        </div>
-        ${ps2M?`<div class="territory-owner-row"><span class="territory-badge t-ps-badge">PS สำรอง</span><span>${esc(ps2M.name)}</span></div>`:''}
-      </div>
+      <div class="territory-owners">${pairRows}</div>
     </div>`;
   }).join('');
 }
@@ -3450,14 +3501,20 @@ function renderProvinceTerritory(){
     (REGION_PROVINCES[region]||[]).forEach(prov=>{
       const override = provOverrides.find(t=>t.province===prov);
       const regionT = Object.values(allTerritories).find(t=>t.region===region&&!t.province)||{};
-      const salesM = override?.salesId ? allMembers[override.salesId] : (regionT.salesId ? allMembers[regionT.salesId] : null);
-      const psM    = override?.psId    ? allMembers[override.psId]    : (regionT.psId    ? allMembers[regionT.psId]    : null);
+      // pairs mode: show all pairs
+      const pairs = override?.pairs || regionT.pairs || [];
+      const pairText = pairs.length
+        ? pairs.map(p=>{
+            const sM=p.salesId?allMembers[p.salesId]:null;
+            const pM=p.psId?allMembers[p.psId]:null;
+            return `${sM?esc(sM.name):'—'} ↔ ${pM?esc(pM.name):'—'}`;
+          }).join('<br>')
+        : '<span style="color:var(--gray-400);">—</span>';
       const isOverride = !!override;
       rows += `<tr>
         <td style="font-size:12px;color:var(--gray-400);">${region}</td>
         <td style="font-size:12px;font-weight:600;">${prov}${isOverride?'<span style="font-size:10px;color:var(--primary);margin-left:4px;">★</span>':''}</td>
-        <td style="font-size:12px;">${salesM?esc(salesM.name):'<span style="color:var(--gray-400);">—</span>'}</td>
-        <td style="font-size:12px;">${psM?esc(psM.name):'<span style="color:var(--gray-400);">—</span>'}</td>
+        <td style="font-size:12px;" colspan="2">${pairText}</td>
         <td><button onclick="quickLoadProvince('${prov}')" style="font-size:10px;padding:2px 8px;border:1px solid var(--primary);color:var(--primary);background:var(--white);border-radius:20px;cursor:pointer;">แก้ไข</button></td>
       </tr>`;
     });
@@ -3521,24 +3578,28 @@ function loadTerritoryForm(region){
   switchTerritoryFormTab('region', document.getElementById('tf-tab-region'));
   const rSel = document.getElementById('t-region');
   if(rSel){ rSel.value=region; updateTerritoryProvinces(); }
+  // load existing pairs
+  const t = Object.values(allTerritories).find(x=>x.region===region&&!x.province)||{};
+  const pairs = t.pairs||[];
+  renderSalesPsPairingForm(pairs.length?pairs:[{salesId:'',psId:''}]);
 }
 
 // ---- Save region territory ----
 function saveTerritory(){
   const region = document.getElementById('t-region')?.value;
   if(!region){ showToast('กรุณาเลือกภาคก่อน','error'); return; }
-  const salesId = document.getElementById('t-sales')?.value||'';
-  const psId    = document.getElementById('t-ps')?.value||'';
-  const ps2Id   = document.getElementById('t-ps2')?.value||'';
+  const pairs = getPairsFromForm().map(p=>({
+    salesId: p.salesId,
+    salesName: p.salesId?(allMembers[p.salesId]?.name||''):'',
+    psId: p.psId,
+    psName: p.psId?(allMembers[p.psId]?.name||''):''
+  }));
   const checked = [...document.querySelectorAll('#t-province-checkboxes input:checked')].map(cb=>cb.value);
-  const salesM = salesId?allMembers[salesId]:null;
-  const psM    = psId?allMembers[psId]:null;
-  const ps2M   = ps2Id?allMembers[ps2Id]:null;
-  const data = { region, provinces:checked, salesId, salesName:salesM?.name||'', psId, psName:psM?.name||'', ps2Id, ps2Name:ps2M?.name||'', updatedAt:Date.now(), updatedBy:currentUser?.name||'' };
+  const data = { region, provinces:checked, pairs, updatedAt:Date.now(), updatedBy:currentUser?.name||'' };
   const existing = Object.entries(allTerritories).find(([,t])=>t.region===region&&!t.province);
   const ref = existing ? territoriesRef.child(existing[0]) : territoriesRef.push();
   (existing?ref.update(data):ref.set(data))
-    .then(()=>{ showToast('บันทึก Territory ระดับภาคแล้ว ✓','success'); renderTerritoryUserView(); })
+    .then(()=>{ showToast('บันทึก Territory แล้ว ✓','success'); renderTerritoryUserView(); })
     .catch(()=>showToast('เกิดข้อผิดพลาด','error'));
 }
 
@@ -3559,9 +3620,11 @@ function saveProvinceTerritory(){
 }
 
 function clearTerritoryForm(){
-  ['t-region','t-sales','t-ps','t-ps2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const rSel = document.getElementById('t-region');
+  if(rSel) rSel.value='';
   const box = document.getElementById('t-province-checkboxes');
   if(box) box.innerHTML='<span style="font-size:12px;color:var(--gray-400);">เลือกภาคก่อน</span>';
+  renderSalesPsPairingForm([{salesId:'',psId:''}]);
 }
 
 // Re-render territory when data changes
