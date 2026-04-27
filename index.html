@@ -961,6 +961,11 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <div class="kpi-card k-book"><div class="kpi-label">✅ เสร็จสิ้น (Done)</div><div class="kpi-val" id="cv-demo-done">—</div></div>
         <div class="kpi-card k-util"><div class="kpi-label">🎯 Conversion Rate</div><div class="kpi-val" id="cv-rate">—%</div></div>
       </div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-top:0;">
+        <div class="kpi-card" style="border-top:3px solid var(--purple);"><div class="kpi-label">📝 กรอกสรุปแล้ว</div><div class="kpi-val" id="cv-summarized" style="color:var(--purple);">—</div></div>
+        <div class="kpi-card" style="border-top:3px solid var(--teal);"><div class="kpi-label">🔥 สนใจมาก (Hot)</div><div class="kpi-val" id="cv-hot" style="color:var(--teal);">—</div></div>
+        <div class="kpi-card" style="border-top:3px solid var(--amber);"><div class="kpi-label">🔄 ต้องติดตามผล</div><div class="kpi-val" id="cv-followup" style="color:var(--amber);">—</div></div>
+      </div>
       <div class="section-2col">
         <div class="card">
           <div class="card-title">🎯 Conversion ต่อคน</div>
@@ -974,6 +979,10 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       <div class="card">
         <div class="card-title" style="margin-bottom:10px;">📋 Demo Bookings ทั้งหมด</div>
         <div id="cv-list"></div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <div class="card-title" style="margin-bottom:10px;">📊 สรุปการเดโม่ (ที่กรอกข้อมูลแล้ว)</div>
+        <div id="cv-demo-summaries"></div>
       </div>
     </div>
 
@@ -1475,8 +1484,86 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="fgg"><label>จังหวัด</label><select id="e-province" onchange="autoFillHealthZone('e-province','e-healthzone')"><option value="">-- เลือกจังหวัด --</option><option>กรุงเทพมหานคร</option><option>กระบี่</option><option>กาญจนบุรี</option><option>กาฬสินธุ์</option><option>กำแพงเพชร</option><option>ขอนแก่น</option><option>จันทบุรี</option><option>ฉะเชิงเทรา</option><option>ชลบุรี</option><option>ชัยนาท</option><option>ชัยภูมิ</option><option>ชุมพร</option><option>เชียงราย</option><option>เชียงใหม่</option><option>ตรัง</option><option>ตราด</option><option>ตาก</option><option>นครนายก</option><option>นครปฐม</option><option>นครพนม</option><option>นครราชสีมา</option><option>นครศรีธรรมราช</option><option>นครสวรรค์</option><option>นนทบุรี</option><option>นราธิวาส</option><option>น่าน</option><option>บึงกาฬ</option><option>บุรีรัมย์</option><option>ปทุมธานี</option><option>ประจวบคีรีขันธ์</option><option>ปราจีนบุรี</option><option>ปัตตานี</option><option>พระนครศรีอยุธยา</option><option>พะเยา</option><option>พังงา</option><option>พัทลุง</option><option>พิจิตร</option><option>พิษณุโลก</option><option>เพชรบุรี</option><option>เพชรบูรณ์</option><option>แพร่</option><option>ภูเก็ต</option><option>มหาสารคาม</option><option>มุกดาหาร</option><option>แม่ฮ่องสอน</option><option>ยโสธร</option><option>ยะลา</option><option>ร้อยเอ็ด</option><option>ระนอง</option><option>ระยอง</option><option>ราชบุรี</option><option>ลพบุรี</option><option>ลำปาง</option><option>ลำพูน</option><option>เลย</option><option>ศรีสะเกษ</option><option>สกลนคร</option><option>สงขลา</option><option>สตูล</option><option>สมุทรปราการ</option><option>สมุทรสงคราม</option><option>สมุทรสาคร</option><option>สระแก้ว</option><option>สระบุรี</option><option>สิงห์บุรี</option><option>สุโขทัย</option><option>สุพรรณบุรี</option><option>สุราษฎร์ธานี</option><option>สุรินทร์</option><option>หนองคาย</option><option>หนองบัวลำภู</option><option>อ่างทอง</option><option>อำนาจเจริญ</option><option>อุดรธานี</option><option>อุตรดิตถ์</option><option>อุทัยธานี</option><option>อุบลราชธานี</option></select></div>
     <div class="fgg"><label>เขตสุขภาพ</label><select id="e-healthzone"><option value="">-- เลือกเขตสุขภาพ --</option><option>เขต 1 (เชียงใหม่)</option><option>เขต 2 (พิษณุโลก)</option><option>เขต 3 (นครสวรรค์)</option><option>เขต 4 (สระบุรี)</option><option>เขต 5 (ราชบุรี)</option><option>เขต 6 (ระยอง)</option><option>เขต 7 (ขอนแก่น)</option><option>เขต 8 (อุดรธานี)</option><option>เขต 9 (นครราชสีมา)</option><option>เขต 10 (อุบลราชธานี)</option><option>เขต 11 (สุราษฎร์ธานี)</option><option>เขต 12 (สงขลา)</option><option>เขต 13 (กรุงเทพมหานคร)</option></select></div>
     <div class="fgg full"><label>หมายเหตุ</label><textarea id="e-note"></textarea></div>
+    <!-- Demo Summary Section (show only for clinical_demo) -->
+    <div class="fgg full" id="e-demo-summary-section" style="display:none;background:var(--purple-light);border:1px solid var(--purple);border-radius:var(--radius-sm);padding:12px 14px;">
+      <div style="font-size:11px;font-weight:600;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">📊 สรุปผลการเดโม่ (Clinical Demo)</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="fgg" style="margin:0;">
+          <label>ผลการสาธิต</label>
+          <select id="e-ds-result" style="width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
+            <option value="">-- เลือกผลลัพธ์ --</option>
+            <option value="interested">😊 สนใจ — มีแนวโน้มซื้อ</option>
+            <option value="very_interested">🔥 สนใจมาก — ต้องการ Quote</option>
+            <option value="need_followup">🔄 ต้องติดตามผลเพิ่มเติม</option>
+            <option value="not_interested">👎 ไม่สนใจ</option>
+            <option value="already_have">🔲 มีเครื่องอยู่แล้ว</option>
+            <option value="no_budget">💰 งบไม่เพียงพอ</option>
+          </select>
+        </div>
+        <div class="fgg" style="margin:0;">
+          <label>จำนวนผู้เข้าร่วม / ตำแหน่ง</label>
+          <input type="text" id="e-ds-attendees" placeholder="เช่น แพทย์ 2 คน, นักกายภาพ 3 คน" style="width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
+        </div>
+        <div class="fgg" style="margin:0;">
+          <label>สรุปผลการเดโม่</label>
+          <textarea id="e-ds-summary" rows="3" placeholder="อธิบายผลลัพธ์ ความคิดเห็นของลูกค้า..." style="width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;resize:vertical;"></textarea>
+        </div>
+        <div class="fgg" style="margin:0;">
+          <label>Next Action</label>
+          <input type="text" id="e-ds-next-action" placeholder="เช่น ส่ง Quotation / นัด demo รอบสอง" style="width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
+        </div>
+      </div>
+    </div>
   </div>
   <button class="save-btn purple-btn" onclick="saveEdit()">บันทึกการแก้ไข</button>
+</div>
+</div>
+
+<!-- DEMO SUMMARY MODAL -->
+<div class="modal-overlay" id="demo-summary-overlay" onclick="if(event.target.id==='demo-summary-overlay')closeDemoSummary()">
+<div class="modal">
+  <div class="modal-hd">
+    <span>📊 สรุปผลการเดโม่ — Clinical Demo</span>
+    <button class="modal-close" onclick="closeDemoSummary()">&#10005;</button>
+  </div>
+  <div style="background:var(--primary-light);border-left:4px solid var(--primary);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--primary-dark);">
+    ✅ นัดหมายนี้เสร็จสิ้นแล้ว — กรุณากรอกสรุปผลการเดโม่ก่อนปิด
+  </div>
+  <div id="demo-summary-booking-info" style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--gray-700);"></div>
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="fgg">
+      <label>ผลการสาธิต *</label>
+      <select id="ds-result" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;">
+        <option value="">-- เลือกผลลัพธ์ --</option>
+        <option value="interested">😊 สนใจ — มีแนวโน้มซื้อ</option>
+        <option value="very_interested">🔥 สนใจมาก — ต้องการ Quote</option>
+        <option value="need_followup">🔄 ต้องติดตามผลเพิ่มเติม</option>
+        <option value="not_interested">👎 ไม่สนใจ</option>
+        <option value="already_have">🔲 มีเครื่องอยู่แล้ว</option>
+        <option value="no_budget">💰 งบไม่เพียงพอ</option>
+      </select>
+    </div>
+    <div class="fgg">
+      <label>จำนวนผู้เข้าร่วมเดโม่</label>
+      <input type="number" id="ds-attendees" min="1" max="100" placeholder="เช่น 5" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;">
+    </div>
+    <div class="fgg">
+      <label>ตำแหน่ง/กลุ่มผู้เข้าร่วม</label>
+      <input type="text" id="ds-attendee-roles" placeholder="เช่น แพทย์ 2 คน, นักกายภาพ 3 คน" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;">
+    </div>
+    <div class="fgg">
+      <label>สรุปผลการเดโม่ (รายละเอียด)</label>
+      <textarea id="ds-summary" rows="4" placeholder="อธิบายผลลัพธ์ ความคิดเห็นของลูกค้า ข้อดี/ข้อเสียที่พบ..." style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div class="fgg">
+      <label>ขั้นตอนถัดไป (Next Action)</label>
+      <input type="text" id="ds-next-action" placeholder="เช่น ส่ง Quotation ภายใน 3 วัน / นัด demo รอบสอง" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;">
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:16px;">
+    <button class="save-btn" id="ds-save-btn" onclick="saveDemoSummary()" style="flex:1;">💾 บันทึกสรุปการเดโม่</button>
+    <button onclick="closeDemoSummary()" style="padding:10px 16px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);color:var(--gray-600);font-size:13px;font-family:inherit;cursor:pointer;">ข้ามไปก่อน</button>
+  </div>
 </div>
 </div>
 
@@ -2110,6 +2197,8 @@ function bkgRow(b, isAdmin){
       <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
+      ${b.demoResult?`<div style="margin-top:6px;padding:7px 10px;background:var(--purple-light);border-left:3px solid var(--purple);border-radius:var(--radius-sm);font-size:11px;"><span style="font-weight:600;color:var(--purple);">📊 สรุปการเดโม่:</span> <span style="color:var(--purple);">${demoResultLabel[b.demoResult]||b.demoResult}</span>${b.demoSummary?'<br><span style="color:var(--gray-700);">'+esc(b.demoSummary)+'</span>':''}${b.demoNextAction?'<br><span style="color:var(--teal);font-weight:600;">➡ Next: </span><span style="color:var(--teal);">'+esc(b.demoNextAction)+'</span>':''}${b.demoAttendees?'<br><span style="color:var(--gray-400);">👥 '+esc(b.demoAttendees)+'</span>':''}${b.demoAttendeeRoles?'<span style="color:var(--gray-400);"> — '+esc(b.demoAttendeeRoles)+'</span>':''}</div>`:''}
+      ${(b.category==='clinical_demo'&&b.status==='done'&&!b.demoResult&&(currentUser&&(b.staffId===currentUser.id||canAssign())))?`<button onclick="openDemoSummaryModal('${b.id}')" style="margin-top:6px;padding:4px 12px;background:var(--purple-light);color:var(--purple);border:1px solid var(--purple);border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">📊 กรอกสรุปการเดโม่</button>`:''}
       ${renderDocList(b, isAdmin || canAttachDoc())}
     </div>
     ${statusSelect}
@@ -2302,6 +2391,9 @@ function startRealtimeNotifListener(){
 }
 
 // ===================== STATUS CHANGE =====================
+let demoSummaryBookingId = null;
+let demoSummarySelectEl = null;
+
 function changeStatus(id, sel){
   sel.className='sts '+(scMap[sel.value]||'');
   const newStatus = sel.value;
@@ -2316,7 +2408,67 @@ function changeStatus(id, sel){
       if(booking && newStatus === 'cancel'){
         addNotification('cancel', {...booking, id, lastUpdatedBy: currentUser?.name||''});
       }
+      // แสดง demo summary modal ถ้าเป็น clinical_demo และ done
+      if(booking && newStatus === 'done' && booking.category === 'clinical_demo'){
+        openDemoSummaryModal(id);
+      }
     });
+}
+
+const demoResultLabel = {
+  interested:'😊 สนใจ — มีแนวโน้มซื้อ',
+  very_interested:'🔥 สนใจมาก — ต้องการ Quote',
+  need_followup:'🔄 ต้องติดตามผลเพิ่มเติม',
+  not_interested:'👎 ไม่สนใจ',
+  already_have:'🔲 มีเครื่องอยู่แล้ว',
+  no_budget:'💰 งบไม่เพียงพอ'
+};
+
+function openDemoSummaryModal(bookingId){
+  demoSummaryBookingId = bookingId;
+  const b = allBookings[bookingId];
+  if(!b) return;
+  // Fill booking info
+  const ds = b.date ? new Date(b.date+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}) : '';
+  document.getElementById('demo-summary-booking-info').innerHTML =
+    `<b>🏥 ${esc(b.hospital)}</b> &nbsp;·&nbsp; ${esc(b.contact)} &nbsp;·&nbsp; ${ds} ${b.time||''}`
+    +(b.product?`<br>📦 ${esc(b.product)}`:'');
+  // Clear fields (or prefill if already saved)
+  document.getElementById('ds-result').value = b.demoResult||'';
+  document.getElementById('ds-attendees').value = b.demoAttendees||'';
+  document.getElementById('ds-attendee-roles').value = b.demoAttendeeRoles||'';
+  document.getElementById('ds-summary').value = b.demoSummary||'';
+  document.getElementById('ds-next-action').value = b.demoNextAction||'';
+  document.getElementById('demo-summary-overlay').classList.add('open');
+}
+
+function closeDemoSummary(){
+  document.getElementById('demo-summary-overlay').classList.remove('open');
+  demoSummaryBookingId = null;
+}
+
+function saveDemoSummary(){
+  if(!demoSummaryBookingId) return;
+  const result = document.getElementById('ds-result').value;
+  if(!result){ showToast('กรุณาเลือกผลการสาธิต','error'); return; }
+  const btn = document.getElementById('ds-save-btn');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  bookingsRef.child(demoSummaryBookingId).update({
+    demoResult: result,
+    demoAttendees: document.getElementById('ds-attendees').value.trim(),
+    demoAttendeeRoles: document.getElementById('ds-attendee-roles').value.trim(),
+    demoSummary: document.getElementById('ds-summary').value.trim(),
+    demoNextAction: document.getElementById('ds-next-action').value.trim(),
+    demoSummaryAt: Date.now(),
+    demoSummaryBy: currentUser ? currentUser.name : ''
+  }).then(()=>{
+    showToast('บันทึกสรุปการเดโม่แล้ว ✓','success');
+    closeDemoSummary();
+    btn.disabled = false; btn.textContent = '💾 บันทึกสรุปการเดโม่';
+  }).catch(()=>{
+    showToast('เกิดข้อผิดพลาด','error');
+    btn.disabled = false; btn.textContent = '💾 บันทึกสรุปการเดโม่';
+  });
 }
 
 function deleteBooking(id){
@@ -2374,6 +2526,19 @@ function openEdit(id){
     document.getElementById('e-category').disabled = false;
   }
   document.getElementById('edit-overlay').classList.add('open');
+  // Show/hide demo summary section based on category
+  const catSel = document.getElementById('e-category');
+  const demoSec = document.getElementById('e-demo-summary-section');
+  function updateDemoSection(){
+    demoSec.style.display = catSel.value === 'clinical_demo' ? 'block' : 'none';
+  }
+  catSel.onchange = updateDemoSection;
+  updateDemoSection();
+  // Prefill demo summary fields if exists
+  if(b.demoResult) document.getElementById('e-ds-result').value = b.demoResult||'';
+  document.getElementById('e-ds-attendees').value = b.demoAttendees ? (b.demoAttendees+(b.demoAttendeeRoles?' — '+b.demoAttendeeRoles:'')) : (b.demoAttendeeRoles||'');
+  document.getElementById('e-ds-summary').value = b.demoSummary||'';
+  document.getElementById('e-ds-next-action').value = b.demoNextAction||'';
 }
 function closeEdit(){ document.getElementById('edit-overlay').classList.remove('open'); editId=null; }
 function saveEdit(){
@@ -2390,6 +2555,15 @@ function saveEdit(){
     setTimeout(()=>recentWrites.delete(editId), 3000);
   }
 
+  const newCategory = document.getElementById('e-category').value;
+  const demoFields = newCategory === 'clinical_demo' ? {
+    demoResult: document.getElementById('e-ds-result').value,
+    demoAttendees: document.getElementById('e-ds-attendees').value.trim(),
+    demoAttendeeRoles: '',
+    demoSummary: document.getElementById('e-ds-summary').value.trim(),
+    demoNextAction: document.getElementById('e-ds-next-action').value.trim()
+  } : {};
+
   bookingsRef.child(editId).update({
     hospital:document.getElementById('e-hospital').value.trim(),
     contact:document.getElementById('e-contact').value.trim(),
@@ -2398,11 +2572,12 @@ function saveEdit(){
     time:document.getElementById('e-time').value,
     province:(document.getElementById('e-province')?.value||''),
     healthzone:(document.getElementById('e-healthzone')?.value||''),
-    category:document.getElementById('e-category').value,
+    category:newCategory,
     status:newStatus,
     note:document.getElementById('e-note').value.trim(),
     lastUpdatedBy: currentUser?currentUser.name:'',
-    lastUpdatedAt: Date.now()
+    lastUpdatedAt: Date.now(),
+    ...demoFields
   }).then(()=>{ showToast('แก้ไขแล้ว ✓','success'); closeEdit(); }).catch(()=>showToast('เกิดข้อผิดพลาด','error'));
 }
 
@@ -2900,6 +3075,14 @@ function renderMgrConversion(){
   setText('cv-demo-done',demosDone);
   setText('cv-rate',rate+'%');
 
+  // Demo summary stats
+  const summarized=demos.filter(b=>b.demoResult).length;
+  const hot=demos.filter(b=>b.demoResult==='very_interested').length;
+  const followup=demos.filter(b=>b.demoResult==='need_followup').length;
+  setText('cv-summarized',summarized);
+  setText('cv-hot',hot);
+  setText('cv-followup',followup);
+
   // per-person conversion
   const byP={};
   demos.forEach(b=>{
@@ -2930,11 +3113,14 @@ function renderMgrConversion(){
       const scMap={pending:'pending',active:'active',done:'done',cancel:'cancel'};
       el.innerHTML=demos.sort((a,b)=>a.date.localeCompare(b.date)).map(b=>{
         const ds=fmtTH(b.date);
+        const resultBadge = b.demoResult ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:var(--purple-light);color:var(--purple);font-weight:600;">${demoResultLabel[b.demoResult]||b.demoResult}</span>` : '';
         return `<div class="b-item">
           <div class="b-info">
-            <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.dept==='ps'?'bg-ps':'bg-sales'}">${b.dept==='ps'?'PS':'Sales'}</span></div>
+            <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.dept==='ps'?'bg-ps':'bg-sales'}">${b.dept==='ps'?'PS':'Sales'}</span>${resultBadge}</div>
             <div class="b-meta"><span>${ds}</span><span>${esc(b.contact)}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
             <div class="b-staff-row"><span class="b-staff-name">${esc(b.staff||'')}</span></div>
+            ${b.demoSummary?'<div style="font-size:11px;color:var(--gray-600);margin-top:3px;">'+esc(b.demoSummary)+'</div>':''}
+            ${b.demoNextAction?'<div style="font-size:11px;color:var(--teal);margin-top:2px;"><b>➡</b> '+esc(b.demoNextAction)+'</div>':''}
           </div>
           <select class="sts ${scMap[b.status]||''}" onchange="changeStatus('${Object.entries(allBookings).find(([,v])=>v===b)?.[0]||''}',this)">
             <option value="pending" ${b.status==='pending'?'selected':''}>รอดำเนินการ</option>
@@ -2942,6 +3128,32 @@ function renderMgrConversion(){
             <option value="done"    ${b.status==='done'?'selected':''}>เสร็จสิ้น</option>
             <option value="cancel"  ${b.status==='cancel'?'selected':''}>ยกเลิก</option>
           </select>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Demo summaries section — show only those with demoResult
+  const sumEl = document.getElementById('cv-demo-summaries');
+  if(sumEl){
+    const withSummary = demos.filter(b=>b.demoResult).sort((a,b)=>(b.demoSummaryAt||0)-(a.demoSummaryAt||0));
+    if(!withSummary.length){ sumEl.innerHTML='<div class="empty">ยังไม่มีสรุปการเดโม่ที่กรอกข้อมูล</div>'; }
+    else {
+      sumEl.innerHTML = withSummary.map(b=>{
+        const ds=fmtTH(b.date);
+        const resultColors={interested:'#d1fae5,var(--primary)',very_interested:'#ede9fe,var(--purple)',need_followup:'#fef3c7,var(--amber)',not_interested:'#fee2e2,var(--red)',already_have:'#f3f4f6,var(--gray-600)',no_budget:'#fff7ed,var(--orange)'};
+        const [bg,col]=(resultColors[b.demoResult]||'#f3f4f6,var(--gray-600)').split(',');
+        return `<div style="border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--gray-900);">${esc(b.hospital)}</div>
+              <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">${ds} · ${esc(b.contact)} · ${esc(b.staff||'')}${b.product?' · '+esc(b.product):''}</div>
+            </div>
+            <div style="background:${bg};color:${col};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;">${demoResultLabel[b.demoResult]||b.demoResult}</div>
+          </div>
+          ${b.demoAttendees||b.demoAttendeeRoles?`<div style="font-size:11px;color:var(--gray-600);margin-bottom:5px;">👥 ${esc(b.demoAttendees||'')}${b.demoAttendeeRoles?' — '+esc(b.demoAttendeeRoles):''}</div>`:''}
+          ${b.demoSummary?`<div style="font-size:12px;color:var(--gray-700);background:var(--gray-50);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:6px;">${esc(b.demoSummary)}</div>`:''}
+          ${b.demoNextAction?`<div style="font-size:12px;color:var(--teal);font-weight:600;">➡ Next: ${esc(b.demoNextAction)}</div>`:''}
         </div>`;
       }).join('');
     }
