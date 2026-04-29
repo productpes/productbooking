@@ -2712,7 +2712,7 @@ function renderDashboard(){
     const stageColors = {prospecting:'#64748b',demo:'#d97706',quotation:'#2563eb',spec:'#7c3aed',negotiation:'#0d7a6b',won:'#16a34a'};
     const stageLabels = {prospecting:'Prospecting',demo:'Demo/Trial',quotation:'Quotation',spec:'Spec-in',negotiation:'Negotiate',won:'Won ✓'};
     const max = Math.max(...Object.keys(stageColors).map(k=>plCases.filter(p=>p.stage===k).length), 1);
-    if(!plCases.length){ plSnap.innerHTML='<div style="font-size:12px;color:var(--gray-400);text-align:center;padding:10px;">ยังไม่มีเคส — <button onclick="switchView('pipeline')" style="color:var(--primary);background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;">เพิ่มเคส</button></div>'; }
+    if(!plCases.length){ plSnap.innerHTML='<div style="font-size:12px;color:var(--gray-400);text-align:center;padding:10px;">ยังไม่มีเคส — <button onclick="switchView(&quot;pipeline&quot;)" style="color:var(--primary);background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;">เพิ่มเคส</button></div>'; }
     else plSnap.innerHTML = Object.keys(stageColors).map(k=>{
       const cnt = plCases.filter(p=>p.stage===k).length;
       const pct = Math.round(cnt/max*100);
