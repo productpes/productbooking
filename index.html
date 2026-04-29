@@ -387,6 +387,33 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .ws-input:focus{border-color:var(--teal);}
 .ws-done-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:20px;background:var(--teal-light);color:var(--teal);border:1px solid var(--teal);font-weight:600;margin-top:4px;cursor:pointer;font-family:inherit;}
 .ws-done-badge:hover{background:var(--teal);color:white;}
+/* Visit Outcomes extras */
+.ws-cb-grid{display:flex;flex-direction:column;gap:6px;}
+.ws-cb-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;background:var(--white);user-select:none;}
+.ws-cb-item:hover{border-color:var(--teal);background:var(--teal-light);}
+.ws-cb-item.checked{border-color:var(--teal);background:var(--teal-light);}
+.ws-cb-box{width:18px;height:18px;border-radius:4px;border:2px solid var(--gray-200);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:var(--white);}
+.ws-cb-item.checked .ws-cb-box{border-color:var(--teal);background:var(--teal);}
+.ws-cb-check{color:white;font-size:11px;font-weight:700;display:none;}
+.ws-cb-item.checked .ws-cb-check{display:block;}
+.ws-cb-label{font-size:13px;font-weight:500;color:var(--gray-800);}
+.ws-cb-sub{font-size:11px;color:var(--gray-400);margin-top:1px;}
+.ws-prod-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.ws-prod-tag{padding:5px 12px;border-radius:20px;border:1.5px solid var(--gray-200);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--white);color:var(--gray-700);font-family:inherit;}
+.ws-prod-tag:hover{border-color:var(--teal);color:var(--teal);}
+.ws-prod-tag.sel{border-color:var(--teal);background:var(--teal);color:white;}
+.ws-funnel-list{display:flex;flex-direction:column;gap:6px;}
+.ws-funnel-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius);border:2px solid var(--gray-200);cursor:pointer;transition:all .15s;background:var(--white);font-family:inherit;width:100%;text-align:left;}
+.ws-funnel-item:hover{border-color:var(--teal);}
+.ws-funnel-item.sel{border-color:var(--teal);background:var(--teal-light);}
+.ws-funnel-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ws-funnel-txt{flex:1;}
+.ws-funnel-label{font-size:13px;font-weight:600;color:var(--gray-800);}
+.ws-funnel-item.sel .ws-funnel-label{color:var(--teal);}
+.ws-funnel-sub{font-size:11px;color:var(--gray-400);margin-top:1px;}
+.ws-outcome-summary{margin-top:8px;padding:10px 14px;background:var(--teal-light);border-left:3px solid var(--teal);border-radius:var(--radius-sm);font-size:11px;color:var(--teal);line-height:1.7;display:none;}
+.ws-outcome-summary.show{display:block;}
+
 .ws-submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--teal),#0a5c4f);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px;}
 .ws-submit-btn:disabled{opacity:.5;cursor:not-allowed;}
 
@@ -1842,6 +1869,117 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       </div>
     </div>
 
+
+    <!-- VISIT PURPOSE CHECKLIST -->
+    <div class="ws-section">
+      <div class="ws-stitle">☑️ วัตถุประสงค์การเข้าพบ</div>
+      <div class="ws-cb-grid" id="ws-purpose-grid">
+        <div class="ws-cb-item" onclick="wsTogglePurpose(this,'visit')" data-p="visit">
+          <div class="ws-cb-box"><span class="ws-cb-check">✓</span></div>
+          <div><div class="ws-cb-label">👋 เยี่ยมเยียน / Follow-up</div><div class="ws-cb-sub">รักษาความสัมพันธ์ลูกค้า</div></div>
+        </div>
+        <div class="ws-cb-item" onclick="wsTogglePurpose(this,'new_product')" data-p="new_product">
+          <div class="ws-cb-box"><span class="ws-cb-check">✓</span></div>
+          <div><div class="ws-cb-label">🆕 นำเสนอสินค้าใหม่</div><div class="ws-cb-sub">Demo / Presentation สินค้าใหม่</div></div>
+        </div>
+        <div class="ws-cb-item" onclick="wsTogglePurpose(this,'follow_quotation')" data-p="follow_quotation">
+          <div class="ws-cb-box"><span class="ws-cb-check">✓</span></div>
+          <div><div class="ws-cb-label">📄 ติดตามใบเสนอราคา</div><div class="ws-cb-sub">Follow-up Quotation ที่ส่งไปแล้ว</div></div>
+        </div>
+        <div class="ws-cb-item" onclick="wsTogglePurpose(this,'troubleshoot')" data-p="troubleshoot">
+          <div class="ws-cb-box"><span class="ws-cb-check">✓</span></div>
+          <div><div class="ws-cb-label">🔧 แก้ไขปัญหาการใช้งาน</div><div class="ws-cb-sub">Service / Troubleshoot</div></div>
+        </div>
+        <div class="ws-cb-item" onclick="wsTogglePurpose(this,'training')" data-p="training">
+          <div class="ws-cb-box"><span class="ws-cb-check">✓</span></div>
+          <div><div class="ws-cb-label">🎓 อบรมการใช้งาน</div><div class="ws-cb-sub">In-service Training</div></div>
+        </div>
+        <div class="ws-cb-item" onclick="wsTogglePurpose(this,'maintenance')" data-p="maintenance">
+          <div class="ws-cb-box"><span class="ws-cb-check">✓</span></div>
+          <div><div class="ws-cb-label">⚙️ Maintenance / Calibration</div><div class="ws-cb-sub">ตรวจเช็คและสอบเทียบเครื่อง</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT FOCUS -->
+    <div class="ws-section">
+      <div class="ws-stitle">🔬 สินค้าที่เน้นในรอบนี้</div>
+      <div class="ws-prod-tags" id="ws-prod-tags">
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'spirometer')" data-prod="spirometer">🫁 Spirometer</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'shockwave')" data-prod="shockwave">💥 Shockwave</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'ultrasound')" data-prod="ultrasound">🔊 Ultrasound</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'tens_ems')" data-prod="tens_ems">⚡ TENS / EMS</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'laser')" data-prod="laser">💡 Laser Therapy</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'frt')" data-prod="frt">📏 Functional Reach Test</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'pulmonary_rehab')" data-prod="pulmonary_rehab">🫀 Pulmonary Rehab</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'peak_flow')" data-prod="peak_flow">📐 Peak Flow Meter</button>
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'other_prod')" data-prod="other_prod">📦 อื่น ๆ</button>
+      </div>
+    </div>
+
+    <!-- DECISION STAGE / FUNNEL -->
+    <div class="ws-section">
+      <div class="ws-stitle">🔽 Decision Stage — ตำแหน่งใน Funnel</div>
+      <div class="ws-funnel-list">
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'awareness')" data-funnel="awareness">
+          <div class="ws-funnel-dot" style="background:#94a3b8;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">สนใจเบื้องต้น</div>
+            <div class="ws-funnel-sub">รับรู้สินค้า — ยังไม่ได้ประเมินจริง</div>
+          </div>
+          <div style="font-size:18px;">👀</div>
+        </button>
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'trial')" data-funnel="trial">
+          <div class="ws-funnel-dot" style="background:#f59e0b;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">ขอทดลองเครื่อง / Demo</div>
+            <div class="ws-funnel-sub">อยู่ระหว่างทดลองใช้งานจริง</div>
+          </div>
+          <div style="font-size:18px;">🔬</div>
+        </button>
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'quotation')" data-funnel="quotation">
+          <div class="ws-funnel-dot" style="background:#3b82f6;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">รอเสนอราคา / เปรียบเทียบ</div>
+            <div class="ws-funnel-sub">กำลังพิจารณา Quotation</div>
+          </div>
+          <div style="font-size:18px;">📄</div>
+        </button>
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'budget_approval')" data-funnel="budget_approval">
+          <div class="ws-funnel-dot" style="background:#8b5cf6;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">รออนุมัติงบประมาณ ปี 69</div>
+            <div class="ws-funnel-sub">ตัดสินใจซื้อแล้ว — รอ Budget cycle</div>
+          </div>
+          <div style="font-size:18px;">📅</div>
+        </button>
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'negotiation')" data-funnel="negotiation">
+          <div class="ws-funnel-dot" style="background:#0d7a6b;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">ต่อรองราคา / เงื่อนไข</div>
+            <div class="ws-funnel-sub">ใกล้ปิดงาน — กำลัง Negotiate</div>
+          </div>
+          <div style="font-size:18px;">🤝</div>
+        </button>
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'closed_won')" data-funnel="closed_won">
+          <div class="ws-funnel-dot" style="background:#16a34a;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">ตกลงซื้อ / ปิดงานสำเร็จ</div>
+            <div class="ws-funnel-sub">Closed Won 🎉</div>
+          </div>
+          <div style="font-size:18px;">🏆</div>
+        </button>
+        <button class="ws-funnel-item" onclick="wsSelectFunnel(this,'closed_lost')" data-funnel="closed_lost">
+          <div class="ws-funnel-dot" style="background:#be123c;"></div>
+          <div class="ws-funnel-txt">
+            <div class="ws-funnel-label">ไม่ผ่าน / ปิด Lead</div>
+            <div class="ws-funnel-sub">Closed Lost</div>
+          </div>
+          <div style="font-size:18px;">❌</div>
+        </button>
+      </div>
+    </div>
+
     <!-- WORK NOTES -->
     <div class="ws-section">
       <div class="ws-stitle">📝 บันทึกผลการทำงาน</div>
@@ -2371,7 +2509,7 @@ function bkgRow(b, isAdmin){
     </div>
     <div class="b-info">
       <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}${isAdmin?'<span class="badge bg-admin">Admin</span>':''}${catTag(b.category)}</div>
-      <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}${b.leadStatus?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:var(--teal-light);color:var(--teal);font-weight:600;border:1px solid var(--teal);">${{'hot':'🔥 ร้อนแรง','quotation':'📄 รอเสนอราคา','interested':'👍 สนใจซื้อเพิ่ม','consider':'🤔 พิจารณา','maintenance_ok':'✅ Maint. OK','not_interested':'❌ ไม่สนใจ'}[b.leadStatus]||b.leadStatus}</span>`:''}</div>
+      <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}${b.leadStatus?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:var(--teal-light);color:var(--teal);font-weight:600;border:1px solid var(--teal);">${{'hot':'🔥 ร้อนแรง','quotation':'📄 รอเสนอราคา','interested':'👍 สนใจซื้อเพิ่ม','consider':'🤔 พิจารณา','maintenance_ok':'✅ Maint. OK','not_interested':'❌ ไม่สนใจ'}[b.leadStatus]||b.leadStatus}</span>`:''}\${b.funnelStage?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:var(--purple-light);color:var(--purple);font-weight:600;border:1px solid var(--purple-light);">${{'awareness':'👀 สนใจเบื้องต้น','trial':'🔬 ทดลองเครื่อง','quotation':'📄 รอ Quotation','budget_approval':'📅 รองบประมาณ','negotiation':'🤝 ต่อรองราคา','closed_won':'🏆 ปิดงานสำเร็จ','closed_lost':'❌ ปิด Lead'}[b.funnelStage]||b.funnelStage}</span>`:''}</div>
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
       ${b.demoResult?`<div style="margin-top:6px;padding:7px 10px;background:var(--purple-light);border-left:3px solid var(--purple);border-radius:var(--radius-sm);font-size:11px;"><span style="font-weight:600;color:var(--purple);">📊 สรุปการเดโม่:</span> <span style="color:var(--purple);">${demoResultLabel[b.demoResult]||b.demoResult}</span>${b.demoSummary?'<br><span style="color:var(--gray-700);">'+esc(b.demoSummary)+'</span>':''}${b.demoNextAction?'<br><span style="color:var(--teal);font-weight:600;">➡ Next: </span><span style="color:var(--teal);">'+esc(b.demoNextAction)+'</span>':''}${b.demoAttendees?'<br><span style="color:var(--gray-400);">👥 '+esc(b.demoAttendees)+'</span>':''}${b.demoAttendeeRoles?'<span style="color:var(--gray-400);"> — '+esc(b.demoAttendeeRoles)+'</span>':''}</div>`:''}
@@ -3035,6 +3173,9 @@ let wsBookingId = null;
 let wsPhotos = []; // [{dataUrl, file}]
 let wsSigCanvas = null, wsSigCtx = null, wsSigDrawing = false, wsSigHasData = false;
 let wsLeadStatus = '';
+let wsPurposes = new Set();   // multi-select checklist
+let wsProducts = new Set();   // multi-select product tags
+let wsFunnelStage = '';        // single-select funnel
 
 const wsLeadLabels = {
   hot: '🔥 สนใจมาก / ร้อนแรง',
@@ -3078,6 +3219,25 @@ function openWorksheet(bkgId) {
   wsLeadStatus = ws.leadStatus || '';
   document.querySelectorAll('.ws-lead-chip').forEach(c => {
     c.classList.toggle('sel', c.dataset.lead === wsLeadStatus);
+  });
+
+  // Restore purposes
+  wsPurposes = new Set(ws.purposes || []);
+  document.querySelectorAll('.ws-cb-item').forEach(c => {
+    const checked = wsPurposes.has(c.dataset.p);
+    c.classList.toggle('checked', checked);
+  });
+
+  // Restore products
+  wsProducts = new Set(ws.products || []);
+  document.querySelectorAll('.ws-prod-tag').forEach(t => {
+    t.classList.toggle('sel', wsProducts.has(t.dataset.prod));
+  });
+
+  // Restore funnel
+  wsFunnelStage = ws.funnelStage || '';
+  document.querySelectorAll('.ws-funnel-item').forEach(f => {
+    f.classList.toggle('sel', f.dataset.funnel === wsFunnelStage);
   });
 
   // Restore photos
@@ -3196,6 +3356,26 @@ function wsSelectLead(el, val) {
   el.classList.add('sel');
 }
 
+
+// ---- Purpose checklist ----
+function wsTogglePurpose(el, val) {
+  if (wsPurposes.has(val)) { wsPurposes.delete(val); el.classList.remove('checked'); }
+  else { wsPurposes.add(val); el.classList.add('checked'); }
+}
+
+// ---- Product tags ----
+function wsToggleProd(el, val) {
+  if (wsProducts.has(val)) { wsProducts.delete(val); el.classList.remove('sel'); }
+  else { wsProducts.add(val); el.classList.add('sel'); }
+}
+
+// ---- Funnel stage ----
+function wsSelectFunnel(el, val) {
+  wsFunnelStage = val;
+  document.querySelectorAll('.ws-funnel-item').forEach(f => f.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
 // ---- Submit ----
 async function submitWorksheet() {
   if (!wsBookingId) return;
@@ -3209,6 +3389,9 @@ async function submitWorksheet() {
     signerPos: document.getElementById('ws-signer-pos').value.trim(),
     signature: sigDataUrl || null,
     leadStatus: wsLeadStatus,
+    purposes: Array.from(wsPurposes),
+    products: Array.from(wsProducts),
+    funnelStage: wsFunnelStage,
     workNote: document.getElementById('ws-work-note').value.trim(),
     nextAction: document.getElementById('ws-next-action').value.trim(),
     photos: wsPhotos.map(p => p.dataUrl),
@@ -3221,6 +3404,8 @@ async function submitWorksheet() {
     updates['bookings/' + wsBookingId + '/worksheet'] = wsData;
     updates['bookings/' + wsBookingId + '/status'] = 'done';
     if (wsLeadStatus) updates['bookings/' + wsBookingId + '/leadStatus'] = wsLeadStatus;
+    if (wsFunnelStage) updates['bookings/' + wsBookingId + '/funnelStage'] = wsFunnelStage;
+    if (wsProducts.size) updates['bookings/' + wsBookingId + '/productFocus'] = Array.from(wsProducts).join(', ');
     if (wsData.nextAction) updates['bookings/' + wsBookingId + '/demoNextAction'] = wsData.nextAction;
     await db.ref().update(updates);
     showToast('บันทึก Work Sheet แล้ว ✓', 'success');
