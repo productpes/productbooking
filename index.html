@@ -345,6 +345,68 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .doc-drop-area:hover,.doc-drop-area.drag-over{border-color:var(--primary);background:var(--primary-light);}
 .doc-drop-area input{display:none;}
 
+
+/* ===================== SALES PIPELINE ===================== */
+.pipeline-board{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;align-items:flex-start;}
+.pipeline-col{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);min-width:220px;max-width:240px;flex-shrink:0;display:flex;flex-direction:column;}
+.pipeline-col-hd{padding:10px 12px;border-radius:var(--radius) var(--radius) 0 0;display:flex;align-items:center;justify-content:space-between;}
+.pipeline-col-title{font-size:12px;font-weight:700;color:white;}
+.pipeline-col-sub{font-size:10px;color:rgba(255,255,255,.8);margin-top:1px;}
+.pipeline-col-count{background:rgba(255,255,255,.25);border-radius:20px;padding:1px 8px;font-size:11px;font-weight:700;color:white;}
+.pipeline-cards{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:60px;}
+.pipeline-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;transition:all .15s;position:relative;}
+.pipeline-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1);border-color:var(--gray-400);}
+.pipeline-card-hosp{font-size:12px;font-weight:700;color:var(--gray-900);margin-bottom:3px;}
+.pipeline-card-meta{font-size:10px;color:var(--gray-400);line-height:1.6;}
+.pipeline-card-prod{display:inline-block;font-size:10px;padding:1px 6px;border-radius:20px;background:var(--gray-100);color:var(--gray-600);border:1px solid var(--gray-200);margin-top:4px;}
+.pipeline-card-age{font-size:10px;color:var(--amber);font-weight:600;}
+.pipeline-card-value{font-size:11px;font-weight:700;color:var(--primary);margin-top:3px;}
+.pipeline-add-btn{margin:0 8px 8px;padding:6px;border:1.5px dashed var(--gray-200);border-radius:var(--radius-sm);font-size:11px;color:var(--gray-400);background:none;cursor:pointer;font-family:inherit;width:calc(100% - 16px);transition:all .15s;}
+.pipeline-add-btn:hover{border-color:var(--primary);color:var(--primary);}
+/* Pipeline modal */
+.pl-modal{background:var(--white);border-radius:16px;width:100%;max-width:540px;margin:auto;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.2);}
+.pl-modal-hd{background:linear-gradient(135deg,#1e3a5c,#1a6b3c);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
+.pl-modal-title{font-size:14px;font-weight:700;color:white;}
+.pl-modal-body{padding:18px 20px;overflow-y:auto;max-height:80vh;display:flex;flex-direction:column;gap:12px;}
+.pl-field{display:flex;flex-direction:column;gap:5px;}
+.pl-field label{font-size:12px;font-weight:600;color:var(--gray-600);}
+.pl-input{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;background:var(--white);}
+.pl-input:focus{border-color:var(--navy);}
+.pl-select{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;background:var(--white);}
+.pl-stage-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pl-stage-btn{padding:8px 10px;border-radius:var(--radius-sm);border:2px solid var(--gray-200);cursor:pointer;font-family:inherit;text-align:left;background:var(--white);transition:all .15s;}
+.pl-stage-btn:hover{border-color:var(--navy);}
+.pl-stage-btn.sel{border-width:2px;}
+.pl-stage-icon{font-size:16px;margin-bottom:2px;}
+.pl-stage-label{font-size:11px;font-weight:700;color:var(--gray-800);}
+.pl-stage-btn.sel .pl-stage-label{color:white;}
+.pl-stage-sub{font-size:10px;color:var(--gray-400);margin-top:1px;}
+.pl-stage-btn.sel .pl-stage-sub{color:rgba(255,255,255,.8);}
+/* Stage colors */
+.stage-prospecting .pipeline-col-hd{background:linear-gradient(135deg,#64748b,#475569);}
+.stage-demo .pipeline-col-hd{background:linear-gradient(135deg,#d97706,#b45309);}
+.stage-quotation .pipeline-col-hd{background:linear-gradient(135deg,#2563eb,#1d4ed8);}
+.stage-spec .pipeline-col-hd{background:linear-gradient(135deg,#7c3aed,#6d28d9);}
+.stage-negotiation .pipeline-col-hd{background:linear-gradient(135deg,#0d7a6b,#0a5c4f);}
+.stage-won .pipeline-col-hd{background:linear-gradient(135deg,#16a34a,#15803d);}
+.stage-prospecting{border-top:3px solid #64748b;}
+.stage-demo{border-top:3px solid #d97706;}
+.stage-quotation{border-top:3px solid #2563eb;}
+.stage-spec{border-top:3px solid #7c3aed;}
+.stage-negotiation{border-top:3px solid #0d7a6b;}
+.stage-won{border-top:3px solid #16a34a;}
+/* Stage chip in booking row */
+.pl-stage-chip{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:1px 7px;border-radius:20px;font-weight:600;border:1px solid transparent;}
+.pl-chip-prospecting{background:#f1f5f9;color:#475569;border-color:#cbd5e1;}
+.pl-chip-demo{background:#fef3c7;color:#b45309;border-color:#fcd34d;}
+.pl-chip-quotation{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd;}
+.pl-chip-spec{background:#ede9fe;color:#6d28d9;border-color:#c4b5fd;}
+.pl-chip-negotiation{background:var(--teal-light);color:var(--teal);border-color:var(--teal);}
+.pl-chip-won{background:#dcfce7;color:#15803d;border-color:#86efac;}
+/* Pipeline summary bar */
+.pl-summary{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.pl-sum-item{padding:6px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
+
 /* ===================== DIGITAL WORK SHEET ===================== */
 .ws-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:600;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px 0;}
 .ws-overlay.open{display:flex;}
@@ -681,6 +743,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       <button class="nav-btn" onclick="switchView('res')">&#128230; ยืม/คืน</button>
       <button class="nav-btn" id="nav-territory-btn" style="display:none;" onclick="switchView('territory')">&#128205; Territory</button>
       <button class="nav-btn" onclick="switchView('trips')">&#9992;&#65039; Trips</button>
+      <button class="nav-btn" id="nav-pipeline-btn" onclick="switchView('pipeline')">&#128202; Pipeline</button>
       <button class="nav-btn" id="nav-book-btn" onclick="openModal(null)">+ จอง</button>
     </div>
     <div class="topbar-right">
@@ -832,6 +895,22 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <button class="filter-chip" onclick="setTripFilter(this,'cancel')">ยกเลิก</button>
       </div>
       <div id="trips-list"><div class="loading">กำลังโหลด...</div></div>
+    </div>
+
+
+    <!-- SALES PIPELINE VIEW -->
+    <div class="view" id="view-pipeline">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--gray-900);">📊 Sales Pipeline</div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">ติดตามความคืบหน้าของแต่ละเคส</div>
+        </div>
+        <button onclick="openPipelineModal(null)" style="padding:8px 16px;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">+ เพิ่มเคส</button>
+      </div>
+      <div class="pl-summary" id="pl-summary"></div>
+      <div class="pipeline-board" id="pipeline-board">
+        <div class="loading">กำลังโหลด...</div>
+      </div>
     </div>
 
     <!-- TERRITORY VIEW (PS Manager only) -->
@@ -1774,6 +1853,103 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 </div>
 
 
+
+<!-- SALES PIPELINE MODAL -->
+<div class="modal-overlay" id="pl-overlay" onclick="if(event.target===this)closePipelineModal()">
+<div class="pl-modal">
+  <div class="pl-modal-hd">
+    <div class="pl-modal-title" id="pl-modal-title">➕ เพิ่มเคสใหม่</div>
+    <button class="modal-close" style="background:rgba(255,255,255,.15);color:white;border-color:rgba(255,255,255,.3);" onclick="closePipelineModal()">✕</button>
+  </div>
+  <div class="pl-modal-body">
+
+    <!-- Stage selector -->
+    <div class="pl-field">
+      <label>📍 Stage ปัจจุบัน *</label>
+      <div class="pl-stage-grid" id="pl-stage-grid">
+        <button class="pl-stage-btn" onclick="plSelectStage(this,'prospecting')" data-stage="prospecting" style="--sc:#64748b;">
+          <div class="pl-stage-icon">🔍</div>
+          <div class="pl-stage-label">Prospecting</div>
+          <div class="pl-stage-sub">เปิดเคส / แนะนำตัว</div>
+        </button>
+        <button class="pl-stage-btn" onclick="plSelectStage(this,'demo')" data-stage="demo" style="--sc:#d97706;">
+          <div class="pl-stage-icon">🔬</div>
+          <div class="pl-stage-label">Demo / Trial</div>
+          <div class="pl-stage-sub">สาธิต / ทดลองเครื่อง</div>
+        </button>
+        <button class="pl-stage-btn" onclick="plSelectStage(this,'quotation')" data-stage="quotation" style="--sc:#2563eb;">
+          <div class="pl-stage-icon">📄</div>
+          <div class="pl-stage-label">Quotation Sent</div>
+          <div class="pl-stage-sub">ส่งใบเสนอราคาแล้ว</div>
+        </button>
+        <button class="pl-stage-btn" onclick="plSelectStage(this,'spec')" data-stage="spec" style="--sc:#7c3aed;">
+          <div class="pl-stage-icon">📋</div>
+          <div class="pl-stage-label">Spec-in / Committee</div>
+          <div class="pl-stage-sub">กรรมการพิจารณาสเปก</div>
+        </button>
+        <button class="pl-stage-btn" onclick="plSelectStage(this,'negotiation')" data-stage="negotiation" style="--sc:#0d7a6b;">
+          <div class="pl-stage-icon">🤝</div>
+          <div class="pl-stage-label">Negotiation</div>
+          <div class="pl-stage-sub">ต่อรองราคา / เงื่อนไข</div>
+        </button>
+        <button class="pl-stage-btn" onclick="plSelectStage(this,'won')" data-stage="won" style="--sc:#16a34a;">
+          <div class="pl-stage-icon">🏆</div>
+          <div class="pl-stage-label">Won / Closed</div>
+          <div class="pl-stage-sub">ได้ PO / ปิดการขาย</div>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="pl-field" style="grid-column:1/-1;">
+        <label>🏥 โรงพยาบาล / คลินิก *</label>
+        <input type="text" class="pl-input" id="pl-hospital" placeholder="ชื่อโรงพยาบาล">
+      </div>
+      <div class="pl-field">
+        <label>👤 ผู้ติดต่อหลัก</label>
+        <input type="text" class="pl-input" id="pl-contact" placeholder="ชื่อ-ตำแหน่ง">
+      </div>
+      <div class="pl-field">
+        <label>📦 สินค้าที่เสนอ</label>
+        <select class="pl-select" id="pl-product">
+          <option value="">-- เลือกสินค้า --</option>
+          <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
+          <option>Shockwave Therapy</option>
+          <option>เครื่อง Ultrasound กายภาพบำบัด</option>
+          <option>เครื่อง TENS / EMS</option>
+          <option>เครื่องเลเซอร์กายภาพบำบัด</option>
+          <option>ชุด Pulmonary Rehabilitation</option>
+          <option>Peak Flow Meter</option>
+          <option>Functional Reach Test</option>
+          <option>อื่น ๆ</option>
+        </select>
+      </div>
+      <div class="pl-field">
+        <label>💰 มูลค่าประมาณ (บาท)</label>
+        <input type="number" class="pl-input" id="pl-value" placeholder="เช่น 250000">
+      </div>
+      <div class="pl-field">
+        <label>📅 วันที่เปิดเคส</label>
+        <input type="date" class="pl-input" id="pl-date-open">
+      </div>
+      <div class="pl-field">
+        <label>📅 คาดปิดงาน</label>
+        <input type="date" class="pl-input" id="pl-date-expect">
+      </div>
+      <div class="pl-field" style="grid-column:1/-1;">
+        <label>📝 หมายเหตุ / ขั้นตอนถัดไป</label>
+        <textarea class="pl-input" id="pl-note" rows="2" placeholder="เช่น รอ committee ประชุม 15 พ.ค., ต้องส่ง spec เพิ่มเติม..." style="resize:vertical;"></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button onclick="savePipelineCase()" style="flex:1;padding:11px;background:var(--navy);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;" id="pl-save-btn">💾 บันทึก</button>
+      <button id="pl-delete-btn" onclick="deletePipelineCase()" style="display:none;padding:11px 16px;background:var(--red-light);color:var(--red);border:1px solid var(--red-light);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer;">ลบ</button>
+    </div>
+  </div>
+</div>
+</div>
+
 <!-- DIGITAL WORK SHEET MODAL -->
 <div class="ws-overlay" id="ws-overlay" onclick="if(event.target===this)closeWorksheet()">
 <div class="ws-modal">
@@ -2038,11 +2214,12 @@ const resourcesRef = db.ref('resources');
 const resBookingsRef = db.ref('resBookings');
 const territoriesRef = db.ref('territories');
 const tripsRef = db.ref('trips');
+const pipelinesRef = db.ref('pipelines');
 
 const ADMIN_PW = 'admin1234';
 const MGR_PW = 'manager2026';
 let currentUser = null;
-let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {}, allTerritories = {}, allTrips = {};
+let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {}, allTerritories = {}, allTrips = {}, allPipelines = {};
 
 // ROLE HELPERS
 function isSales(){ return currentUser && currentUser.dept==='sales'; }
@@ -2066,6 +2243,7 @@ resourcesRef.on('value', s => { allResources = s.val()||{}; renderResViews(); })
 resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews(); });
 territoriesRef.on('value', s => { allTerritories = s.val()||{}; });
 tripsRef.on('value', s => { allTrips = s.val()||{}; if(document.getElementById('view-trips')?.classList.contains('active')) renderTripsView(); });
+pipelinesRef.on('value', s => { allPipelines = s.val()||{}; if(document.getElementById('view-pipeline')?.classList.contains('active')) renderPipelineBoard(); });
 
 function refreshAll(){
   renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner();
@@ -2189,6 +2367,8 @@ function startUserApp(){
   // ปรับ UI ตาม role
   const bookBtn = document.getElementById('nav-book-btn');
   if(bookBtn) bookBtn.style.display = isSales() ? 'none' : '';
+  const pipelineBtn = document.getElementById('nav-pipeline-btn');
+  if(pipelineBtn) pipelineBtn.style.display = isSales() ? '' : 'none';
   const terrBtn = document.getElementById('nav-territory-btn');
   if(terrBtn) terrBtn.style.display = canAssign() ? '' : 'none';
   // Sales: default filter = mine
@@ -2208,7 +2388,7 @@ function switchView(v){
   document.querySelectorAll('#user-screen .nav-btn').forEach(el=>el.classList.remove('active'));
   const viewEl = document.getElementById('view-'+v);
   if(viewEl) viewEl.classList.add('active');
-  const idx={cal:0,dash:1,res:2};
+  const idx={cal:0,dash:1,res:2,pipeline:5};
   if(idx[v]!==undefined) document.querySelectorAll('#user-screen .nav-btn')[idx[v]].classList.add('active');
   if(v==='res') renderResViews();
   if(v==='territory'){ renderTerritoryUserView(); populateTerritoryMemberSelects(); }
@@ -2217,6 +2397,7 @@ function switchView(v){
     const cb = document.getElementById('create-trip-btn');
     if(cb) cb.style.display = canAssign() ? '' : 'none';
   }
+  if(v==='pipeline') renderPipelineBoard();
 }
 function switchAdminView(v){
   document.querySelectorAll('#admin-screen .view').forEach(el=>el.classList.remove('active'));
@@ -3418,6 +3599,178 @@ async function submitWorksheet() {
   btn.textContent = '✅ ปิดงาน & บันทึก Work Sheet';
 }
 // ===================== END DIGITAL WORK SHEET =====================
+
+
+// ===================== SALES PIPELINE =====================
+const PIPELINE_STAGES = [
+  { key:'prospecting', label:'Prospecting',       sub:'เปิดเคส / แนะนำตัว',       icon:'🔍', color:'#64748b' },
+  { key:'demo',        label:'Demo / Trial',       sub:'สาธิต / ทดลองเครื่อง',     icon:'🔬', color:'#d97706' },
+  { key:'quotation',   label:'Quotation Sent',     sub:'ส่งใบเสนอราคาแล้ว',        icon:'📄', color:'#2563eb' },
+  { key:'spec',        label:'Spec-in / Committee',sub:'กรรมการพิจารณาสเปก',       icon:'📋', color:'#7c3aed' },
+  { key:'negotiation', label:'Negotiation',        sub:'ต่อรองราคา / เงื่อนไข',   icon:'🤝', color:'#0d7a6b' },
+  { key:'won',         label:'Won / Closed',       sub:'ได้ PO / ปิดการขาย',       icon:'🏆', color:'#16a34a' },
+];
+
+let plEditingId = null;
+let plSelectedStage = '';
+
+function renderPipelineBoard() {
+  const board = document.getElementById('pipeline-board');
+  const summary = document.getElementById('pl-summary');
+  if (!board) return;
+
+  const cases = Object.entries(allPipelines)
+    .map(([id, c]) => ({id, ...c}))
+    .filter(c => !currentUser || isSales() ? (c.ownerId === currentUser?.id || !isSales()) : true)
+    .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+  // Summary bar
+  const totalVal = cases.reduce((s,c) => s + (parseFloat(c.value)||0), 0);
+  const wonVal   = cases.filter(c=>c.stage==='won').reduce((s,c)=>s+(parseFloat(c.value)||0),0);
+  summary.innerHTML = `
+    <div class="pl-sum-item" style="background:var(--gray-100);color:var(--gray-700);">📁 ${cases.length} เคส</div>
+    <div class="pl-sum-item" style="background:var(--navy-light);color:var(--navy);">💰 ${totalVal.toLocaleString('th')} บาท</div>
+    <div class="pl-sum-item" style="background:#dcfce7;color:#15803d;">🏆 ปิดแล้ว ${wonVal.toLocaleString('th')} บาท</div>
+  `;
+
+  board.innerHTML = PIPELINE_STAGES.map(st => {
+    const cols = cases.filter(c => c.stage === st.key);
+    const cards = cols.map(c => {
+      const ageDays = c.dateOpen ? Math.floor((Date.now() - new Date(c.dateOpen))/(86400000)) : null;
+      const ageLabel = ageDays !== null ? `${ageDays} วัน` : '';
+      const valLabel = c.value ? `฿${parseFloat(c.value).toLocaleString('th')}` : '';
+      return `<div class="pipeline-card" onclick="openPipelineModal('${c.id}')">
+        <div class="pipeline-card-hosp">${esc(c.hospital||'—')}</div>
+        <div class="pipeline-card-meta">
+          ${c.contact ? esc(c.contact)+'<br>':''}
+          ${c.owner ? '<span style="color:var(--gray-500);">👤 '+esc(c.owner)+'</span>' : ''}
+        </div>
+        ${c.product ? `<div class="pipeline-card-prod">${esc(c.product)}</div>` : ''}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:5px;">
+          ${valLabel ? `<div class="pipeline-card-value">${valLabel}</div>` : '<div></div>'}
+          ${ageDays !== null ? `<div class="pipeline-card-age">🕐 ${ageLabel}</div>` : ''}
+        </div>
+        ${c.note ? `<div style="font-size:10px;color:var(--gray-400);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.note)}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    return `<div class="pipeline-col stage-${st.key}">
+      <div class="pipeline-col-hd">
+        <div>
+          <div class="pipeline-col-title">${st.icon} ${st.label}</div>
+          <div class="pipeline-col-sub">${st.sub}</div>
+        </div>
+        <div class="pipeline-col-count">${cols.length}</div>
+      </div>
+      <div class="pipeline-cards">${cards || '<div style="font-size:11px;color:var(--gray-400);text-align:center;padding:12px;">ว่าง</div>'}</div>
+      <button class="pipeline-add-btn" onclick="openPipelineModal(null,'${st.key}')">+ เพิ่มเคส</button>
+    </div>`;
+  }).join('');
+}
+
+function openPipelineModal(id, defaultStage) {
+  plEditingId = id || null;
+  const c = id ? allPipelines[id] : null;
+  const title = document.getElementById('pl-modal-title');
+  title.textContent = id ? '✏️ แก้ไขเคส' : '➕ เพิ่มเคสใหม่';
+
+  // Set stage
+  plSelectedStage = c ? c.stage : (defaultStage || '');
+  document.querySelectorAll('.pl-stage-btn').forEach(b => {
+    const s = b.dataset.stage;
+    b.classList.toggle('sel', s === plSelectedStage);
+    const stObj = PIPELINE_STAGES.find(x=>x.key===s);
+    if(b.classList.contains('sel') && stObj){
+      b.style.background = stObj.color;
+      b.style.borderColor = stObj.color;
+    } else {
+      b.style.background = '';
+      b.style.borderColor = '';
+    }
+  });
+
+  // Fill fields
+  document.getElementById('pl-hospital').value = c?.hospital || '';
+  document.getElementById('pl-contact').value  = c?.contact  || '';
+  document.getElementById('pl-product').value  = c?.product  || '';
+  document.getElementById('pl-value').value    = c?.value    || '';
+  document.getElementById('pl-date-open').value    = c?.dateOpen    || new Date().toISOString().slice(0,10);
+  document.getElementById('pl-date-expect').value  = c?.dateExpect  || '';
+  document.getElementById('pl-note').value         = c?.note        || '';
+  document.getElementById('pl-delete-btn').style.display = id ? 'block' : 'none';
+
+  document.getElementById('pl-overlay').style.display = 'flex';
+  document.getElementById('pl-overlay').style.alignItems = 'flex-start';
+  document.getElementById('pl-overlay').style.justifyContent = 'center';
+  document.getElementById('pl-overlay').style.position = 'fixed';
+  document.getElementById('pl-overlay').style.inset = '0';
+  document.getElementById('pl-overlay').style.background = 'rgba(0,0,0,.55)';
+  document.getElementById('pl-overlay').style.zIndex = '600';
+  document.getElementById('pl-overlay').style.overflowY = 'auto';
+  document.getElementById('pl-overlay').style.padding = '16px 0';
+}
+
+function closePipelineModal() {
+  document.getElementById('pl-overlay').style.display = 'none';
+  plEditingId = null; plSelectedStage = '';
+}
+
+function plSelectStage(el, stage) {
+  plSelectedStage = stage;
+  document.querySelectorAll('.pl-stage-btn').forEach(b => {
+    const s = b.dataset.stage;
+    const stObj = PIPELINE_STAGES.find(x=>x.key===s);
+    b.classList.toggle('sel', s === stage);
+    if(s === stage && stObj){ b.style.background = stObj.color; b.style.borderColor = stObj.color; }
+    else { b.style.background = ''; b.style.borderColor = ''; }
+  });
+}
+
+async function savePipelineCase() {
+  const hospital = document.getElementById('pl-hospital').value.trim();
+  if (!hospital) { showToast('กรุณาใส่ชื่อโรงพยาบาล','error'); return; }
+  if (!plSelectedStage) { showToast('กรุณาเลือก Stage','error'); return; }
+
+  const btn = document.getElementById('pl-save-btn');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+
+  const data = {
+    stage: plSelectedStage,
+    hospital,
+    contact:    document.getElementById('pl-contact').value.trim(),
+    product:    document.getElementById('pl-product').value,
+    value:      document.getElementById('pl-value').value,
+    dateOpen:   document.getElementById('pl-date-open').value,
+    dateExpect: document.getElementById('pl-date-expect').value,
+    note:       document.getElementById('pl-note').value.trim(),
+    owner:      currentUser?.name || '',
+    ownerId:    currentUser?.id   || '',
+    updatedAt:  Date.now(),
+  };
+
+  try {
+    if (plEditingId) {
+      await pipelinesRef.child(plEditingId).update(data);
+    } else {
+      data.createdAt = Date.now();
+      await pipelinesRef.push(data);
+    }
+    showToast('บันทึกเคสแล้ว ✓','success');
+    closePipelineModal();
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+
+  btn.disabled = false; btn.textContent = '💾 บันทึก';
+}
+
+async function deletePipelineCase() {
+  if (!plEditingId) return;
+  const c = allPipelines[plEditingId];
+  if (!confirm(`ลบเคส "${c?.hospital||''}" ออกจากระบบ?`)) return;
+  await pipelinesRef.child(plEditingId).remove();
+  showToast('ลบเคสแล้ว');
+  closePipelineModal();
+}
+// ===================== END SALES PIPELINE =====================
 
 function showToast(msg,type=''){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>{t.className='toast';},3000); }
 function esc(s){ if(!s)return''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
