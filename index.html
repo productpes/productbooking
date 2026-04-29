@@ -346,6 +346,73 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .doc-drop-area input{display:none;}
 
 
+
+/* ===================== NEW DASHBOARD ===================== */
+.db-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+.db-kpi{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;border-top:3px solid var(--gray-200);}
+.db-kpi-icon{font-size:22px;flex-shrink:0;}
+.db-kpi-val{font-size:26px;font-weight:700;color:var(--gray-900);line-height:1;}
+.db-kpi-label{font-size:11px;color:var(--gray-400);margin-top:3px;}
+.db-kpi-all{border-top-color:var(--primary);}
+.db-kpi-all .db-kpi-val{color:var(--primary);}
+.db-kpi-pend{border-top-color:#f59e0b;}
+.db-kpi-pend .db-kpi-val{color:#b45309;}
+.db-kpi-act{border-top-color:var(--blue);}
+.db-kpi-act .db-kpi-val{color:var(--blue);}
+.db-kpi-done{border-top-color:var(--primary-mid);}
+.db-kpi-done .db-kpi-val{color:var(--primary-mid);}
+.db-kpi-ws{border-top-color:var(--navy);}
+.db-kpi-ws .db-kpi-val{color:var(--navy);}
+.db-kpi-ws:hover{background:var(--navy-light);}
+.db-grid{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start;}
+.db-col-main{display:flex;flex-direction:column;gap:14px;}
+.db-col-side{display:flex;flex-direction:column;gap:14px;}
+.db-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:16px;}
+.db-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.db-card-title{font-size:12px;font-weight:700;color:var(--gray-700);}
+.db-badge{background:var(--gray-100);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;color:var(--gray-600);}
+/* Today/upcoming items */
+.db-appt{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100);}
+.db-appt:last-child{border-bottom:none;padding-bottom:0;}
+.db-appt-time{font-size:11px;font-weight:700;color:var(--primary);background:var(--primary-light);border-radius:var(--radius-sm);padding:3px 7px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.db-appt-time.sales{color:var(--navy);background:var(--navy-light);}
+.db-appt-hosp{font-size:12px;font-weight:700;color:var(--gray-900);}
+.db-appt-meta{font-size:11px;color:var(--gray-400);margin-top:2px;}
+.db-appt-staff{font-size:10px;color:var(--gray-400);margin-top:2px;display:flex;align-items:center;gap:4px;}
+/* Quick actions */
+.db-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.db-quick-btn{padding:10px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--primary-light);background:var(--primary-light);color:var(--primary-dark);cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;}
+.db-quick-btn:hover{background:var(--primary);color:white;border-color:var(--primary);}
+.db-quick-btn.db-quick-blue{background:var(--blue-light);color:var(--navy);border-color:var(--blue-light);}
+.db-quick-btn.db-quick-blue:hover{background:var(--navy);color:white;}
+.db-quick-btn.db-quick-teal{background:var(--teal-light);color:var(--teal);border-color:var(--teal-light);}
+.db-quick-btn.db-quick-teal:hover{background:var(--teal);color:white;}
+.db-quick-btn.db-quick-purple{background:var(--purple-light);color:var(--purple);border-color:var(--purple-light);}
+.db-quick-btn.db-quick-purple:hover{background:var(--purple);color:white;}
+.db-quick-icon{font-size:18px;}
+/* Pipeline snap bars */
+.pl-snap-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.pl-snap-label{font-size:11px;color:var(--gray-600);width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-snap-track{flex:1;height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden;}
+.pl-snap-fill{height:100%;border-radius:4px;transition:width .4s;}
+.pl-snap-num{font-size:11px;font-weight:700;color:var(--gray-700);width:20px;text-align:right;flex-shrink:0;}
+/* Lead snap */
+.db-lead-row{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:var(--radius-sm);margin-bottom:4px;font-size:11px;}
+/* Team */
+.db-team-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--gray-100);}
+.db-team-row:last-child{border-bottom:none;}
+.db-team-info{flex:1;min-width:0;}
+.db-team-name{font-size:12px;font-weight:600;color:var(--gray-900);}
+.db-team-last{font-size:10px;color:var(--gray-400);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.db-team-count{font-size:12px;font-weight:700;color:var(--primary);flex-shrink:0;}
+@media(max-width:780px){
+  .db-kpi-row{grid-template-columns:repeat(3,1fr);}
+  .db-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .db-kpi-row{grid-template-columns:repeat(2,1fr);}
+}
+
 /* ===================== SALES PIPELINE ===================== */
 .pipeline-board{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;align-items:flex-start;}
 .pipeline-col{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);min-width:220px;max-width:240px;flex-shrink:0;display:flex;flex-direction:column;}
@@ -804,27 +871,138 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
       </div>
     </div>
     <div class="view" id="view-dash">
-      <div class="stat-grid">
-        <div class="stat-card s-all"><div class="stat-label">นัดทั้งหมด</div><div class="stat-val" id="d-total">—</div></div>
-        <div class="stat-card s-pend"><div class="stat-label">รอดำเนินการ</div><div class="stat-val" id="d-pend">—</div></div>
-        <div class="stat-card s-act"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-val" id="d-act">—</div></div>
-        <div class="stat-card s-done"><div class="stat-label">เสร็จสิ้น</div><div class="stat-val" id="d-done">—</div></div>
+
+      <!-- KPI STRIP -->
+      <div class="db-kpi-row">
+        <div class="db-kpi db-kpi-all">
+          <div class="db-kpi-icon">📅</div>
+          <div class="db-kpi-body">
+            <div class="db-kpi-val" id="d-total">—</div>
+            <div class="db-kpi-label">นัดทั้งหมด</div>
+          </div>
+        </div>
+        <div class="db-kpi db-kpi-pend">
+          <div class="db-kpi-icon">⏳</div>
+          <div class="db-kpi-body">
+            <div class="db-kpi-val" id="d-pend">—</div>
+            <div class="db-kpi-label">รอดำเนินการ</div>
+          </div>
+        </div>
+        <div class="db-kpi db-kpi-act">
+          <div class="db-kpi-icon">⚡</div>
+          <div class="db-kpi-body">
+            <div class="db-kpi-val" id="d-act">—</div>
+            <div class="db-kpi-label">กำลังดำเนินการ</div>
+          </div>
+        </div>
+        <div class="db-kpi db-kpi-done">
+          <div class="db-kpi-icon">✅</div>
+          <div class="db-kpi-body">
+            <div class="db-kpi-val" id="d-done">—</div>
+            <div class="db-kpi-label">เสร็จสิ้น</div>
+          </div>
+        </div>
+        <div class="db-kpi db-kpi-ws" onclick="switchView('pipeline')" style="cursor:pointer;">
+          <div class="db-kpi-icon">📊</div>
+          <div class="db-kpi-body">
+            <div class="db-kpi-val" id="d-pipeline">—</div>
+            <div class="db-kpi-label">เคส Pipeline</div>
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <div class="sec-hd">
-          <div class="card-title" style="margin:0;">รายการนัดหมาย</div>
-          <span class="sec-count" id="list-count">0 รายการ</span>
+
+      <!-- TWO-COL LAYOUT -->
+      <div class="db-grid">
+
+        <!-- LEFT: upcoming + my tasks -->
+        <div class="db-col-main">
+
+          <!-- TODAY'S APPOINTMENTS -->
+          <div class="db-card">
+            <div class="db-card-hd">
+              <div class="db-card-title">🗓 นัดวันนี้</div>
+              <span class="db-badge" id="db-today-count">0</span>
+            </div>
+            <div id="db-today-list"><div class="empty" style="padding:16px;">ไม่มีนัดวันนี้ 🎉</div></div>
+          </div>
+
+          <!-- UPCOMING (next 7 days) -->
+          <div class="db-card">
+            <div class="db-card-hd">
+              <div class="db-card-title">📆 กำลังจะถึง (7 วัน)</div>
+              <span class="db-badge" id="db-upcoming-count">0</span>
+            </div>
+            <div id="db-upcoming-list"><div class="empty" style="padding:16px;">ไม่มีนัดในช่วงนี้</div></div>
+          </div>
+
+          <!-- ALL BOOKINGS (filterable) -->
+          <div class="db-card">
+            <div class="db-card-hd">
+              <div class="db-card-title">📋 รายการนัดหมายทั้งหมด</div>
+              <span class="sec-count" id="list-count">0 รายการ</span>
+            </div>
+            <div class="filter-row" style="margin-bottom:10px;">
+              <button class="filter-chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
+              <button class="filter-chip" onclick="setFilter(this,'mine')">ของฉัน</button>
+              <button class="filter-chip" onclick="setFilter(this,'ps')">PS</button>
+              <button class="filter-chip" onclick="setFilter(this,'sales')">Sales</button>
+              <button class="filter-chip" onclick="setFilter(this,'pending')">รอดำเนินการ</button>
+              <button class="filter-chip" onclick="setFilter(this,'done')">เสร็จสิ้น</button>
+            </div>
+            <div id="booking-list"><div class="loading">กำลังโหลด...</div></div>
+          </div>
         </div>
-        <div class="filter-row">
-          <span style="font-size:12px;color:var(--gray-400);">กรอง:</span>
-          <button class="filter-chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
-          <button class="filter-chip" onclick="setFilter(this,'mine')">ของฉัน</button>
-          <button class="filter-chip" onclick="setFilter(this,'ps')">PS</button>
-          <button class="filter-chip" onclick="setFilter(this,'sales')">Sales</button>
-          <button class="filter-chip" onclick="setFilter(this,'pending')">รอดำเนินการ</button>
-          <button class="filter-chip" onclick="setFilter(this,'done')">เสร็จสิ้น</button>
+
+        <!-- RIGHT: quick actions + pipeline snapshot + recent -->
+        <div class="db-col-side">
+
+          <!-- QUICK ACTIONS -->
+          <div class="db-card">
+            <div class="db-card-title" style="margin-bottom:10px;">⚡ ทำรายการ</div>
+            <div class="db-quick-grid">
+              <button class="db-quick-btn" onclick="openModal(null)" id="db-book-btn">
+                <span class="db-quick-icon">📌</span>
+                <span>จองนัดหมาย</span>
+              </button>
+              <button class="db-quick-btn db-quick-blue" onclick="switchView('trips')">
+                <span class="db-quick-icon">✈️</span>
+                <span>สร้าง Trip</span>
+              </button>
+              <button class="db-quick-btn db-quick-teal" onclick="switchView('res')">
+                <span class="db-quick-icon">🔬</span>
+                <span>ยืมเครื่อง Demo</span>
+              </button>
+              <button class="db-quick-btn db-quick-purple" onclick="switchView('pipeline')">
+                <span class="db-quick-icon">📊</span>
+                <span>เปิดเคส Pipeline</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- PIPELINE SNAPSHOT -->
+          <div class="db-card">
+            <div class="db-card-hd">
+              <div class="db-card-title">📊 Pipeline Snapshot</div>
+              <button onclick="switchView('pipeline')" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;">ดูทั้งหมด →</button>
+            </div>
+            <div id="db-pipeline-snap"></div>
+          </div>
+
+          <!-- LEAD STATUS BREAKDOWN -->
+          <div class="db-card">
+            <div class="db-card-title" style="margin-bottom:10px;">🎯 สถานะ Lead</div>
+            <div id="db-lead-snap"></div>
+          </div>
+
+          <!-- TEAM ACTIVITY -->
+          <div class="db-card">
+            <div class="db-card-hd">
+              <div class="db-card-title">👥 ทีม — นัดล่าสุด</div>
+            </div>
+            <div id="db-team-list"></div>
+          </div>
+
         </div>
-        <div id="booking-list"><div class="loading">กำลังโหลด...</div></div>
       </div>
     </div>
     <!-- RESOURCE BOOKING VIEW -->
@@ -2243,10 +2421,10 @@ resourcesRef.on('value', s => { allResources = s.val()||{}; renderResViews(); })
 resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews(); });
 territoriesRef.on('value', s => { allTerritories = s.val()||{}; });
 tripsRef.on('value', s => { allTrips = s.val()||{}; if(document.getElementById('view-trips')?.classList.contains('active')) renderTripsView(); });
-pipelinesRef.on('value', s => { allPipelines = s.val()||{}; if(document.getElementById('view-pipeline')?.classList.contains('active')) renderPipelineBoard(); });
+pipelinesRef.on('value', s => { allPipelines = s.val()||{}; if(document.getElementById('view-pipeline')?.classList.contains('active')) renderPipelineBoard(); renderDashboard(); });
 
 function refreshAll(){
-  renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner();
+  renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner(); renderDashboard();
 }
 
 // AVATAR HELPERS
@@ -2390,6 +2568,7 @@ function switchView(v){
   if(viewEl) viewEl.classList.add('active');
   const idx={cal:0,dash:1,res:2,pipeline:5};
   if(idx[v]!==undefined) document.querySelectorAll('#user-screen .nav-btn')[idx[v]].classList.add('active');
+  if(v==='dash') renderDashboard();
   if(v==='res') renderResViews();
   if(v==='territory'){ renderTerritoryUserView(); populateTerritoryMemberSelects(); }
   if(v==='trips'){
@@ -2487,6 +2666,118 @@ function savePhoto(){
 }
 
 // STATS
+
+// ===================== NEW DASHBOARD =====================
+function renderDashboard(){
+  if(!currentUser) return;
+  const today = new Date().toISOString().slice(0,10);
+  const in7 = new Date(Date.now()+7*86400000).toISOString().slice(0,10);
+  const allBks = Object.entries(allBookings).map(([id,b])=>({id,...b}));
+  const myBks  = isSales() ? allBks.filter(b=>b.staffId===currentUser.id) : allBks;
+
+  // ── KPI ──────────────────────────────────────────────────────────────────
+  const total = myBks.length;
+  const pend  = myBks.filter(b=>b.status==='pending').length;
+  const act   = myBks.filter(b=>b.status==='active').length;
+  const done  = myBks.filter(b=>b.status==='done').length;
+  const plCount = Object.values(allPipelines).filter(p=>!isSales()||p.ownerId===currentUser.id).length;
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('d-total',total); set('d-pend',pend); set('d-act',act); set('d-done',done);
+  set('d-pipeline', plCount);
+
+  // ── TODAY ─────────────────────────────────────────────────────────────────
+  const todayBks = myBks.filter(b=>b.date===today).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const todayEl  = document.getElementById('db-today-list');
+  const todayCnt = document.getElementById('db-today-count');
+  if(todayCnt) todayCnt.textContent = todayBks.length;
+  if(todayEl){
+    if(!todayBks.length){ todayEl.innerHTML='<div class="empty" style="padding:16px;">ไม่มีนัดวันนี้ 🎉</div>'; }
+    else todayEl.innerHTML = todayBks.map(b=>dbApptRow(b)).join('');
+  }
+
+  // ── UPCOMING ─────────────────────────────────────────────────────────────
+  const upBks = myBks.filter(b=>b.date>today&&b.date<=in7).sort((a,b)=>a.date.localeCompare(b.date));
+  const upEl  = document.getElementById('db-upcoming-list');
+  const upCnt = document.getElementById('db-upcoming-count');
+  if(upCnt) upCnt.textContent = upBks.length;
+  if(upEl){
+    if(!upBks.length){ upEl.innerHTML='<div class="empty" style="padding:16px;">ไม่มีนัดในช่วงนี้</div>'; }
+    else upEl.innerHTML = upBks.map(b=>dbApptRow(b)).join('');
+  }
+
+  // ── PIPELINE SNAPSHOT ────────────────────────────────────────────────────
+  const plCases = Object.values(allPipelines).filter(p=>!isSales()||p.ownerId===currentUser.id);
+  const plSnap  = document.getElementById('db-pipeline-snap');
+  if(plSnap){
+    const stageColors = {prospecting:'#64748b',demo:'#d97706',quotation:'#2563eb',spec:'#7c3aed',negotiation:'#0d7a6b',won:'#16a34a'};
+    const stageLabels = {prospecting:'Prospecting',demo:'Demo/Trial',quotation:'Quotation',spec:'Spec-in',negotiation:'Negotiate',won:'Won ✓'};
+    const max = Math.max(...Object.keys(stageColors).map(k=>plCases.filter(p=>p.stage===k).length), 1);
+    if(!plCases.length){ plSnap.innerHTML='<div style="font-size:12px;color:var(--gray-400);text-align:center;padding:10px;">ยังไม่มีเคส — <button onclick="switchView('pipeline')" style="color:var(--primary);background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;">เพิ่มเคส</button></div>'; }
+    else plSnap.innerHTML = Object.keys(stageColors).map(k=>{
+      const cnt = plCases.filter(p=>p.stage===k).length;
+      const pct = Math.round(cnt/max*100);
+      return `<div class="pl-snap-row">
+        <div class="pl-snap-label">${stageLabels[k]}</div>
+        <div class="pl-snap-track"><div class="pl-snap-fill" style="width:${pct}%;background:${stageColors[k]};"></div></div>
+        <div class="pl-snap-num">${cnt}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── LEAD STATUS BREAKDOWN ────────────────────────────────────────────────
+  const leadEl = document.getElementById('db-lead-snap');
+  if(leadEl){
+    const leadMap = {'hot':['🔥 ร้อนแรง','#fef3c7','#b45309'],'quotation':['📄 รอเสนอราคา','#dbeafe','#1d4ed8'],'interested':['👍 สนใจซื้อเพิ่ม','var(--teal-light)','var(--teal)'],'consider':['🤔 พิจารณา','#f1f5f9','#475569'],'maintenance_ok':['✅ Maint.OK','var(--primary-light)','var(--primary)'],'not_interested':['❌ ไม่สนใจ','var(--red-light)','var(--red)']};
+    const bksWithLead = myBks.filter(b=>b.leadStatus);
+    if(!bksWithLead.length){ leadEl.innerHTML='<div style="font-size:12px;color:var(--gray-400);text-align:center;padding:8px;">ยังไม่มีข้อมูล Lead</div>'; }
+    else leadEl.innerHTML = Object.entries(leadMap).map(([k,[label,bg,color]])=>{
+      const cnt = bksWithLead.filter(b=>b.leadStatus===k).length;
+      if(!cnt) return '';
+      return `<div class="db-lead-row" style="background:${bg};"><span style="color:${color};font-weight:600;">${label}</span><span style="font-weight:700;color:${color};">${cnt}</span></div>`;
+    }).join('');
+  }
+
+  // ── QUICK ACTIONS VISIBILITY ─────────────────────────────────────────────
+  const dbBookBtn = document.getElementById('db-book-btn');
+  if(dbBookBtn) dbBookBtn.style.display = isSales() ? 'none' : '';
+
+  // ── TEAM ACTIVITY ─────────────────────────────────────────────────────────
+  const teamEl = document.getElementById('db-team-list');
+  if(teamEl){
+    const teamMap = {};
+    allBks.forEach(b=>{
+      if(!b.staff) return;
+      if(!teamMap[b.staff]) teamMap[b.staff]={count:0,last:'',staffId:b.staffId,dept:b.role};
+      teamMap[b.staff].count++;
+      if(b.date>teamMap[b.staff].last) teamMap[b.staff].last=b.date;
+    });
+    const rows = Object.entries(teamMap).sort((a,b)=>b[1].count-a[1].count).slice(0,5);
+    if(!rows.length){ teamEl.innerHTML='<div class="empty" style="padding:12px;">ยังไม่มีข้อมูล</div>'; }
+    else teamEl.innerHTML = rows.map(([name,d])=>{
+      const m = Object.values(allMembers).find(mm=>mm.name===name);
+      const av = m ? avatarHTML(m,28) : `<div style="width:28px;height:28px;border-radius:50%;background:${d.dept==='ps'?'var(--primary)':'var(--navy)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;">${name.slice(0,2)}</div>`;
+      const ds = d.last ? d.last.split('-').reverse().join('/') : '—';
+      return `<div class="db-team-row">${av}<div class="db-team-info"><div class="db-team-name">${esc(name)}</div><div class="db-team-last">ล่าสุด ${ds}</div></div><div class="db-team-count">${d.count} นัด</div></div>`;
+    }).join('');
+  }
+}
+
+function dbApptRow(b){
+  const ds = b.date ? b.date.split('-').reverse().join('/') : '—';
+  const catMap={case_support:'🏥 Case Support',clinical_demo:'📊 Demo',inservice_training:'🎓 Training',maintenance:'🔧 Maintenance'};
+  const isPsRole = b.role==='ps';
+  return `<div class="db-appt">
+    <div class="db-appt-time ${isPsRole?'':'sales'}">${b.time||ds}</div>
+    <div style="flex:1;min-width:0;">
+      <div class="db-appt-hosp">${esc(b.hospital||'—')}</div>
+      <div class="db-appt-meta">${esc(b.contact||'')}${b.product?' · <span style="color:var(--teal);">'+esc(b.product)+'</span>':''}</div>
+      <div class="db-appt-staff">${catMap[b.category]||''}${b.staff?' · '+esc(b.staff):''}</div>
+    </div>
+    ${b.status==='pending'?'<span class="badge" style="background:#fef3c7;color:#b45309;align-self:flex-start;">รอ</span>':''}
+  </div>`;
+}
+// ===================== END NEW DASHBOARD =====================
+
 function renderStats(){
   const list = Object.values(allBookings);
   const c = {pending:0,active:0,done:0};
