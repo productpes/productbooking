@@ -345,6 +345,51 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .doc-drop-area:hover,.doc-drop-area.drag-over{border-color:var(--primary);background:var(--primary-light);}
 .doc-drop-area input{display:none;}
 
+/* ===================== DIGITAL WORK SHEET ===================== */
+.ws-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:600;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px 0;}
+.ws-overlay.open{display:flex;}
+.ws-modal{background:var(--white);border-radius:16px;width:100%;max-width:620px;margin:auto;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.2);}
+.ws-hd{background:linear-gradient(135deg,var(--teal),#0a5c4f);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.ws-hd-title{font-size:15px;font-weight:700;color:white;display:flex;align-items:center;gap:8px;}
+.ws-hd-sub{font-size:11px;color:rgba(255,255,255,.75);margin-top:2px;}
+.ws-body{padding:18px 20px;overflow-y:auto;max-height:80vh;}
+.ws-section{margin-bottom:20px;}
+.ws-stitle{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--teal-light);display:flex;align-items:center;gap:6px;}
+.ws-stitle::before{content:'';display:inline-block;width:3px;height:12px;background:var(--teal);border-radius:2px;}
+.ws-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ws-info-item{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:8px 12px;}
+.ws-info-label{font-size:10px;color:var(--gray-400);font-weight:600;text-transform:uppercase;}
+.ws-info-val{font-size:13px;font-weight:600;color:var(--gray-900);margin-top:2px;}
+.ws-photo-zone{border:2px dashed var(--gray-200);border-radius:var(--radius);padding:20px;text-align:center;cursor:pointer;transition:all .15s;background:var(--gray-50);}
+.ws-photo-zone:hover{border-color:var(--teal);background:var(--teal-light);}
+.ws-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.ws-thumb{position:relative;border-radius:var(--radius-sm);overflow:hidden;aspect-ratio:4/3;background:var(--gray-100);}
+.ws-thumb img{width:100%;height:100%;object-fit:cover;}
+.ws-thumb-del{position:absolute;top:3px;right:3px;background:rgba(190,18,60,.85);border:none;border-radius:50%;width:20px;height:20px;color:white;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.ws-sig-wrap{border:1.5px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;background:white;}
+.ws-sig-wrap canvas{display:block;touch-action:none;cursor:crosshair;}
+.ws-sig-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:var(--gray-50);border-top:1px solid var(--gray-100);}
+.ws-sig-tag{font-size:10px;color:var(--gray-400);}
+.ws-sig-clear{font-size:11px;color:var(--red);background:none;border:1px solid var(--red-light);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:inherit;}
+.ws-sig-saved{margin-top:8px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--gray-200);}
+.ws-sig-saved img{width:100%;display:block;}
+.ws-lead-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.ws-lead-chip{padding:10px 12px;border-radius:var(--radius);border:2px solid var(--gray-200);cursor:pointer;transition:all .15s;background:var(--white);text-align:left;font-family:inherit;width:100%;}
+.ws-lead-chip:hover{border-color:var(--teal);background:var(--teal-light);}
+.ws-lead-chip.sel{border-color:var(--teal);background:var(--teal-light);}
+.wlc-icon{font-size:18px;margin-bottom:4px;}
+.wlc-title{font-size:12px;font-weight:700;color:var(--gray-800);}
+.ws-lead-chip.sel .wlc-title{color:var(--teal);}
+.wlc-sub{font-size:10px;color:var(--gray-400);margin-top:1px;}
+.ws-textarea{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;resize:vertical;min-height:72px;outline:none;transition:border-color .15s;}
+.ws-textarea:focus{border-color:var(--teal);}
+.ws-input{width:100%;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;background:var(--white);}
+.ws-input:focus{border-color:var(--teal);}
+.ws-done-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:20px;background:var(--teal-light);color:var(--teal);border:1px solid var(--teal);font-weight:600;margin-top:4px;cursor:pointer;font-family:inherit;}
+.ws-done-badge:hover{background:var(--teal);color:white;}
+.ws-submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--teal),#0a5c4f);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px;}
+.ws-submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+
 /* NOTIFICATION BELL */
 .notif-bell-wrap{position:relative;cursor:pointer;}
 .notif-bell{width:34px;height:34px;border-radius:50%;border:1px solid var(--gray-200);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s;}
@@ -1701,6 +1746,122 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 </div>
 </div>
 
+
+<!-- DIGITAL WORK SHEET MODAL -->
+<div class="ws-overlay" id="ws-overlay" onclick="if(event.target===this)closeWorksheet()">
+<div class="ws-modal">
+  <div class="ws-hd">
+    <div>
+      <div class="ws-hd-title">📋 Digital Work Sheet — ปิดงาน</div>
+      <div class="ws-hd-sub" id="ws-hd-sub">—</div>
+    </div>
+    <button class="modal-close" style="background:rgba(255,255,255,.15);color:white;border-color:rgba(255,255,255,.3);" onclick="closeWorksheet()">✕</button>
+  </div>
+  <div class="ws-body">
+
+    <!-- JOB INFO -->
+    <div class="ws-section">
+      <div class="ws-stitle">📌 ข้อมูลงาน</div>
+      <div class="ws-info-grid" id="ws-info-grid"></div>
+    </div>
+
+    <!-- PHOTO UPLOAD -->
+    <div class="ws-section">
+      <div class="ws-stitle">📷 รูปประกอบ / รายงานผล</div>
+      <div class="ws-photo-zone" onclick="document.getElementById('ws-photo-input').click()">
+        <input type="file" id="ws-photo-input" accept="image/*" multiple onchange="wsAddPhotos(event)">
+        <div style="font-size:24px;margin-bottom:6px;">📸</div>
+        <div style="font-size:13px;font-weight:600;color:var(--gray-600);">แตะเพื่อถ่ายรูปหรือเลือกไฟล์</div>
+        <div style="font-size:11px;color:var(--gray-400);margin-top:4px;">JPG, PNG — เพิ่มได้หลายรูป</div>
+      </div>
+      <div class="ws-photo-grid" id="ws-photo-grid"></div>
+    </div>
+
+    <!-- DIGITAL SIGNATURE -->
+    <div class="ws-section">
+      <div class="ws-stitle">✍️ ลายเซ็นผู้รับทราบ</div>
+      <div class="fgg" style="margin-bottom:10px;">
+        <label style="font-size:12px;font-weight:500;color:var(--gray-600);">ชื่อผู้เซ็น (แพทย์ / หัวหน้าแผนก)</label>
+        <input type="text" class="ws-input" id="ws-signer-name" placeholder="เช่น นพ.สมชาย ใจดี">
+      </div>
+      <div class="fgg" style="margin-bottom:10px;">
+        <label style="font-size:12px;font-weight:500;color:var(--gray-600);">ตำแหน่ง</label>
+        <input type="text" class="ws-input" id="ws-signer-pos" placeholder="เช่น หัวหน้าแผนกกายภาพบำบัด">
+      </div>
+      <div id="ws-sig-container">
+        <div class="ws-sig-wrap">
+          <canvas id="ws-sig-canvas" height="160"></canvas>
+          <div class="ws-sig-bar">
+            <span class="ws-sig-tag">✏️ วาดลายเซ็นในช่องนี้</span>
+            <button class="ws-sig-clear" onclick="wsClearSig()">ล้าง</button>
+          </div>
+        </div>
+      </div>
+      <div id="ws-sig-saved" class="ws-sig-saved" style="display:none;">
+        <img id="ws-sig-img" src="" alt="signature">
+        <div style="text-align:right;padding:4px 8px;">
+          <button class="ws-sig-clear" onclick="wsResetSig()">เซ็นใหม่</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEAD STATUS -->
+    <div class="ws-section">
+      <div class="ws-stitle">🎯 อัปเดตสถานะ Lead</div>
+      <div class="ws-lead-grid" id="ws-lead-grid">
+        <button class="ws-lead-chip" onclick="wsSelectLead(this,'hot')" data-lead="hot">
+          <div class="wlc-icon">🔥</div>
+          <div class="wlc-title">สนใจมาก / ร้อนแรง</div>
+          <div class="wlc-sub">พร้อม Follow-up ทันที</div>
+        </button>
+        <button class="ws-lead-chip" onclick="wsSelectLead(this,'quotation')" data-lead="quotation">
+          <div class="wlc-icon">📄</div>
+          <div class="wlc-title">รอเสนอราคา</div>
+          <div class="wlc-sub">ต้องการ Quotation</div>
+        </button>
+        <button class="ws-lead-chip" onclick="wsSelectLead(this,'interested')" data-lead="interested">
+          <div class="wlc-icon">👍</div>
+          <div class="wlc-title">สนใจซื้อเพิ่ม</div>
+          <div class="wlc-sub">ลูกค้าเดิม — ขยายงาน</div>
+        </button>
+        <button class="ws-lead-chip" onclick="wsSelectLead(this,'consider')" data-lead="consider">
+          <div class="wlc-icon">🤔</div>
+          <div class="wlc-title">กำลังพิจารณา</div>
+          <div class="wlc-sub">ยังไม่ตัดสินใจ</div>
+        </button>
+        <button class="ws-lead-chip" onclick="wsSelectLead(this,'maintenance_ok')" data-lead="maintenance_ok">
+          <div class="wlc-icon">✅</div>
+          <div class="wlc-title">เช็คเครื่อง — ปกติ</div>
+          <div class="wlc-sub">Maintenance เสร็จสิ้น</div>
+        </button>
+        <button class="ws-lead-chip" onclick="wsSelectLead(this,'not_interested')" data-lead="not_interested">
+          <div class="wlc-icon">❌</div>
+          <div class="wlc-title">ไม่สนใจ</div>
+          <div class="wlc-sub">ปิด Lead</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- WORK NOTES -->
+    <div class="ws-section">
+      <div class="ws-stitle">📝 บันทึกผลการทำงาน</div>
+      <textarea class="ws-textarea" id="ws-work-note" placeholder="สรุปผลการทำงาน เช่น ผลการทดสอบ, ปัญหาที่พบ, ข้อเสนอแนะ..."></textarea>
+    </div>
+
+    <!-- NEXT ACTION -->
+    <div class="ws-section">
+      <div class="ws-stitle">➡️ Next Action</div>
+      <input type="text" class="ws-input" id="ws-next-action" placeholder="เช่น ส่ง Quotation ภายใน 3 วัน, นัด Demo ครั้งที่ 2...">
+    </div>
+
+    <button class="ws-submit-btn" id="ws-submit-btn" onclick="submitWorksheet()">
+      ✅ ปิดงาน &amp; บันทึก Work Sheet
+    </button>
+
+  </div>
+</div>
+</div>
+
 <!-- NOTIFICATION PANEL -->
 <div class="notif-panel" id="notif-panel">
   <div class="notif-panel-hd">
@@ -2210,11 +2371,12 @@ function bkgRow(b, isAdmin){
     </div>
     <div class="b-info">
       <div class="b-name-row">${esc(b.hospital)} <span class="badge ${b.role==='ps'?'bg-ps':'bg-sales'}">${b.role==='ps'?'PS':'Sales'}</span>${mine&&!isAdmin?'<span class="badge bg-mine">ของฉัน</span>':''}${isAdmin?'<span class="badge bg-admin">Admin</span>':''}${catTag(b.category)}</div>
-      <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}</div>
+      <div class="b-meta"><span>${esc(b.contact)}</span>${b.phone?'<span>'+esc(b.phone)+'</span>':''}<span>${ds} ${b.time||''}</span>${b.province?'<span>📍'+esc(b.province)+'</span>':''}<span style="font-size:10px;color:var(--gray-400);">${b.region?esc(b.region):''}</span>${b.product?'<span class="prod-tag">'+esc(b.product)+'</span>':''}${b.leadStatus?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:var(--teal-light);color:var(--teal);font-weight:600;border:1px solid var(--teal);">${{'hot':'🔥 ร้อนแรง','quotation':'📄 รอเสนอราคา','interested':'👍 สนใจซื้อเพิ่ม','consider':'🤔 พิจารณา','maintenance_ok':'✅ Maint. OK','not_interested':'❌ ไม่สนใจ'}[b.leadStatus]||b.leadStatus}</span>`:''}</div>
       <div class="b-staff-row">${staffAvHTML}<span class="b-staff-name">${esc(b.staff||'')}</span>${b.staffPosition?`<span class="b-staff-pos">· ${esc(b.staffPosition)}</span>`:''}</div>
       ${b.note?'<div style="font-size:11px;color:var(--gray-400);margin-top:2px;">'+esc(b.note)+'</div>':''}
       ${b.demoResult?`<div style="margin-top:6px;padding:7px 10px;background:var(--purple-light);border-left:3px solid var(--purple);border-radius:var(--radius-sm);font-size:11px;"><span style="font-weight:600;color:var(--purple);">📊 สรุปการเดโม่:</span> <span style="color:var(--purple);">${demoResultLabel[b.demoResult]||b.demoResult}</span>${b.demoSummary?'<br><span style="color:var(--gray-700);">'+esc(b.demoSummary)+'</span>':''}${b.demoNextAction?'<br><span style="color:var(--teal);font-weight:600;">➡ Next: </span><span style="color:var(--teal);">'+esc(b.demoNextAction)+'</span>':''}${b.demoAttendees?'<br><span style="color:var(--gray-400);">👥 '+esc(b.demoAttendees)+'</span>':''}${b.demoAttendeeRoles?'<span style="color:var(--gray-400);"> — '+esc(b.demoAttendeeRoles)+'</span>':''}</div>`:''}
       ${(b.category==='clinical_demo'&&b.status==='done'&&!b.demoResult&&(currentUser&&(b.staffId===currentUser.id||canAssign())))?`<button onclick="openDemoSummaryModal('${b.id}')" style="margin-top:6px;padding:4px 12px;background:var(--purple-light);color:var(--purple);border:1px solid var(--purple);border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">📊 กรอกสรุปการเดโม่</button>`:''}
+      ${b.worksheet ? `<button class="ws-done-badge" onclick="openWorksheet('${b.id}')">📋 Work Sheet บันทึกแล้ว · ดู/แก้ไข</button>` : (b.status!=='cancel' && currentUser && (b.staffId===currentUser.id || canAssign() || isAdmin) ? `<button class="ws-done-badge" onclick="openWorksheet('${b.id}')" style="background:var(--primary-light);color:var(--primary);border-color:var(--primary);">📋 กรอก Work Sheet</button>` : '')}
       ${renderDocList(b, isAdmin || canAttachDoc())}
     </div>
     ${statusSelect}
@@ -2866,6 +3028,211 @@ function deleteResource(id,name){
 }
 
 // ===================== END RESOURCE BOOKING =====================
+
+
+// ===================== DIGITAL WORK SHEET =====================
+let wsBookingId = null;
+let wsPhotos = []; // [{dataUrl, file}]
+let wsSigCanvas = null, wsSigCtx = null, wsSigDrawing = false, wsSigHasData = false;
+let wsLeadStatus = '';
+
+const wsLeadLabels = {
+  hot: '🔥 สนใจมาก / ร้อนแรง',
+  quotation: '📄 รอเสนอราคา',
+  interested: '👍 สนใจซื้อเพิ่ม',
+  consider: '🤔 กำลังพิจารณา',
+  maintenance_ok: '✅ Maintenance เสร็จสิ้น',
+  not_interested: '❌ ไม่สนใจ'
+};
+
+function openWorksheet(bkgId) {
+  wsBookingId = bkgId;
+  wsPhotos = [];
+  wsLeadStatus = '';
+  const b = allBookings[bkgId];
+  if (!b) return;
+
+  // Header sub-line
+  const ds = b.date ? b.date.split('-').reverse().join('/') : '—';
+  document.getElementById('ws-hd-sub').textContent = (b.hospital||'—') + ' · ' + ds + ' · ' + (b.contact||'—');
+
+  // Info grid
+  const catNames = {case_support:'Case Support',clinical_demo:'Clinical Demo',inservice_training:'In-service Training',maintenance:'Maintenance'};
+  document.getElementById('ws-info-grid').innerHTML = `
+    <div class="ws-info-item"><div class="ws-info-label">โรงพยาบาล</div><div class="ws-info-val">${esc(b.hospital||'—')}</div></div>
+    <div class="ws-info-item"><div class="ws-info-label">ผู้ติดต่อ</div><div class="ws-info-val">${esc(b.contact||'—')}</div></div>
+    <div class="ws-info-item"><div class="ws-info-label">วันที่</div><div class="ws-info-val">${ds} ${b.time||''}</div></div>
+    <div class="ws-info-item"><div class="ws-info-label">ประเภท</div><div class="ws-info-val">${catNames[b.category]||b.category||'—'}</div></div>
+    <div class="ws-info-item"><div class="ws-info-label">สินค้า</div><div class="ws-info-val">${esc(b.product||'—')}</div></div>
+    <div class="ws-info-item"><div class="ws-info-label">ผู้รับผิดชอบ</div><div class="ws-info-val">${esc(b.staff||'—')}</div></div>
+  `;
+
+  // Restore saved data if exists
+  const ws = b.worksheet || {};
+  document.getElementById('ws-signer-name').value = ws.signerName || '';
+  document.getElementById('ws-signer-pos').value = ws.signerPos || '';
+  document.getElementById('ws-work-note').value = ws.workNote || '';
+  document.getElementById('ws-next-action').value = ws.nextAction || '';
+
+  // Restore lead status
+  wsLeadStatus = ws.leadStatus || '';
+  document.querySelectorAll('.ws-lead-chip').forEach(c => {
+    c.classList.toggle('sel', c.dataset.lead === wsLeadStatus);
+  });
+
+  // Restore photos
+  wsPhotos = [];
+  if (ws.photos && ws.photos.length) {
+    ws.photos.forEach(url => wsPhotos.push({dataUrl: url, saved: true}));
+  }
+  wsRenderPhotos();
+
+  // Restore signature
+  if (ws.signature) {
+    document.getElementById('ws-sig-container').style.display = 'none';
+    document.getElementById('ws-sig-saved').style.display = 'block';
+    document.getElementById('ws-sig-img').src = ws.signature;
+    wsSigHasData = true;
+  } else {
+    document.getElementById('ws-sig-container').style.display = 'block';
+    document.getElementById('ws-sig-saved').style.display = 'none';
+    wsSigHasData = false;
+    setTimeout(() => wsInitSig(), 100);
+  }
+
+  document.getElementById('ws-overlay').classList.add('open');
+}
+
+function closeWorksheet() {
+  document.getElementById('ws-overlay').classList.remove('open');
+  wsBookingId = null;
+}
+
+// ---- Signature Pad ----
+function wsInitSig() {
+  const canvas = document.getElementById('ws-sig-canvas');
+  if (!canvas) return;
+  // Set canvas width to match container
+  canvas.width = canvas.parentElement.offsetWidth || 560;
+  canvas.height = 160;
+  wsSigCanvas = canvas;
+  wsSigCtx = canvas.getContext('2d');
+  wsSigCtx.strokeStyle = '#1f3328';
+  wsSigCtx.lineWidth = 2;
+  wsSigCtx.lineCap = 'round';
+  wsSigCtx.lineJoin = 'round';
+
+  // Mouse events
+  canvas.onmousedown = e => { wsSigDrawing = true; const r = canvas.getBoundingClientRect(); wsSigCtx.beginPath(); wsSigCtx.moveTo(e.clientX-r.left, e.clientY-r.top); };
+  canvas.onmousemove = e => { if(!wsSigDrawing) return; const r = canvas.getBoundingClientRect(); wsSigCtx.lineTo(e.clientX-r.left, e.clientY-r.top); wsSigCtx.stroke(); wsSigHasData = true; };
+  canvas.onmouseup = () => { wsSigDrawing = false; };
+  canvas.onmouseleave = () => { wsSigDrawing = false; };
+
+  // Touch events
+  canvas.ontouchstart = e => { e.preventDefault(); wsSigDrawing = true; const r = canvas.getBoundingClientRect(); const t = e.touches[0]; wsSigCtx.beginPath(); wsSigCtx.moveTo(t.clientX-r.left, t.clientY-r.top); };
+  canvas.ontouchmove = e => { e.preventDefault(); if(!wsSigDrawing) return; const r = canvas.getBoundingClientRect(); const t = e.touches[0]; wsSigCtx.lineTo(t.clientX-r.left, t.clientY-r.top); wsSigCtx.stroke(); wsSigHasData = true; };
+  canvas.ontouchend = () => { wsSigDrawing = false; };
+}
+
+function wsClearSig() {
+  if (!wsSigCtx || !wsSigCanvas) return;
+  wsSigCtx.clearRect(0, 0, wsSigCanvas.width, wsSigCanvas.height);
+  wsSigHasData = false;
+}
+
+function wsResetSig() {
+  document.getElementById('ws-sig-saved').style.display = 'none';
+  document.getElementById('ws-sig-container').style.display = 'block';
+  wsSigHasData = false;
+  setTimeout(() => wsInitSig(), 100);
+}
+
+function wsGetSigDataUrl() {
+  // If showing saved image
+  const savedImg = document.getElementById('ws-sig-img');
+  if (document.getElementById('ws-sig-saved').style.display !== 'none' && savedImg.src) {
+    return savedImg.src;
+  }
+  if (!wsSigHasData || !wsSigCanvas) return null;
+  return wsSigCanvas.toDataURL('image/png');
+}
+
+// ---- Photos ----
+function wsAddPhotos(e) {
+  const files = Array.from(e.target.files);
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      wsPhotos.push({dataUrl: ev.target.result, saved: false});
+      loaded++;
+      if (loaded === files.length) wsRenderPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function wsRenderPhotos() {
+  const grid = document.getElementById('ws-photo-grid');
+  if (!wsPhotos.length) { grid.innerHTML = ''; return; }
+  grid.innerHTML = wsPhotos.map((p, i) => `
+    <div class="ws-thumb">
+      <img src="${p.dataUrl}" alt="photo ${i+1}">
+      <button class="ws-thumb-del" onclick="wsRemovePhoto(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function wsRemovePhoto(idx) {
+  wsPhotos.splice(idx, 1);
+  wsRenderPhotos();
+}
+
+// ---- Lead status ----
+function wsSelectLead(el, val) {
+  wsLeadStatus = val;
+  document.querySelectorAll('.ws-lead-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ---- Submit ----
+async function submitWorksheet() {
+  if (!wsBookingId) return;
+  const btn = document.getElementById('ws-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังบันทึก...';
+
+  const sigDataUrl = wsGetSigDataUrl();
+  const wsData = {
+    signerName: document.getElementById('ws-signer-name').value.trim(),
+    signerPos: document.getElementById('ws-signer-pos').value.trim(),
+    signature: sigDataUrl || null,
+    leadStatus: wsLeadStatus,
+    workNote: document.getElementById('ws-work-note').value.trim(),
+    nextAction: document.getElementById('ws-next-action').value.trim(),
+    photos: wsPhotos.map(p => p.dataUrl),
+    updatedAt: Date.now(),
+    updatedBy: currentUser ? currentUser.name : 'unknown'
+  };
+
+  try {
+    const updates = {};
+    updates['bookings/' + wsBookingId + '/worksheet'] = wsData;
+    updates['bookings/' + wsBookingId + '/status'] = 'done';
+    if (wsLeadStatus) updates['bookings/' + wsBookingId + '/leadStatus'] = wsLeadStatus;
+    if (wsData.nextAction) updates['bookings/' + wsBookingId + '/demoNextAction'] = wsData.nextAction;
+    await db.ref().update(updates);
+    showToast('บันทึก Work Sheet แล้ว ✓', 'success');
+    closeWorksheet();
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✅ ปิดงาน & บันทึก Work Sheet';
+}
+// ===================== END DIGITAL WORK SHEET =====================
 
 function showToast(msg,type=''){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>{t.className='toast';},3000); }
 function esc(s){ if(!s)return''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
