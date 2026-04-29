@@ -411,6 +411,8 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 .res-add-form input:focus,.res-add-form select:focus{border-color:var(--primary);}
 .res-add-form input.r-name{flex:1;min-width:140px;}
 .res-add-form input.r-detail{flex:1;min-width:120px;}
+.res-add-form input.r-brand{flex:1;min-width:110px;}
+.res-add-form select.r-category{min-width:140px;}
 
 /* MANAGER SCREEN */
 .topbar.mgr-bar{border-bottom-color:var(--teal);}
@@ -1597,8 +1599,21 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
           <option value="accessory">&#128268; อุปกรณ์เสริม</option>
           <option value="car">&#128663; รถบริษัท</option>
         </select>
+        <select class="r-category" id="ra-category" style="padding:7px 10px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;background:var(--white);min-width:140px;">
+          <option value="">-- ประเภทสินค้า --</option>
+          <option value="spirometry">🫁 Spirometry / ทดสอบสมรรถภาพปอด</option>
+          <option value="ultrasound">🔊 Ultrasound กายภาพบำบัด</option>
+          <option value="tens_ems">⚡ TENS / EMS</option>
+          <option value="laser">💡 เลเซอร์กายภาพบำบัด</option>
+          <option value="pulmonary_rehab">🫀 Pulmonary Rehabilitation</option>
+          <option value="peak_flow">📏 Peak Flow Meter</option>
+          <option value="accessory">🔧 อุปกรณ์เสริม</option>
+          <option value="car">🚗 ยานพาหนะ</option>
+          <option value="other">📦 อื่น ๆ</option>
+        </select>
+        <input class="r-brand" type="text" id="ra-brand" placeholder="แบรนด์ เช่น Contec, Ndd">
         <input class="r-name" type="text" id="ra-name" placeholder="ชื่อ เช่น Spirometer #1">
-        <input class="r-detail" type="text" id="ra-detail" placeholder="รายละเอียด เช่น Contec SP10">
+        <input class="r-detail" type="text" id="ra-detail" placeholder="รายละเอียด เช่น รุ่น SP10">
         <button class="add-btn" onclick="addResource()">+ เพิ่ม</button>
       </div>
     </div>
@@ -2809,10 +2824,18 @@ function renderResAdminList(){
   const el = document.getElementById('res-admin-list');
   const all = Object.entries(allResources).map(([id,r])=>({id,...r})).sort((a,b)=>(a.type+a.name).localeCompare(b.type+b.name));
   if(!all.length){ el.innerHTML='<div class="empty">ยังไม่มีรายการ</div>'; return; }
+  const catLabel={'spirometry':'🫁 Spirometry','ultrasound':'🔊 Ultrasound','tens_ems':'⚡ TENS/EMS','laser':'💡 เลเซอร์','pulmonary_rehab':'🫀 Pulm.Rehab','peak_flow':'📏 Peak Flow','accessory':'🔧 อุปกรณ์เสริม','car':'🚗 ยานพาหนะ','other':'📦 อื่น ๆ'};
   el.innerHTML = all.map(r=>`
     <div class="rb-item">
       <div class="rb-icon">${resTypeIcon[r.type]||'📦'}</div>
-      <div class="rb-info"><div class="rb-name">${esc(r.name)}</div><div class="rb-meta"><span>${resTypeLabel[r.type]||r.type}</span>${r.detail?'<span>'+esc(r.detail)+'</span>':''}</div></div>
+      <div class="rb-info">
+        <div class="rb-name">${esc(r.name)}${r.brand?` <span style="font-size:10px;padding:1px 7px;border-radius:20px;background:var(--blue-light);color:var(--navy);font-weight:600;margin-left:4px;">${esc(r.brand)}</span>`:''}</div>
+        <div class="rb-meta">
+          <span>${resTypeLabel[r.type]||r.type}</span>
+          ${r.category?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:var(--purple-light);color:var(--purple);">${catLabel[r.category]||esc(r.category)}</span>`:''}
+          ${r.detail?'<span>'+esc(r.detail)+'</span>':''}
+        </div>
+      </div>
       <button class="del-btn" onclick="deleteResource('${r.id}','${esc(r.name)}')">&#10005;</button>
     </div>`).join('');
 }
@@ -2821,10 +2844,14 @@ function addResource(){
   const type = document.getElementById('ra-type').value;
   const name = document.getElementById('ra-name').value.trim();
   const detail = document.getElementById('ra-detail').value.trim();
+  const category = document.getElementById('ra-category').value;
+  const brand = document.getElementById('ra-brand').value.trim();
   if(!name){ showToast('กรุณาใส่ชื่อรายการ','error'); return; }
-  resourcesRef.push({type,name,detail,createdAt:Date.now()}).then(()=>{
+  resourcesRef.push({type,name,detail,category,brand,createdAt:Date.now()}).then(()=>{
     document.getElementById('ra-name').value='';
     document.getElementById('ra-detail').value='';
+    document.getElementById('ra-category').value='';
+    document.getElementById('ra-brand').value='';
     showToast('เพิ่ม '+name+' แล้ว ✓','success');
     renderResAdminList();
     renderAdminResViews();
