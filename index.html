@@ -2517,7 +2517,6 @@ function doLogout(){
 
 // START USER
 function startUserApp(){
-  initProductsRef();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('user-screen').classList.add('active');
   const u = currentUser, isPS = u.dept==='ps';
@@ -2557,7 +2556,6 @@ function startUserApp(){
 
 // START ADMIN
 function startAdminApp(){
-  initProductsRef();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('admin-screen').classList.add('active');
   renderMemberCards(); renderReport(); renderAdminBkgList();
@@ -4771,95 +4769,7 @@ function renameProduct(i){
 }
 // ===================== END PRODUCT MANAGEMENT =====================
 
-// ===================== PRODUCT MANAGEMENT =====================
-let productsRef = null;
-let allProducts = [];
 
-const defaultProducts = [
-  'เครื่อง Demo',
-  'เครื่องตรวจสมรรถภาพปอด (Spirometry)',
-  'เครื่อง Ultrasound กายภาพบำบัด',
-  'เครื่อง TENS / EMS',
-  'เครื่องเลเซอร์กายภาพบำบัด',
-  'ชุด Pulmonary Rehabilitation',
-  'Peak Flow Meter',
-  'อื่น ๆ'
-];
-
-function initProductsRef(){
-  if(productsRef) return;
-  productsRef = firebase.database().ref('products');
-  productsRef.on('value', snap => {
-    const data = snap.val();
-    if(data && Array.isArray(data)){
-      allProducts = data.filter(Boolean);
-    } else if(data && typeof data === 'object'){
-      allProducts = Object.values(data).filter(Boolean);
-    } else {
-      // First run: seed defaults
-      allProducts = [...defaultProducts];
-      productsRef.set(allProducts);
-    }
-    syncProductDropdowns();
-    renderProductAdminList();
-  });
-}
-
-function syncProductDropdowns(){
-  // Sync all product <select> elements in the page
-  const selects = ['f-product', 'pl-product'];
-  selects.forEach(id => {
-    const el = document.getElementById(id);
-    if(!el) return;
-    const cur = el.value;
-    el.innerHTML = '<option value="">-- เลือกสินค้า --</option>';
-    allProducts.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p; opt.textContent = p;
-      el.appendChild(opt);
-    });
-    if(cur) el.value = cur;
-  });
-}
-
-function renderProductAdminList(){
-  const el = document.getElementById('product-list-admin');
-  if(!el) return;
-  if(!allProducts.length){ el.innerHTML = '<div style="color:var(--gray-400);font-size:12px;">ยังไม่มีสินค้า</div>'; return; }
-  el.innerHTML = allProducts.map((p,i) => `
-    <div style="display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:8px 12px;">
-      <span style="flex:1;font-size:13px;">${esc(p)}</span>
-      <button onclick="editProductItem(${i})" title="แก้ไข"
-        style="padding:4px 10px;font-size:11px;border:1px solid var(--amber);color:var(--amber);background:var(--amber-light);border-radius:4px;cursor:pointer;font-family:inherit;">✏️ แก้ไข</button>
-      <button onclick="deleteProductItem(${i})" title="ลบ"
-        style="padding:4px 10px;font-size:11px;border:1px solid var(--red);color:var(--red);background:var(--red-light);border-radius:4px;cursor:pointer;font-family:inherit;">✕ ลบ</button>
-    </div>`).join('');
-}
-
-function addProductItem(){
-  const inp = document.getElementById('new-product-input');
-  const val = inp.value.trim();
-  if(!val){ showToast('กรุณาใส่ชื่อสินค้า',''); return; }
-  if(allProducts.includes(val)){ showToast('สินค้านี้มีอยู่แล้ว',''); return; }
-  allProducts.push(val);
-  productsRef.set(allProducts).then(()=>{ inp.value=''; showToast('✅ เพิ่มสินค้าแล้ว','success'); });
-}
-
-function editProductItem(i){
-  const oldName = allProducts[i];
-  const newName = prompt('แก้ไขชื่อสินค้า:', oldName);
-  if(!newName || newName.trim()==='' || newName.trim()===oldName) return;
-  allProducts[i] = newName.trim();
-  productsRef.set(allProducts).then(()=>showToast('✅ แก้ไขแล้ว','success'));
-}
-
-function deleteProductItem(i){
-  const name = allProducts[i];
-  if(!confirm('ลบสินค้า "'+name+'" ออกจากระบบ?')) return;
-  allProducts.splice(i,1);
-  productsRef.set(allProducts).then(()=>showToast('🗑️ ลบสินค้าแล้ว','success'));
-}
-// ===================== END PRODUCT MANAGEMENT =====================
 
 // ===================== N8N WEBHOOK — LINE OA =====================
 let n8nWebhookUrl = localStorage.getItem('pes_n8n_url') || '';
