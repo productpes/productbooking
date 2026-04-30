@@ -1549,6 +1549,18 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
 
     <!-- SETTINGS VIEW -->
     <div class="view" id="aview-settings">
+      <!-- PRODUCT MANAGEMENT CARD -->
+      <div class="card">
+        <div class="card-title">📦 จัดการรายการสินค้า</div>
+        <div style="font-size:12px;color:var(--gray-600);margin-bottom:14px;">เพิ่ม แก้ไข หรือลบสินค้าที่แสดงใน dropdown ทุกส่วนของระบบ (ฟอร์มจอง, Work Sheet, Pipeline)</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input type="text" id="new-product-input" placeholder="ชื่อสินค้าใหม่ เช่น Shockwave Therapy" onkeydown="if(event.key==='Enter')addProduct()"
+            style="flex:1;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;outline:none;">
+          <button onclick="addProduct()" style="padding:9px 18px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">+ เพิ่ม</button>
+        </div>
+        <div id="admin-product-list"></div>
+      </div>
+
       <div class="card">
         <div class="card-title">&#128279; n8n Webhook — แจ้งเตือนกลุ่ม Line OA</div>
         <div style="font-size:12px;color:var(--gray-600);margin-bottom:16px;line-height:1.8;">
@@ -1763,14 +1775,6 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="fgg"><label>สินค้าที่สนใจ</label>
       <select id="f-product">
         <option value="">-- เลือกสินค้า --</option>
-        <option>เครื่อง Demo</option>
-        <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
-        <option>เครื่อง Ultrasound กายภาพบำบัด</option>
-        <option>เครื่อง TENS / EMS</option>
-        <option>เครื่องเลเซอร์กายภาพบำบัด</option>
-        <option>ชุด Pulmonary Rehabilitation</option>
-        <option>Peak Flow Meter</option>
-        <option>อื่น ๆ</option>
       </select>
     </div>
     <div class="fgg full"><label>หมายเหตุ</label><textarea id="f-note" placeholder="รายละเอียดเพิ่มเติม..."></textarea></div>
@@ -2092,16 +2096,6 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <label>📦 สินค้าที่เสนอ</label>
         <select class="pl-select" id="pl-product">
           <option value="">-- เลือกสินค้า --</option>
-          <option>เครื่อง Demo</option>
-          <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
-          <option>Shockwave Therapy</option>
-          <option>เครื่อง Ultrasound กายภาพบำบัด</option>
-          <option>เครื่อง TENS / EMS</option>
-          <option>เครื่องเลเซอร์กายภาพบำบัด</option>
-          <option>ชุด Pulmonary Rehabilitation</option>
-          <option>Peak Flow Meter</option>
-          <option>Functional Reach Test</option>
-          <option>อื่น ๆ</option>
         </select>
       </div>
       <div class="pl-field">
@@ -2260,18 +2254,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <!-- PRODUCT FOCUS -->
     <div class="ws-section">
       <div class="ws-stitle">🔬 สินค้าที่เน้นในรอบนี้</div>
-      <div class="ws-prod-tags" id="ws-prod-tags">
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'demo_machine')" data-prod="demo_machine">🖥️ เครื่อง Demo</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'spirometer')" data-prod="spirometer">🫁 Spirometer</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'shockwave')" data-prod="shockwave">💥 Shockwave</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'ultrasound')" data-prod="ultrasound">🔊 Ultrasound</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'tens_ems')" data-prod="tens_ems">⚡ TENS / EMS</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'laser')" data-prod="laser">💡 Laser Therapy</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'frt')" data-prod="frt">📏 Functional Reach Test</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'pulmonary_rehab')" data-prod="pulmonary_rehab">🫀 Pulmonary Rehab</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'peak_flow')" data-prod="peak_flow">📐 Peak Flow Meter</button>
-        <button class="ws-prod-tag" onclick="wsToggleProd(this,'other_prod')" data-prod="other_prod">📦 อื่น ๆ</button>
-      </div>
+      <div class="ws-prod-tags" id="ws-prod-tags"></div>
     </div>
 
     <!-- DECISION STAGE / FUNNEL -->
@@ -2396,11 +2379,13 @@ const resBookingsRef = db.ref('resBookings');
 const territoriesRef = db.ref('territories');
 const tripsRef = db.ref('trips');
 const pipelinesRef = db.ref('pipelines');
+const productsRef = db.ref('products');
 
 const ADMIN_PW = 'admin1234';
 const MGR_PW = 'manager2026';
 let currentUser = null;
 let allBookings = {}, allMembers = {}, allResources = {}, allResBookings = {}, allTerritories = {}, allTrips = {}, allPipelines = {};
+let allProducts = [];
 
 // ROLE HELPERS
 function isSales(){ return currentUser && currentUser.dept==='sales'; }
@@ -2425,6 +2410,19 @@ resBookingsRef.on('value', s => { allResBookings = s.val()||{}; renderResViews()
 territoriesRef.on('value', s => { allTerritories = s.val()||{}; });
 tripsRef.on('value', s => { allTrips = s.val()||{}; if(document.getElementById('view-trips')?.classList.contains('active')) renderTripsView(); });
 pipelinesRef.on('value', s => { allPipelines = s.val()||{}; if(document.getElementById('view-pipeline')?.classList.contains('active')) renderPipelineBoard(); renderDashboard(); });
+productsRef.on('value', s => {
+  const data = s.val();
+  if(data && Array.isArray(data) && data.length>0){
+    allProducts = data;
+  } else if(data && typeof data==='object' && !Array.isArray(data)){
+    allProducts = Object.values(data);
+  } else {
+    // Default products if none in Firebase yet
+    allProducts = ['เครื่อง Demo','เครื่องตรวจสมรรถภาพปอด (Spirometry)','เครื่อง Ultrasound กายภาพบำบัด','เครื่อง TENS / EMS','เครื่องเลเซอร์กายภาพบำบัด','ชุด Pulmonary Rehabilitation','Peak Flow Meter','อื่น ๆ'];
+  }
+  renderProductDropdowns();
+  renderAdminProductList();
+});
 
 function refreshAll(){
   renderStats(); renderCalendar(); renderList(); renderAdminBkgList(); renderReport(); updateMyBanner(); renderDashboard();
@@ -2519,6 +2517,7 @@ function doLogout(){
 
 // START USER
 function startUserApp(){
+  initProductsRef();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('user-screen').classList.add('active');
   const u = currentUser, isPS = u.dept==='ps';
@@ -2558,6 +2557,7 @@ function startUserApp(){
 
 // START ADMIN
 function startAdminApp(){
+  initProductsRef();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('admin-screen').classList.add('active');
   renderMemberCards(); renderReport(); renderAdminBkgList();
@@ -4706,6 +4706,160 @@ async function requestDoc(bookingId){
   });
   showToast('📋 ส่งคำขอเอกสารแล้ว PS Manager จะได้รับแจ้ง','success');
 }
+
+
+// ===================== PRODUCT MANAGEMENT =====================
+function renderProductDropdowns(){
+  const opts = allProducts.map(p=>`<option value="${p}">${p}</option>`).join('');
+  ['f-product','pl-product'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      const cur = el.value;
+      el.innerHTML = `<option value="">-- เลือกสินค้า --</option>${opts}`;
+      if(cur) el.value = cur;
+    }
+  });
+  // Worksheet product tags
+  const wsTags = document.getElementById('ws-prod-tags');
+  if(wsTags){
+    const tagIcons = {'เครื่อง Demo':'🖥️','เครื่องตรวจสมรรถภาพปอด (Spirometry)':'🫁','Shockwave Therapy':'💥','เครื่อง Ultrasound กายภาพบำบัด':'🔊','เครื่อง TENS / EMS':'⚡','เครื่องเลเซอร์กายภาพบำบัด':'💡','Functional Reach Test':'📏','ชุด Pulmonary Rehabilitation':'🫀','Peak Flow Meter':'📐','อื่น ๆ':'📦'};
+    wsTags.innerHTML = allProducts.map((p,i)=>{
+      const key = 'prod_'+i;
+      const icon = tagIcons[p]||'📦';
+      return `<button class="ws-prod-tag" onclick="wsToggleProd(this,'${key}')" data-prod="${key}">${icon} ${p}</button>`;
+    }).join('');
+  }
+}
+
+function renderAdminProductList(){
+  const el = document.getElementById('admin-product-list');
+  if(!el) return;
+  if(!allProducts.length){ el.innerHTML='<div style="color:var(--gray-400);font-size:12px;padding:8px 0;">ยังไม่มีสินค้า</div>'; return; }
+  el.innerHTML = allProducts.map((p,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);margin-bottom:6px;">
+      <span style="flex:1;font-size:13px;">📦 ${esc(p)}</span>
+      <button onclick="renameProduct(${i})" title="แก้ไข" style="padding:4px 10px;background:var(--blue-light);color:var(--blue);border:none;border-radius:4px;font-size:11px;font-family:inherit;cursor:pointer;">✏️ แก้ไข</button>
+      <button onclick="deleteProduct(${i})" title="ลบ" style="padding:4px 10px;background:var(--red-light);color:var(--red);border:none;border-radius:4px;font-size:11px;font-family:inherit;cursor:pointer;">✕ ลบ</button>
+    </div>`).join('');
+}
+
+function addProduct(){
+  const inp = document.getElementById('new-product-input');
+  const name = (inp?.value||'').trim();
+  if(!name){ showToast('กรุณากรอกชื่อสินค้า','error'); return; }
+  if(allProducts.includes(name)){ showToast('มีสินค้านี้อยู่แล้ว','error'); return; }
+  const updated = [...allProducts, name];
+  productsRef.set(updated).then(()=>{ inp.value=''; showToast('เพิ่มสินค้าแล้ว ✓','success'); });
+}
+
+function deleteProduct(i){
+  const name = allProducts[i];
+  if(!confirm('ลบสินค้า "'+name+'" ?')) return;
+  const updated = allProducts.filter((_,idx)=>idx!==i);
+  productsRef.set(updated).then(()=>showToast('ลบแล้ว','success'));
+}
+
+function renameProduct(i){
+  const old = allProducts[i];
+  const newName = prompt('แก้ไขชื่อสินค้า:', old);
+  if(!newName || newName.trim()===old) return;
+  const trimmed = newName.trim();
+  if(allProducts.includes(trimmed)){ alert('มีสินค้านี้อยู่แล้ว'); return; }
+  const updated = [...allProducts];
+  updated[i] = trimmed;
+  productsRef.set(updated).then(()=>showToast('แก้ไขแล้ว ✓','success'));
+}
+// ===================== END PRODUCT MANAGEMENT =====================
+
+// ===================== PRODUCT MANAGEMENT =====================
+let productsRef = null;
+let allProducts = [];
+
+const defaultProducts = [
+  'เครื่อง Demo',
+  'เครื่องตรวจสมรรถภาพปอด (Spirometry)',
+  'เครื่อง Ultrasound กายภาพบำบัด',
+  'เครื่อง TENS / EMS',
+  'เครื่องเลเซอร์กายภาพบำบัด',
+  'ชุด Pulmonary Rehabilitation',
+  'Peak Flow Meter',
+  'อื่น ๆ'
+];
+
+function initProductsRef(){
+  if(productsRef) return;
+  productsRef = firebase.database().ref('products');
+  productsRef.on('value', snap => {
+    const data = snap.val();
+    if(data && Array.isArray(data)){
+      allProducts = data.filter(Boolean);
+    } else if(data && typeof data === 'object'){
+      allProducts = Object.values(data).filter(Boolean);
+    } else {
+      // First run: seed defaults
+      allProducts = [...defaultProducts];
+      productsRef.set(allProducts);
+    }
+    syncProductDropdowns();
+    renderProductAdminList();
+  });
+}
+
+function syncProductDropdowns(){
+  // Sync all product <select> elements in the page
+  const selects = ['f-product', 'pl-product'];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    const cur = el.value;
+    el.innerHTML = '<option value="">-- เลือกสินค้า --</option>';
+    allProducts.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p; opt.textContent = p;
+      el.appendChild(opt);
+    });
+    if(cur) el.value = cur;
+  });
+}
+
+function renderProductAdminList(){
+  const el = document.getElementById('product-list-admin');
+  if(!el) return;
+  if(!allProducts.length){ el.innerHTML = '<div style="color:var(--gray-400);font-size:12px;">ยังไม่มีสินค้า</div>'; return; }
+  el.innerHTML = allProducts.map((p,i) => `
+    <div style="display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:8px 12px;">
+      <span style="flex:1;font-size:13px;">${esc(p)}</span>
+      <button onclick="editProductItem(${i})" title="แก้ไข"
+        style="padding:4px 10px;font-size:11px;border:1px solid var(--amber);color:var(--amber);background:var(--amber-light);border-radius:4px;cursor:pointer;font-family:inherit;">✏️ แก้ไข</button>
+      <button onclick="deleteProductItem(${i})" title="ลบ"
+        style="padding:4px 10px;font-size:11px;border:1px solid var(--red);color:var(--red);background:var(--red-light);border-radius:4px;cursor:pointer;font-family:inherit;">✕ ลบ</button>
+    </div>`).join('');
+}
+
+function addProductItem(){
+  const inp = document.getElementById('new-product-input');
+  const val = inp.value.trim();
+  if(!val){ showToast('กรุณาใส่ชื่อสินค้า',''); return; }
+  if(allProducts.includes(val)){ showToast('สินค้านี้มีอยู่แล้ว',''); return; }
+  allProducts.push(val);
+  productsRef.set(allProducts).then(()=>{ inp.value=''; showToast('✅ เพิ่มสินค้าแล้ว','success'); });
+}
+
+function editProductItem(i){
+  const oldName = allProducts[i];
+  const newName = prompt('แก้ไขชื่อสินค้า:', oldName);
+  if(!newName || newName.trim()==='' || newName.trim()===oldName) return;
+  allProducts[i] = newName.trim();
+  productsRef.set(allProducts).then(()=>showToast('✅ แก้ไขแล้ว','success'));
+}
+
+function deleteProductItem(i){
+  const name = allProducts[i];
+  if(!confirm('ลบสินค้า "'+name+'" ออกจากระบบ?')) return;
+  allProducts.splice(i,1);
+  productsRef.set(allProducts).then(()=>showToast('🗑️ ลบสินค้าแล้ว','success'));
+}
+// ===================== END PRODUCT MANAGEMENT =====================
 
 // ===================== N8N WEBHOOK — LINE OA =====================
 let n8nWebhookUrl = localStorage.getItem('pes_n8n_url') || '';
