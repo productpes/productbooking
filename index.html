@@ -1763,6 +1763,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="fgg"><label>สินค้าที่สนใจ</label>
       <select id="f-product">
         <option value="">-- เลือกสินค้า --</option>
+        <option>เครื่อง Demo</option>
         <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
         <option>เครื่อง Ultrasound กายภาพบำบัด</option>
         <option>เครื่อง TENS / EMS</option>
@@ -2091,6 +2092,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
         <label>📦 สินค้าที่เสนอ</label>
         <select class="pl-select" id="pl-product">
           <option value="">-- เลือกสินค้า --</option>
+          <option>เครื่อง Demo</option>
           <option>เครื่องตรวจสมรรถภาพปอด (Spirometry)</option>
           <option>Shockwave Therapy</option>
           <option>เครื่อง Ultrasound กายภาพบำบัด</option>
@@ -2259,6 +2261,7 @@ body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--gray-50);color
     <div class="ws-section">
       <div class="ws-stitle">🔬 สินค้าที่เน้นในรอบนี้</div>
       <div class="ws-prod-tags" id="ws-prod-tags">
+        <button class="ws-prod-tag" onclick="wsToggleProd(this,'demo_machine')" data-prod="demo_machine">🖥️ เครื่อง Demo</button>
         <button class="ws-prod-tag" onclick="wsToggleProd(this,'spirometer')" data-prod="spirometer">🫁 Spirometer</button>
         <button class="ws-prod-tag" onclick="wsToggleProd(this,'shockwave')" data-prod="shockwave">💥 Shockwave</button>
         <button class="ws-prod-tag" onclick="wsToggleProd(this,'ultrasound')" data-prod="ultrasound">🔊 Ultrasound</button>
