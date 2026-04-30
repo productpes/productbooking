@@ -3044,17 +3044,29 @@ function addNotification(type, booking, extra){
   const timeStr = now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
   const dateStr = now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
   let title, desc, icon;
+
+  // ระบุว่าใครเป็นคน Action (Sales ที่ยกเลิก/เลื่อน)
+  // lastUpdatedBy = ผู้ที่กดเปลี่ยนสถานะล่าสุด (set ใน changeStatus)
+  // salesName = ชื่อ Sales เจ้าของนัด (set ตอนสร้าง booking)
+  // ถ้าไม่มีทั้งคู่ fallback เป็น currentUser.name หรือ booking.staff
+  const actionBy = booking.lastUpdatedBy
+    || booking.salesName
+    || (currentUser ? currentUser.name : null)
+    || booking.staff
+    || 'Sales';
+
   if(type==='cancel'){
     icon='❌'; title='ยกเลิกนัดหมาย';
-    desc=`<b>${esc(booking.staff||'Sales')}</b> ยกเลิกนัดที่ <b>${esc(booking.hospital)}</b>`;
-    if(booking.date) desc+=` วันที่ ${fmtTH(booking.date)}`;
-    if(booking.contact) desc+=` (${esc(booking.contact)})`;
+    desc=`🧑‍💼 <b>Sales: ${esc(actionBy)}</b> ยกเลิกนัดที่ <b>${esc(booking.hospital)}</b>`;
+    if(booking.date) desc+=`<br>📅 วันที่ ${fmtTH(booking.date)}`;
+    if(booking.contact) desc+=`<br>👤 ผู้ติดต่อ: ${esc(booking.contact)}`;
+    if(booking.product) desc+=`<br>📦 สินค้า: ${esc(booking.product)}`;
   } else if(type==='postpone'){
     icon='📅'; title='เลื่อนนัดหมาย';
-    desc=`<b>${esc(booking.staff||'Sales')}</b> เลื่อนนัดที่ <b>${esc(booking.hospital)}</b>`;
+    desc=`🧑‍💼 <b>Sales: ${esc(actionBy)}</b> เลื่อนนัดที่ <b>${esc(booking.hospital)}</b>`;
     if(extra && extra.oldDate && extra.newDate)
-      desc+=` จาก ${fmtTH(extra.oldDate)} → ${fmtTH(extra.newDate)}`;
-    if(booking.contact) desc+=` (${esc(booking.contact)})`;
+      desc+=`<br>📆 ${fmtTH(extra.oldDate)} → ${fmtTH(extra.newDate)}`;
+    if(booking.contact) desc+=`<br>👤 ผู้ติดต่อ: ${esc(booking.contact)}`;
   }
   const notifId = Date.now();
   notifications.unshift({id: notifId, type, title, desc, icon, time: timeStr+' '+dateStr, read:false});
@@ -4802,23 +4814,30 @@ addNotification = function(type, booking, extra){
   if(!n8nWebhookUrl) return;
   const thM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   const fmt = ds => { if(!ds) return '—'; const d=new Date(ds+'T00:00:00'); return d.getDate()+' '+thM[d.getMonth()]+' '+(d.getFullYear()+543); };
+  // ระบุชื่อ Sales ที่ทำการยกเลิก/เลื่อนนัด
+  const actionBySales = booking.lastUpdatedBy
+    || booking.salesName
+    || (currentUser ? currentUser.name : null)
+    || booking.staff
+    || '—';
   const payload = {
     type,
+    sales:    actionBySales,
     staff:    booking.staff    || '—',
     hospital: booking.hospital || '—',
     contact:  booking.contact  || '—',
     product:  booking.product  || '',
     date:     fmt(booking.date),
     note:     booking.note     || '',
-    updatedBy: booking.lastUpdatedBy || booking.staff || '—',
+    updatedBy: actionBySales,
     oldDate:  extra?.oldDate ? fmt(extra.oldDate) : undefined,
     newDate:  extra?.newDate ? fmt(extra.newDate) : undefined,
-    // message สำเร็จรูปสำหรับใช้ใน n8n ได้เลย
+    // message สำเร็จรูปสำหรับใช้ใน n8n / LINE ได้เลย
     message: type==='cancel'
-      ? `❌ ยกเลิกนัดหมาย\nSales: ${booking.staff||'—'}\nโรงพยาบาล: ${booking.hospital||'—'}\nวันที่: ${fmt(booking.date)}\nผู้ติดต่อ: ${booking.contact||'—'}${booking.product?'\nสินค้า: '+booking.product:''}`
+      ? `❌ ยกเลิกนัดหมาย\nSales: ${actionBySales}\nโรงพยาบาล: ${booking.hospital||'—'}\nวันที่: ${fmt(booking.date)}\nผู้ติดต่อ: ${booking.contact||'—'}${booking.product?'\nสินค้า: '+booking.product:''}`
       : type==='postpone'
-      ? `📅 เลื่อนนัดหมาย\nSales: ${booking.staff||'—'}\nโรงพยาบาล: ${booking.hospital||'—'}\nจากวันที่: ${extra?.oldDate?fmt(extra.oldDate):'—'}\nเป็นวันที่: ${extra?.newDate?fmt(extra.newDate):'—'}\nผู้ติดต่อ: ${booking.contact||'—'}`
-      : `🗑️ ลบนัดหมาย\nSales: ${booking.staff||'—'}\nโรงพยาบาล: ${booking.hospital||'—'}\nวันที่: ${fmt(booking.date)}`
+      ? `📅 เลื่อนนัดหมาย\nSales: ${actionBySales}\nโรงพยาบาล: ${booking.hospital||'—'}\nจากวันที่: ${extra?.oldDate?fmt(extra.oldDate):'—'}\nเป็นวันที่: ${extra?.newDate?fmt(extra.newDate):'—'}\nผู้ติดต่อ: ${booking.contact||'—'}`
+      : `🗑️ ลบนัดหมาย\nSales: ${actionBySales}\nโรงพยาบาล: ${booking.hospital||'—'}\nวันที่: ${fmt(booking.date)}`
   };
   callN8nWebhook(payload);
 };
